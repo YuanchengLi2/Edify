@@ -69,6 +69,13 @@ export class EditorCore {
 			}
 		});
 		this.save.start();
+
+		if (typeof window !== "undefined") {
+			const flushSave = () => {
+				this.save.flush();
+			};
+			window.addEventListener("beforeunload", flushSave);
+		}
 	}
 
 	static getInstance(): EditorCore {

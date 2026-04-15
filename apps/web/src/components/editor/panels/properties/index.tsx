@@ -19,6 +19,8 @@ import { ColorTab } from "./tabs/color-tab";
 import { ClipEffectsTab, StandaloneEffectTab } from "./tabs/effects-tab";
 import { AudioTab } from "./tabs/audio-tab";
 import { TransitionsTab } from "./tabs/transitions-tab";
+import { MasksTab } from "./tabs/masks-tab";
+import { TextTab } from "./tabs/text-tab";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	ArrowLeft01Icon,
@@ -26,6 +28,10 @@ import {
 	MagicWand05Icon,
 	MusicNote03Icon,
 	TransitionTopIcon,
+	MoreHorizontalCircle01Icon,
+	MaskingIcon,
+	ClosedCaptionIcon,
+	PaintBoardIcon,
 } from "@hugeicons/core-free-icons";
 import type {
 	VideoElement,
@@ -36,7 +42,7 @@ import type {
 	TimelineElement,
 } from "@/lib/timeline";
 
-type InspectorView = "color" | "effects" | "audio" | "transitions" | null;
+type InspectorView = "color" | "effects" | "audio" | "transitions" | "masks" | "captions" | null;
 
 function getInspectorCards(element: TimelineElement): {
 	key: InspectorView;
@@ -51,24 +57,58 @@ function getInspectorCards(element: TimelineElement): {
 				{ key: "effects", label: "Effects", icon: MagicWand05Icon },
 				{ key: "audio", label: "Audio", icon: MusicNote03Icon },
 				{ key: "transitions", label: "Transitions", icon: TransitionTopIcon },
+				{ key: "masks", label: "Masks", icon: MaskingIcon },
 			);
 			break;
 		case "image":
 			cards.push(
 				{ key: "color", label: "Color Grading", icon: Sun03Icon },
 				{ key: "effects", label: "Effects", icon: MagicWand05Icon },
+				{ key: "masks", label: "Masks", icon: MaskingIcon },
 			);
 			break;
 		case "text":
+			cards.push(
+				{ key: "effects", label: "Effects", icon: MagicWand05Icon },
+				{ key: "captions", label: "Caption Style", icon: ClosedCaptionIcon },
+			);
+			break;
 		case "sticker":
 		case "graphic":
-			cards.push({ key: "effects", label: "Effects", icon: MagicWand05Icon });
+			cards.push(
+				{ key: "effects", label: "Effects", icon: MagicWand05Icon },
+				{ key: "masks", label: "Masks", icon: MaskingIcon },
+			);
 			break;
 		case "effect":
 			cards.push({ key: "effects", label: "Effects", icon: MagicWand05Icon });
 			break;
 		case "audio":
 			break;
+	}
+	return cards;
+}
+
+function getMoreCards(element: TimelineElement): {
+	key: InspectorView;
+	label: string;
+	icon: typeof Sun03Icon;
+}[] {
+	const cards: { key: InspectorView; label: string; icon: typeof Sun03Icon }[] = [];
+	if (element.type === "video" || element.type === "image" || element.type === "graphic") {
+		cards.push(
+			{ key: "masks", label: "Masks", icon: MaskingIcon },
+		);
+	}
+	if (element.type === "video" || element.type === "image") {
+		cards.push(
+			{ key: "color", label: "Color Grading", icon: PaintBoardIcon },
+		);
+	}
+	if (element.type === "text") {
+		cards.push(
+			{ key: "captions", label: "Caption Style", icon: ClosedCaptionIcon },
+		);
 	}
 	return cards;
 }
@@ -128,6 +168,8 @@ export function PropertiesPanel() {
 
 	const cards = getInspectorCards(element);
 
+	const moreCards = getMoreCards(element);
+
 	return (
 		<div className="panel bg-background flex h-full overflow-hidden rounded-sm border">
 			<TooltipProvider delayDuration={0}>
@@ -136,7 +178,7 @@ export function PropertiesPanel() {
 						<Tooltip key={tab.id}>
 							<TooltipTrigger asChild>
 								<Button
-									variant={tab.id === activeTab.id ? "secondary" : "ghost"}
+									variant={tab.id === activeTab.id && inspectorView === null ? "secondary" : "ghost"}
 									size="icon"
 									onClick={() => {
 										setActiveTab(element.type, tab.id);
@@ -155,6 +197,28 @@ export function PropertiesPanel() {
 							<TooltipContent side="right">{tab.label}</TooltipContent>
 						</Tooltip>
 					))}
+					{moreCards.length > 0 && (
+						<>
+							<div className="bg-border mx-1 my-1 h-px" />
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										variant={inspectorView !== null && cards.every(c => c.key !== inspectorView) ? "secondary" : "ghost"}
+										size="icon"
+										onClick={() => {
+											if (inspectorView === "masks" || inspectorView === "captions") return;
+											setInspectorView(moreCards[0].key);
+										}}
+										aria-label="More"
+										className="shrink-0 h-8 w-8 text-muted-foreground"
+									>
+										<HugeiconsIcon icon={MoreHorizontalCircle01Icon} size={16} />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="right">More</TooltipContent>
+							</Tooltip>
+						</>
+					)}
 				</div>
 			</TooltipProvider>
 			<ScrollArea className="flex-1 scrollbar-hidden">
@@ -221,6 +285,20 @@ export function PropertiesPanel() {
 							element.type === "video" && (
 								<TransitionsTab
 									element={element as VideoElement}
+									trackId={track.id}
+								/>
+							)}
+						{inspectorView === "masks" &&
+							(element.type === "video" || element.type === "image" || element.type === "graphic") && (
+								<MasksTab
+									element={element as import("@/lib/timeline").MaskableElement}
+									trackId={track.id}
+								/>
+							)}
+						{inspectorView === "captions" &&
+							element.type === "text" && (
+								<TextTab
+									element={element as import("@/lib/timeline").TextElement}
 									trackId={track.id}
 								/>
 							)}
