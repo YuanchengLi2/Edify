@@ -23,6 +23,7 @@ import {
 	SelectSeparator,
 } from "@/components/ui/select";
 import { PREVIEW_ZOOM_PRESETS } from "@/lib/preview/zoom";
+import { ASPECT_PRESETS, type AspectPresetKey } from "@/lib/canvas/aspect-presets";
 import { usePreviewViewport } from "./preview-viewport";
 import { GridPopover } from "./guide-popover";
 import { usePreviewStore } from "@/stores/preview-store";
@@ -40,6 +41,7 @@ export function PreviewToolbar({
 			<TimecodeDisplay />
 			<PlayPauseButton />
 			<div className="justify-self-end flex items-center gap-2.5">
+				<AspectRatioSelect />
 				<ZoomSelect />
 				<Separator orientation="vertical" className="h-4" />
 				{/* v0.4.0 */}
@@ -97,6 +99,24 @@ function TimecodeDisplay() {
 				{formatTimecode({ time: totalDuration, format: "HH:MM:SS:FF", rate: fps })}
 			</span>
 		</div>
+	);
+}
+
+function AspectRatioSelect() {
+	const aspectRatio = usePreviewStore((s) => s.aspectRatio);
+	const setAspectRatio = usePreviewStore((s) => s.setAspectRatio);
+
+	return (
+		<Select value={aspectRatio} onValueChange={setAspectRatio}>
+			<SelectTrigger className="tabular-nums">{aspectRatio}</SelectTrigger>
+			<SelectContent>
+				{(Object.keys(ASPECT_PRESETS) as AspectPresetKey[]).map((key) => (
+					<SelectItem key={key} value={key}>
+						{key}
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
 	);
 }
 

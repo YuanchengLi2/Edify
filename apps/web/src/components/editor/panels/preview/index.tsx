@@ -21,6 +21,10 @@ import {
 	PreviewViewportProvider,
 	usePreviewViewportState,
 } from "./preview-viewport";
+import {
+	ASPECT_PRESETS,
+	type AspectPresetKey,
+} from "@/lib/canvas/aspect-presets";
 
 function usePreviewSize() {
 	const canvasSize = useEditor(
@@ -109,11 +113,37 @@ function PreviewCanvas({
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const viewportRef = useRef<HTMLDivElement>(null);
+	const frameRef = useRef<HTMLDivElement>(null);
 	const lastFrameRef = useRef(-1);
 	const lastSceneRef = useRef<RootNode | null>(null);
 	const renderingRef = useRef(false);
 	const { width: nativeWidth, height: nativeHeight } = usePreviewSize();
 	const viewportSize = useContainerSize({ containerRef: viewportRef });
+	const aspectRatioKey = usePreviewStore((s) => s.aspectRatio);
+	const ratioValue = ASPECT_PRESETS[aspectRatioKey as AspectPresetKey];
+	const { frameWidth, frameHeight } = useMemo(() => {
+		if (
+			!ratioValue ||
+			!viewportSize.width ||
+			!viewportSize.height
+		) {
+			return {
+				frameWidth: viewportSize.width,
+				frameHeight: viewportSize.height,
+			};
+		}
+		const actualRatio = viewportSize.width / viewportSize.height;
+		if (actualRatio > ratioValue) {
+			return {
+				frameWidth: viewportSize.height * ratioValue,
+				frameHeight: viewportSize.height,
+			};
+		}
+		return {
+			frameWidth: viewportSize.width,
+			frameHeight: viewportSize.width / ratioValue,
+		};
+	}, [viewportSize.width, viewportSize.height, ratioValue]);
 	const editor = useEditor();
 	const activeProject = useEditor((e) => e.project.getActive());
 	const renderTree = useEditor((e) => e.renderer.getRenderTree());
@@ -121,9 +151,9 @@ function PreviewCanvas({
 	const viewport = usePreviewViewportState({
 		canvasHeight: nativeHeight,
 		canvasWidth: nativeWidth,
-		viewportHeight: viewportSize.height,
-		viewportRef,
-		viewportWidth: viewportSize.width,
+		viewportHeight: frameHeight || viewportSize.height,
+		viewportWidth: frameWidth || viewportSize.width,
+		viewportRef: frameRef,
 	});
 
 	const renderer = useMemo(() => {
@@ -260,25 +290,34 @@ function PreviewCanvas({
 								ref={viewportRef}
 								className="relative flex size-full min-h-0 min-w-0 items-center justify-center overflow-hidden"
 							>
-								<canvas
-									ref={canvasRef}
-									width={nativeWidth}
-									height={nativeHeight}
-									className="absolute block border"
+								<div
+									ref={frameRef}
+									className="relative overflow-hidden"
 									style={{
-										left: viewport.sceneLeft,
-										top: viewport.sceneTop,
-										width: viewport.sceneWidth,
-										height: viewport.sceneHeight,
-										background:
-											activeProject.settings.background.type === "blur"
-												? "transparent"
-												: activeProject?.settings.background.color,
+										width: frameWidth ? `${frameWidth}px` : "100%",
+										height: frameHeight ? `${frameHeight}px` : "100%",
 									}}
-								/>
-								<GuideOverlay />
-								<PreviewInteractionOverlay />
-								{overlays.bookmarks && <BookmarkNoteOverlay />}
+								>
+									<canvas
+										ref={canvasRef}
+										width={nativeWidth}
+										height={nativeHeight}
+										className="absolute block border"
+										style={{
+											left: viewport.sceneLeft,
+											top: viewport.sceneTop,
+											width: viewport.sceneWidth,
+											height: viewport.sceneHeight,
+											background:
+												activeProject.settings.background.type === "blur"
+													? "transparent"
+													: activeProject?.settings.background.color,
+										}}
+									/>
+									<GuideOverlay />
+									<PreviewInteractionOverlay />
+									{overlays.bookmarks && <BookmarkNoteOverlay />}
+								</div>
 							</div>
 						</ContextMenuTrigger>
 						<PreviewContextMenu

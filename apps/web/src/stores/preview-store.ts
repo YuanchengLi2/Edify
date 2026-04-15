@@ -15,12 +15,14 @@ interface PersistedPreviewState {
 	};
 	overlays?: PreviewOverlaysState;
 	gridConfig?: GridConfig;
+	aspectRatio?: string;
 }
 
 interface PreviewState {
 	activeGuide: GuideId | null;
 	overlays: PreviewOverlaysState;
 	gridConfig: GridConfig;
+	aspectRatio: string;
 	toggleGuide: (guideId: GuideId) => void;
 	setGridConfig: (config: Partial<GridConfig>) => void;
 	setOverlayVisibility: ({
@@ -35,6 +37,7 @@ interface PreviewState {
 	}: {
 		overlay: keyof PreviewOverlaysState;
 	}) => void;
+	setAspectRatio: (ratio: string) => void;
 }
 
 const DEFAULT_PREVIEW_OVERLAYS: PreviewOverlaysState = {
@@ -60,6 +63,7 @@ export const usePreviewStore = create<PreviewState>()(
 			activeGuide: null,
 			overlays: DEFAULT_PREVIEW_OVERLAYS,
 			gridConfig: DEFAULT_GRID_CONFIG,
+			aspectRatio: "16:9",
 			toggleGuide: (guideId) => {
 				set((state) => ({
 					activeGuide: state.activeGuide === guideId ? null : guideId,
@@ -86,10 +90,13 @@ export const usePreviewStore = create<PreviewState>()(
 					},
 				}));
 			},
+			setAspectRatio: (ratio) => {
+				set({ aspectRatio: ratio });
+			},
 		}),
 		{
 			name: "preview-settings",
-			version: 4,
+			version: 5,
 			migrate: (persistedState) => {
 				const state = persistedState as PersistedPreviewState | undefined;
 
@@ -100,12 +107,14 @@ export const usePreviewStore = create<PreviewState>()(
 						rows: state?.gridConfig?.rows ?? DEFAULT_GRID_CONFIG.rows,
 						cols: state?.gridConfig?.cols ?? DEFAULT_GRID_CONFIG.cols,
 					},
+					aspectRatio: state?.aspectRatio ?? "16:9",
 				};
 			},
 			partialize: (state) => ({
 				activeGuide: state.activeGuide,
 				overlays: state.overlays,
 				gridConfig: state.gridConfig,
+				aspectRatio: state.aspectRatio,
 			}),
 		},
 	),

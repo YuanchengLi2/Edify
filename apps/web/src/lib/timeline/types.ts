@@ -128,6 +128,9 @@ export interface VideoElement extends BaseTimelineElement {
 	blendMode?: BlendMode;
 	effects?: Effect[];
 	masks?: Mask[];
+	colorSettings?: import("@/lib/color/types").ColorSettings;
+	transitionIn?: import("@/lib/transitions/types").Transition;
+	transitionOut?: import("@/lib/transitions/types").Transition;
 }
 
 export interface ImageElement extends BaseTimelineElement {
@@ -139,6 +142,7 @@ export interface ImageElement extends BaseTimelineElement {
 	blendMode?: BlendMode;
 	effects?: Effect[];
 	masks?: Mask[];
+	colorSettings?: import("@/lib/color/types").ColorSettings;
 }
 
 export interface TextBackground {

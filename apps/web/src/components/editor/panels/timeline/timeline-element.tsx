@@ -92,6 +92,19 @@ const KEYFRAME_INDICATOR_MIN_WIDTH_PX = 40;
 const ELEMENT_RING_WIDTH_PX = 1.5;
 const THUMBNAIL_ASPECT_RATIO = 16 / 9;
 
+const EFFECT_TAG_MAP: Record<string, { color: string; abbr: string }> = {
+	blur: { color: "#3b82f6", abbr: "BL" },
+	vignette: { color: "#8b5cf6", abbr: "VI" },
+	film_grain: { color: "#f59e0b", abbr: "FG" },
+	sharpen: { color: "#06b6d4", abbr: "SH" },
+	glow: { color: "#ec4899", abbr: "GL" },
+	chromatic_aberration: { color: "#ef4444", abbr: "CA" },
+	glitch: { color: "#22c55e", abbr: "GX" },
+	zoom_punch: { color: "#f97316", abbr: "ZP" },
+	blur_background: { color: "#6366f1", abbr: "BB" },
+	clarity: { color: "#14b8a6", abbr: "CL" },
+};
+
 interface KeyframeIndicator {
 	time: number;
 	offsetPx: number;
@@ -1063,6 +1076,40 @@ function EffectsButton({
 	);
 }
 
+function EffectTags({
+	element,
+}: {
+	element: VideoElement | ImageElement;
+}) {
+	if (!element.effects?.length) return null;
+	const enabledEffects = element.effects.filter((e) => e.enabled);
+	if (!enabledEffects.length) return null;
+
+	return (
+		<div className="absolute top-0 left-0 right-0 flex gap-0.5 p-0.5 z-10 pointer-events-none">
+			{enabledEffects.map((effect) => {
+				const tag = EFFECT_TAG_MAP[effect.type];
+				if (!tag) return null;
+				return (
+					<div
+						key={effect.id}
+						className="flex items-center justify-center text-white rounded-[1px]"
+						style={{
+							backgroundColor: tag.color,
+							height: 6,
+							fontSize: 8,
+							lineHeight: "6px",
+							padding: "0 2px",
+						}}
+					>
+						{tag.abbr}
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 function TiledMediaContent({
 	element,
 	track,
@@ -1111,6 +1158,7 @@ function TiledMediaContent({
 				}
 				hasFade={true}
 			/>
+			<EffectTags element={element} />
 		</>
 	);
 }
