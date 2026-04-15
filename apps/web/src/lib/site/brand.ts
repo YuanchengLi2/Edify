@@ -1,9 +1,8 @@
-export const SITE_URL = "https://opencut.app";
+export const SITE_URL = "https://edify.ai";
 
 export const SITE_INFO = {
-	title: "OpenCut",
-	description:
-		"A simple but powerful video editor that gets the job done. In your browser.",
+	title: "Edify",
+	description: "AI-powered video editing. Professional results, zero learning curve.",
 	url: SITE_URL,
 	openGraphImage: "/open-graph/default.jpg",
 	twitterImage: "/open-graph/default.jpg",

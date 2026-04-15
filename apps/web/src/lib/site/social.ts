@@ -1,5 +1,5 @@
 export const SOCIAL_LINKS = {
-	x: "https://x.com/opencutapp",
-	github: "https://github.com/OpenCut-app/OpenCut",
-	discord: "https://discord.com/invite/Mu3acKZvCp",
+	x: "https://x.com/edifyapp",
+	github: "https://github.com/YuanchengLi2/Edify",
+	discord: "https://discord.com/invite/edify",
 };
