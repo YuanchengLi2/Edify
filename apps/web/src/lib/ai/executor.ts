@@ -80,13 +80,14 @@ function executeAction(
 	}
 }
 
-function findTrackIdBySearch(editor: EditorCore, elementId: string): string | null {
+function findTrackIdBySearch(
+	editor: EditorCore,
+	elementId: string,
+): string | null {
 	const activeScene = editor.scenes.getActiveSceneOrNull();
 	if (!activeScene) return null;
 
-	if (
-		activeScene.tracks.main.elements.some((e) => e.id === elementId)
-	) {
+	if (activeScene.tracks.main.elements.some((e) => e.id === elementId)) {
 		return activeScene.tracks.main.id;
 	}
 

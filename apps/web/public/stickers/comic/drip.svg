@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="drip-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2979FF"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </linearGradient>
+    <pattern id="ht-drip" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FFFFFF" opacity="0.12"/>
+    </pattern>
+  </defs>
+  <rect x="6" y="16" width="116" height="80" rx="14" fill="url(#drip-grad)" stroke="#1a1a1a" stroke-width="5"/>
+  <rect x="6" y="16" width="116" height="80" rx="14" fill="url(#ht-drip)"/>
+  <text x="64" y="68" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="44" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="5">DRIP</text>
+  <path d="M20,96 Q20,92 22,96 Q24,100 24,108 Q24,114 22,114 Q20,114 20,108 Z" fill="#42A5F5" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M40,96 Q40,92 42,96 Q44,100 44,104 Q44,108 42,108 Q40,108 40,104 Z" fill="#42A5F5" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M84,96 Q84,92 86,96 Q88,100 88,106 Q88,112 86,112 Q84,112 84,106 Z" fill="#42A5F5" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M104,96 Q104,92 106,96 Q108,100 108,102 Q108,106 106,106 Q104,106 104,102 Z" fill="#42A5F5" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="64" cy="116" r="3" fill="#42A5F5" stroke="#1a1a1a" stroke-width="1.5"/>
+  <circle cx="54" cy="120" r="2" fill="#42A5F5" stroke="#1a1a1a" stroke-width="1"/>
+</svg>

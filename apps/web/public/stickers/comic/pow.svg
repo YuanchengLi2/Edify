@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="ht-pow" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FF1744" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <polygon points="64,4 78,28 108,18 90,44 120,52 92,64 116,88 86,80 78,108 64,88 50,108 42,80 12,88 36,64 8,52 38,44 20,18 50,28" fill="#FFD600" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,4 78,28 108,18 90,44 120,52 92,64 116,88 86,80 78,108 64,88 50,108 42,80 12,88 36,64 8,52 38,44 20,18 50,28" fill="url(#ht-pow)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="38" font-weight="900" fill="#FF1744" stroke="#1a1a1a" stroke-width="3" letter-spacing="2">POW!</text>
+</svg>

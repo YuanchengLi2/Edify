@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="trophyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF9800"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M38,16 L90,16 L86,64 Q86,84 64,84 Q42,84 42,64 Z" fill="url(#trophyGold)"/>
+    <path d="M38,16 Q16,16 16,36 Q16,56 42,56" fill="none" stroke="url(#trophyGold)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M90,16 Q112,16 112,36 Q112,56 86,56" fill="none" stroke="url(#trophyGold)" stroke-width="6" stroke-linecap="round"/>
+    <rect x="56" y="84" width="16" height="16" rx="2" fill="#FFA000"/>
+    <rect x="40" y="100" width="48" height="10" rx="3" fill="#795548"/>
+    <rect x="44" y="110" width="40" height="6" rx="2" fill="#5D4037"/>
+    <path d="M52,16 L54,38 L64,30 L74,38 L76,16" fill="#FFF8E1" opacity="0.4"/>
+    <text x="64" y="58" text-anchor="middle" fill="#E65100" font-family="Arial Black,sans-serif" font-size="14" font-weight="bold">#1</text>
+  </g>
+</svg>

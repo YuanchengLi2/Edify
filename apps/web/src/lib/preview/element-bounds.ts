@@ -3,10 +3,16 @@ import type { MediaAsset } from "@/lib/media/types";
 import { STICKER_INTRINSIC_SIZE_FALLBACK } from "@/lib/stickers/intrinsic-size";
 import { DEFAULT_GRAPHIC_SOURCE_SIZE } from "@/lib/graphics";
 import { measureTextElement } from "@/lib/text/measure-element";
-import {
-	getElementLocalTime,
-	resolveTransformAtTime,
-} from "@/lib/animation";
+import { getElementLocalTime, resolveTransformAtTime } from "@/lib/animation";
+
+let _cachedCtx: CanvasRenderingContext2D | null = null;
+function getCachedMeasurementContext(): CanvasRenderingContext2D | null {
+	if (!_cachedCtx) {
+		const canvas = document.createElement("canvas");
+		_cachedCtx = canvas.getContext("2d");
+	}
+	return _cachedCtx;
+}
 
 export interface ElementBounds {
 	cx: number;
@@ -175,8 +181,7 @@ function getElementBounds({
 			localTime,
 		});
 
-		const canvas = document.createElement("canvas");
-		const ctx = canvas.getContext("2d");
+		const ctx = getCachedMeasurementContext();
 		if (!ctx) return null;
 
 		const measured = measureTextElement({
@@ -236,7 +241,8 @@ export function getEdgeHandlePosition({
 	const angleRad = (bounds.rotation * Math.PI) / 180;
 	const cos = Math.cos(angleRad);
 	const sin = Math.sin(angleRad);
-	const localX = edge === "right" ? halfWidth : edge === "left" ? -halfWidth : 0;
+	const localX =
+		edge === "right" ? halfWidth : edge === "left" ? -halfWidth : 0;
 	const localY = edge === "bottom" ? halfHeight : 0;
 	return {
 		x: bounds.cx + (localX * cos - localY * sin),

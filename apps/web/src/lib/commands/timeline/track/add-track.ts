@@ -69,10 +69,7 @@ function buildAudioTrackState({
 	insertIndex: number;
 	trackId: string;
 }): SceneTracks {
-	const audioInsertIndex = Math.max(
-		0,
-		insertIndex - tracks.overlay.length - 1,
-	);
+	const audioInsertIndex = Math.max(0, insertIndex - tracks.overlay.length - 1);
 	const newTrack = buildEmptyTrack({
 		id: trackId,
 		type: "audio",
@@ -106,7 +103,9 @@ function buildOverlayTrackState({
 				? buildEmptyTrack({ id: trackId, type: "text" })
 				: trackType === "graphic"
 					? buildEmptyTrack({ id: trackId, type: "graphic" })
-					: buildEmptyTrack({ id: trackId, type: "effect" });
+					: trackType === "mask"
+						? buildEmptyTrack({ id: trackId, type: "mask" })
+						: buildEmptyTrack({ id: trackId, type: "effect" });
 	return {
 		...tracks,
 		overlay: [

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="oops-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFAB40"/>
+      <stop offset="100%" stop-color="#FF6D00"/>
+    </linearGradient>
+  </defs>
+  <polygon points="64,6 80,28 108,16 94,42 122,52 98,64 118,90 88,80 76,106 64,86 52,106 40,80 10,90 30,64 6,52 34,42 20,16 48,28" fill="url(#oops-grad)" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <text x="64" y="74" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="38" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="2">OOPS!</text>
+  <circle cx="50" cy="48" r="4" fill="#1a1a1a"/>
+  <circle cx="78" cy="48" r="4" fill="#1a1a1a"/>
+  <path d="M54,56 Q64,62 74,56" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+</svg>

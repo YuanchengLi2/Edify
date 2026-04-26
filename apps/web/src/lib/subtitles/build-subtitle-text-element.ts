@@ -7,6 +7,7 @@ import {
 import { DEFAULTS } from "@/lib/timeline/defaults";
 import { TICKS_PER_SECOND } from "@/lib/wasm";
 import type { CreateTextElement } from "@/lib/timeline";
+import type { CaptionStyle } from "@/lib/captions/types";
 import type { SubtitleCue, SubtitleStyleOverrides } from "./types";
 
 const SUBTITLE_MAX_WIDTH_RATIO = 0.8;
@@ -132,6 +133,8 @@ function resolveSubtitleStyle({
 	lineHeight: number;
 	background: CreateTextElement["background"];
 	placement: NonNullable<SubtitleStyleOverrides["placement"]>;
+	strokeColor: string;
+	strokeWidth: number;
 } {
 	const fontSize =
 		style?.fontSizeRatioOfPlayHeight != null
@@ -160,6 +163,9 @@ function resolveSubtitleStyle({
 			marginRightRatio: style?.placement?.marginRightRatio,
 			marginVerticalRatio: style?.placement?.marginVerticalRatio,
 		},
+		strokeColor:
+			style?.strokeColor ?? DEFAULTS.text.element.strokeColor ?? "#000000",
+		strokeWidth: style?.strokeWidth ?? DEFAULTS.text.element.strokeWidth ?? 0,
 	};
 }
 
@@ -250,10 +256,12 @@ export function buildSubtitleTextElement({
 	index,
 	caption,
 	canvasSize,
+	captionStyle,
 }: {
 	index: number;
 	caption: SubtitleCue;
 	canvasSize: { width: number; height: number };
+	captionStyle?: CaptionStyle;
 }): CreateTextElement {
 	const ctx = createMeasurementContext();
 	const style = resolveSubtitleStyle({
@@ -322,6 +330,8 @@ export function buildSubtitleTextElement({
 		letterSpacing: style.letterSpacing,
 		lineHeight: style.lineHeight,
 		background: style.background,
+		strokeColor: style.strokeColor,
+		strokeWidth: style.strokeWidth,
 		transform: {
 			...DEFAULTS.text.element.transform,
 			position: {
@@ -329,5 +339,6 @@ export function buildSubtitleTextElement({
 				y: positionY,
 			},
 		},
+		...(captionStyle ? { captionStyle } : {}),
 	};
 }

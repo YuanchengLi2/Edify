@@ -1,7 +1,17 @@
 export const STICKER_CATEGORIES = {
 	all: "All",
-	// v0.4.0
-	// logos: "Logos",
+	emojis: "Emojis",
+	arrows: "Arrows",
+	bubbles: "Bubbles",
+	social: "Social",
+	animals: "Animals",
+	food: "Food",
+	comic: "Comic",
+	gaming: "Gaming",
+	decorations: "Decorations",
+	badges: "Badges",
+	weather: "Weather",
+	holiday: "Holiday",
 	flags: "Flags",
 	shapes: "Shapes",
 };

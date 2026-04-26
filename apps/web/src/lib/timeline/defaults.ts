@@ -34,6 +34,8 @@ const defaultTextElement: Omit<TextElement, "id"> = {
 	fontSize: 15,
 	fontFamily: "Arial",
 	color: "#ffffff",
+	strokeColor: "#000000",
+	strokeWidth: 0,
 	background: { ...defaultTextBackground },
 	textAlign: "center",
 	fontWeight: "normal",

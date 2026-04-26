@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="stg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FF8C00"/>
+    </linearGradient>
+    <linearGradient id="stg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA500"/>
+      <stop offset="100%" stop-color="#FF6347"/>
+    </linearGradient>
+  </defs>
+  <polygon points="24,18 27,26 36,26 29,31 31,40 24,35 17,40 19,31 12,26 21,26" fill="url(#stg1)" opacity="0.9"/>
+  <polygon points="90,12 93,19 100,19 94,23 96,30 90,26 84,30 86,23 80,19 87,19" fill="url(#stg2)" opacity="0.85"/>
+  <polygon points="55,40 58,48 66,48 60,52 62,60 55,56 48,60 50,52 44,48 52,48" fill="url(#stg1)" opacity="0.7" transform="scale(0.7) translate(20,10)"/>
+  <polygon points="105,50 107,55 113,55 108,58 110,63 105,60 100,63 102,58 97,55 103,55" fill="#FFD700" opacity="0.6"/>
+  <polygon points="20,65 23,73 31,73 25,77 27,85 20,81 13,85 15,77 9,73 17,73" fill="url(#stg2)" opacity="0.8"/>
+  <polygon points="70,75 72,80 78,80 73,83 75,88 70,85 65,88 67,83 62,80 68,80" fill="url(#stg1)" opacity="0.55"/>
+  <polygon points="40,100 42,105 48,105 43,108 45,113 40,110 35,113 37,108 32,105 38,105" fill="#FFA500" opacity="0.75"/>
+  <polygon points="95,90 97,95 103,95 98,98 100,103 95,100 90,103 92,98 87,95 93,95" fill="url(#stg2)" opacity="0.65"/>
+  <polygon points="60,110 62,114 66,114 63,117 64,121 60,119 56,121 57,117 54,114 58,114" fill="#FFD700" opacity="0.5"/>
+</svg>

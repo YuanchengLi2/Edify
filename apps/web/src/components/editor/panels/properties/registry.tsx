@@ -3,7 +3,6 @@ import type {
 	EffectElement,
 	GraphicElement,
 	ImageElement,
-	MaskableElement,
 	RetimableElement,
 	StickerElement,
 	TextElement,
@@ -11,30 +10,32 @@ import type {
 	VideoElement,
 	AudioElement,
 	TimelineElement,
+	MaskableElement,
+	MaskOverlayElement,
 } from "@/lib/timeline";
 import type { MediaAsset } from "@/lib/media/types";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	TextFontIcon,
 	ArrowExpandIcon,
-	RainDropIcon,
+	KeyframeIcon,
 	MusicNote03Icon,
 	MagicWand05Icon,
 	DashboardSpeed02Icon,
 	Sun03Icon,
-	TransitionTopIcon,
 } from "@hugeicons/core-free-icons";
 import { TransformTab } from "./tabs/transform-tab";
-import { BlendingTab } from "./tabs/blending-tab";
 import { AudioTab } from "./tabs/audio-tab";
 import { TextTab } from "./tabs/text-tab";
 import { ClipEffectsTab, StandaloneEffectTab } from "./tabs/effects-tab";
-import { MasksTab } from "./tabs/masks-tab";
 import { SpeedTab } from "./tabs/speed-tab";
 import { GraphicTab } from "./tabs/graphic-tab";
 import { ColorTab } from "./tabs/color-tab";
 import { TransitionsTab } from "./tabs/transitions-tab";
+import { KeyframesTab } from "./tabs/keyframes-tab";
+import { MasksTab } from "./tabs/masks-tab";
 import { OcShapesIcon } from "@/components/icons";
+import { TransitionTopIcon } from "@hugeicons/core-free-icons";
 
 export type TabContentProps = {
 	trackId: string;
@@ -67,21 +68,6 @@ function buildTransformTab({
 	};
 }
 
-function buildBlendingTab({
-	element,
-}: {
-	element: VisualElement;
-}): PropertiesTabDef {
-	return {
-		id: "blending",
-		label: "Blending",
-		icon: <HugeiconsIcon icon={RainDropIcon} size={16} />,
-		content: ({ trackId }) => (
-			<BlendingTab element={element} trackId={trackId} />
-		),
-	};
-}
-
 function buildAudioTab({
 	element,
 }: {
@@ -108,20 +94,7 @@ function buildSpeedTab({
 	};
 }
 
-function buildMasksTab({
-	element,
-}: {
-	element: MaskableElement;
-}): PropertiesTabDef {
-	return {
-		id: "masks",
-		label: "Masks",
-		icon: <OcShapesIcon size={16} />,
-		content: ({ trackId }) => <MasksTab element={element} trackId={trackId} />,
-	};
-}
-
-function buildClipEffectsTab({
+function _buildClipEffectsTab({
 	element,
 }: {
 	element: VisualElement;
@@ -154,7 +127,9 @@ function buildGraphicTab({
 		id: "graphic",
 		label: "Graphic",
 		icon: <OcShapesIcon size={16} />,
-		content: ({ trackId }) => <GraphicTab element={element} trackId={trackId} />,
+		content: ({ trackId }) => (
+			<GraphicTab element={element} trackId={trackId} />
+		),
 	};
 }
 
@@ -186,6 +161,15 @@ function buildColorTab({
 	};
 }
 
+function buildKeyframesTab(): PropertiesTabDef {
+	return {
+		id: "keyframes",
+		label: "Keyframes",
+		icon: <HugeiconsIcon icon={KeyframeIcon} size={16} />,
+		content: () => <KeyframesTab />,
+	};
+}
+
 function buildTransitionsTab({
 	element,
 }: {
@@ -201,6 +185,30 @@ function buildTransitionsTab({
 	};
 }
 
+function buildMasksTab({
+	element,
+}: {
+	element: MaskableElement;
+}): PropertiesTabDef {
+	return {
+		id: "masks",
+		label: "Masks",
+		icon: <OcShapesIcon size={16} />,
+		content: ({ trackId }) => <MasksTab element={element} trackId={trackId} />,
+	};
+}
+
+function getMaskOverlayConfig({
+	element,
+}: {
+	element: MaskOverlayElement;
+}): ElementPropertiesConfig {
+	return {
+		defaultTab: "masks",
+		tabs: [buildMasksTab({ element })],
+	};
+}
+
 function getTextConfig({
 	element,
 }: {
@@ -211,7 +219,7 @@ function getTextConfig({
 		tabs: [
 			buildTextTab({ element }),
 			buildTransformTab({ element }),
-			buildBlendingTab({ element }),
+			buildKeyframesTab(),
 		],
 	};
 }
@@ -230,11 +238,10 @@ function getVideoConfig({
 			buildTransformTab({ element }),
 			...(showAudioTab ? [buildAudioTab({ element })] : []),
 			buildSpeedTab({ element }),
-			buildBlendingTab({ element }),
-			buildMasksTab({ element }),
-			buildClipEffectsTab({ element }),
-			buildColorTab({ element }),
+			buildKeyframesTab(),
 			buildTransitionsTab({ element }),
+			buildColorTab({ element }),
+			buildMasksTab({ element }),
 		],
 	};
 }
@@ -248,10 +255,9 @@ function getImageConfig({
 		defaultTab: "transform",
 		tabs: [
 			buildTransformTab({ element }),
-			buildBlendingTab({ element }),
-			buildMasksTab({ element }),
-			buildClipEffectsTab({ element }),
+			buildKeyframesTab(),
 			buildColorTab({ element }),
+			buildMasksTab({ element }),
 		],
 	};
 }
@@ -263,11 +269,7 @@ function getStickerConfig({
 }): ElementPropertiesConfig {
 	return {
 		defaultTab: "transform",
-		tabs: [
-			buildTransformTab({ element }),
-			buildBlendingTab({ element }),
-			buildClipEffectsTab({ element }),
-		],
+		tabs: [buildTransformTab({ element }), buildKeyframesTab()],
 	};
 }
 
@@ -281,9 +283,8 @@ function getGraphicConfig({
 		tabs: [
 			buildGraphicTab({ element }),
 			buildTransformTab({ element }),
-			buildBlendingTab({ element }),
+			buildKeyframesTab(),
 			buildMasksTab({ element }),
-			buildClipEffectsTab({ element }),
 		],
 	};
 }
@@ -295,7 +296,11 @@ function getAudioConfig({
 }): ElementPropertiesConfig {
 	return {
 		defaultTab: "audio",
-		tabs: [buildAudioTab({ element }), buildSpeedTab({ element })],
+		tabs: [
+			buildAudioTab({ element }),
+			buildSpeedTab({ element }),
+			buildKeyframesTab(),
+		],
 	};
 }
 
@@ -334,5 +339,7 @@ export function getPropertiesConfig({
 			return getAudioConfig({ element });
 		case "effect":
 			return getEffectConfig({ element });
+		case "mask":
+			return getMaskOverlayConfig({ element });
 	}
 }

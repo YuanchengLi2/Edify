@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hrg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B9D"/>
+      <stop offset="100%" stop-color="#E91E63"/>
+    </linearGradient>
+    <linearGradient id="hrg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A9E"/>
+      <stop offset="100%" stop-color="#FF4081"/>
+    </linearGradient>
+    <linearGradient id="hrg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F48FB1"/>
+      <stop offset="100%" stop-color="#EC407A"/>
+    </linearGradient>
+  </defs>
+  <path d="M18 8 C18 4 24 0 27 4 C30 8 18 16 18 16 C18 16 6 8 9 4 C12 0 18 4 18 8 Z" fill="url(#hrg1)" opacity="0.9"/>
+  <path d="M50 5 C50 1 56 -3 59 1 C62 5 50 13 50 13 C50 13 38 5 41 1 C44 -3 50 1 50 5 Z" fill="url(#hrg2)" opacity="0.8"/>
+  <path d="M85 10 C85 6 91 2 94 6 C97 10 85 18 85 18 C85 18 73 10 76 6 C79 2 85 6 85 10 Z" fill="url(#hrg3)" opacity="0.85"/>
+  <path d="M110 3 C110 -1 116 -5 119 -1 C122 3 110 11 110 11 C110 11 98 3 101 -1 C104 -5 110 -1 110 3 Z" fill="url(#hrg1)" opacity="0.7"/>
+  <path d="M10 40 C10 36 16 32 19 36 C22 40 10 48 10 48 C10 48 -2 40 1 36 C4 32 10 36 10 40 Z" fill="url(#hrg2)" opacity="0.75"/>
+  <path d="M65 35 C65 31 71 27 74 31 C77 35 65 43 65 43 C65 43 53 35 56 31 C59 27 65 31 65 35 Z" fill="url(#hrg3)" opacity="0.9"/>
+  <path d="M35 70 C35 66 41 62 44 66 C47 70 35 78 35 78 C35 78 23 70 26 66 C29 62 35 66 35 70 Z" fill="url(#hrg1)" opacity="0.8"/>
+  <path d="M90 65 C90 61 96 57 99 61 C102 65 90 73 90 73 C90 73 78 65 81 61 C84 57 90 61 90 65 Z" fill="url(#hrg2)" opacity="0.7"/>
+  <path d="M55 100 C55 96 61 92 64 96 C67 100 55 108 55 108 C55 108 43 100 46 96 C49 92 55 96 55 100 Z" fill="url(#hrg3)" opacity="0.85"/>
+  <path d="M105 95 C105 91 111 87 114 91 C117 95 105 103 105 103 C105 103 93 95 96 91 C99 87 105 91 105 95 Z" fill="url(#hrg1)" opacity="0.65"/>
+  <path d="M20 115 C20 111 26 107 29 111 C32 115 20 123 20 123 C20 123 8 115 11 111 C14 107 20 111 20 115 Z" fill="url(#hrg2)" opacity="0.75"/>
+  <path d="M75 115 C75 111 81 107 84 111 C87 115 75 123 75 123 C75 123 63 115 66 111 C69 107 75 111 75 115 Z" fill="url(#hrg3)" opacity="0.6"/>
+</svg>

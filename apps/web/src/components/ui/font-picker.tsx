@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback, type CSSProperties } from "react";
+import {
+	useState,
+	useMemo,
+	useRef,
+	useEffect,
+	useCallback,
+	type CSSProperties,
+} from "react";
 import { List, type RowComponentProps } from "react-window";
 import {
 	Popover,
@@ -17,14 +24,6 @@ import { cn } from "@/utils/ui";
 import { ChevronDown, Search } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { TextIcon } from "@hugeicons/core-free-icons";
-
-const FONT_TABS = [
-	{ key: "all", label: "All fonts" },
-	{ key: "my-fonts", label: "My fonts" },
-	{ key: "favorites", label: "Favorites" },
-] as const;
-
-type FontTab = (typeof FONT_TABS)[number]["key"];
 
 const ROW_HEIGHT = 40;
 const PREVIEW_SCALE = 0.8;
@@ -45,9 +44,13 @@ export function FontPicker({
 }: FontPickerProps) {
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
-	const [activeTab, setActiveTab] = useState<FontTab>("all");
 	const searchInputRef = useRef<HTMLInputElement>(null);
-	const { atlas, status, fontNames, retry: handleRetry } = useFontAtlas({ open });
+	const {
+		atlas,
+		status,
+		fontNames,
+		retry: handleRetry,
+	} = useFontAtlas({ open });
 
 	const filteredFonts = useMemo(() => {
 		if (!search) return fontNames;
@@ -78,12 +81,8 @@ export function FontPicker({
 	useEffect(() => {
 		if (!open) {
 			setSearch("");
-			setActiveTab("all");
 		}
 	}, [open]);
-
-	const activeTabLabel =
-		FONT_TABS.find((t) => t.key === activeTab)?.label.toLowerCase() ?? "";
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -120,29 +119,12 @@ export function FontPicker({
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 shrink-0 opacity-50" />
 					<Input
 						ref={searchInputRef}
-						placeholder={`Search ${activeTabLabel}...`}
+						placeholder="Search fonts..."
 						value={search}
 						onChange={(event) => setSearch(event.target.value)}
 						size="xs"
 						className="w-full pl-5 bg-transparent border-none! shadow-none!"
 					/>
-				</div>
-				<div className="flex border-b px-3">
-					{FONT_TABS.map((tab) => (
-						<button
-							key={tab.key}
-							type="button"
-							className={cn(
-								"px-3 py-1.5 text-xs border-b-2 -mb-px",
-								activeTab === tab.key
-									? "border-foreground text-foreground"
-									: "border-transparent text-muted-foreground hover:text-foreground",
-							)}
-							onClick={() => setActiveTab(tab.key)}
-						>
-							{tab.label}
-						</button>
-					))}
 				</div>
 				{status === "loading" && (
 					<div className="py-8 text-center text-sm text-muted-foreground">
@@ -246,7 +228,10 @@ function FontRow({
 		>
 			<div className="min-w-0 overflow-hidden">
 				{isSystemFont ? (
-					<span className="text-xl text-foreground/85" style={{ fontFamily: fontName }}>
+					<span
+						className="text-xl text-foreground/85"
+						style={{ fontFamily: fontName }}
+					>
 						{fontName}
 					</span>
 				) : (

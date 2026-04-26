@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="flame" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#FF6F00"/>
+      <stop offset="40%" stop-color="#FF8F00"/>
+      <stop offset="70%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#FFD54F"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 8 Q70 30 82 42 Q88 48 86 38 Q96 56 92 72 Q90 82 84 88 Q90 78 86 68 Q84 74 80 80 Q76 86 70 90 Q74 80 72 72 Q68 78 66 84 Q64 90 64 96 Q64 90 62 84 Q60 78 56 72 Q54 80 58 90 Q52 86 48 80 Q44 74 42 68 Q38 78 44 88 Q38 82 36 72 Q32 56 42 38 Q40 48 46 42 Q58 30 64 8Z" fill="url(#flame)" stroke="#E65100" stroke-width="1.5"/>
+  <path d="M64 40 Q68 52 74 58 Q78 62 76 54 Q82 64 80 74 Q78 82 72 86 Q74 78 70 72 Q68 76 66 80 Q64 84 64 88 Q64 84 62 80 Q60 76 58 72 Q56 78 56 86 Q52 82 50 74 Q48 64 52 54 Q52 62 54 58 Q60 52 64 40Z" fill="#FFF176" opacity="0.7"/>
+</svg>

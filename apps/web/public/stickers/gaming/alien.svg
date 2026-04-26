@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <filter id="alGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <path d="M32 76 L32 52 Q32 24 64 24 Q96 24 96 52 L96 76 L88 76 L88 60 L80 60 L80 76 L48 76 L48 60 L40 60 L40 76 Z" fill="#4ECDC4" stroke="#80DEEA" stroke-width="2" filter="url(#alGlow)"/>
+  <rect x="36" y="58" width="12" height="20" rx="3" fill="#1a1a2e"/>
+  <rect x="80" y="58" width="12" height="20" rx="3" fill="#1a1a2e"/>
+  <circle cx="52" cy="48" r="8" fill="#fff" filter="url(#alGlow)"/>
+  <circle cx="76" cy="48" r="8" fill="#fff" filter="url(#alGlow)"/>
+  <circle cx="54" cy="48" r="4" fill="#1a1a2e"/>
+  <circle cx="78" cy="48" r="4" fill="#1a1a2e"/>
+  <circle cx="55" cy="46" r="1.5" fill="#fff"/>
+  <circle cx="79" cy="46" r="1.5" fill="#fff"/>
+  <path d="M32 76 L24 92 L32 88 L28 96 L36 92 L40 76" fill="#4ECDC4" stroke="#80DEEA" stroke-width="1"/>
+  <path d="M96 76 L104 92 L96 88 L100 96 L92 92 L88 76" fill="#4ECDC4" stroke="#80DEEA" stroke-width="1"/>
+  <path d="M56 60 Q64 64 72 60" fill="none" stroke="#80DEEA" stroke-width="1.5" opacity="0.6"/>
+</svg>

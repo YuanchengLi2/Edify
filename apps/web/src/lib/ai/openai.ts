@@ -19,11 +19,9 @@ export async function sendToAI(
 	messages: AIMessage[],
 	contextJson: string,
 ): Promise<SendResult> {
-	const apiKey =
-		process.env.NEXT_PUBLIC_OPENAI_API_KEY ?? "";
+	const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY ?? "";
 	const baseUrl =
-		process.env.NEXT_PUBLIC_OPENAI_BASE_URL ??
-		"https://api.openai.com/v1";
+		process.env.NEXT_PUBLIC_OPENAI_BASE_URL ?? "https://api.openai.com/v1";
 
 	if (!apiKey) {
 		return { ok: false, error: "API key not configured" };
@@ -49,7 +47,7 @@ export async function sendToAI(
 				Authorization: `Bearer ${apiKey}`,
 			},
 			body: JSON.stringify({
-				model: "gpt-4o-mini",
+				model: "gpt-4.1-mini",
 				messages: apiMessages,
 				temperature: 0.3,
 			}),

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="tigerFace" cx="50%" cy="42%" r="50%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#FF9800"/>
+    </radialGradient>
+  </defs>
+  <path d="M26 52L34 24L48 46Z" fill="#FF9800" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M102 52L94 24L80 46Z" fill="#FF9800" stroke="#E65100" stroke-width="1.5" stroke-linejoin="round"/>
+  <ellipse cx="64" cy="72" rx="44" ry="42" fill="url(#tigerFace)" stroke="#E65100" stroke-width="2.5"/>
+  <path d="M30 62Q36 58 44 62" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 72Q38 68 46 72" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <path d="M84 62Q90 58 98 62" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 72Q88 68 96 72" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <path d="M56 54Q64 50 72 54" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="64" cy="82" rx="22" ry="18" fill="#FFF3E0"/>
+  <ellipse cx="48" cy="68" rx="9" ry="10" fill="white"/>
+  <ellipse cx="80" cy="68" rx="9" ry="10" fill="white"/>
+  <ellipse cx="50" cy="69" rx="5" ry="6" fill="#4E342E"/>
+  <ellipse cx="82" cy="69" rx="5" ry="6" fill="#4E342E"/>
+  <ellipse cx="52" cy="67" rx="2" ry="2.5" fill="white"/>
+  <ellipse cx="84" cy="67" rx="2" ry="2.5" fill="white"/>
+  <ellipse cx="64" cy="78" rx="5" ry="3" fill="#FF7043" stroke="#E64A19" stroke-width="1"/>
+  <path d="M56 86Q64 94 72 86" fill="none" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="40" cy="80" r="5" fill="#FF8A65" opacity="0.5"/>
+  <circle cx="88" cy="80" r="5" fill="#FF8A65" opacity="0.5"/>
+  <line x1="22" y1="76" x2="40" y2="80" stroke="#E65100" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="22" y1="84" x2="40" y2="84" stroke="#E65100" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="88" y1="80" x2="106" y2="76" stroke="#E65100" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="88" y1="84" x2="106" y2="84" stroke="#E65100" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

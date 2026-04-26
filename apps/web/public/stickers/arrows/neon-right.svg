@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <polygon points="16,40 80,40 80,20 120,64 80,108 80,88 16,88" fill="#00FF88" filter="url(#glow)" stroke="#00FFAA" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="16,40 80,40 80,20 120,64 80,108 80,88 16,88" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round" opacity="0.6"/>
+</svg>

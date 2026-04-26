@@ -17,7 +17,9 @@ export function Hero() {
 			<div className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center gap-8">
 				<div className="mx-auto inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm">
 					<Sparkles className="size-4 text-purple-400" />
-					<span className="text-muted-foreground">AI-Powered Video Editing</span>
+					<span className="text-muted-foreground">
+						AI-Powered Video Editing
+					</span>
 				</div>
 
 				<h1 className="text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
@@ -29,8 +31,9 @@ export function Hero() {
 				</h1>
 
 				<p className="text-muted-foreground mx-auto max-w-2xl text-lg font-light leading-relaxed md:text-xl">
-					Professional video editing with AI assistance. Color grade, add effects,
-					transitions, and let AI handle the heavy lifting. Free and open source.
+					Professional video editing with AI assistance. Color grade, add
+					effects, transitions, and let AI handle the heavy lifting. Free and
+					open source.
 				</p>
 
 				<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -50,7 +53,9 @@ export function Hero() {
 				<div className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-4">
 					<div className="flex flex-col items-center gap-2">
 						<span className="text-2xl font-bold">10+</span>
-						<span className="text-muted-foreground text-sm">Visual Effects</span>
+						<span className="text-muted-foreground text-sm">
+							Visual Effects
+						</span>
 					</div>
 					<div className="flex flex-col items-center gap-2">
 						<span className="text-2xl font-bold">AI</span>

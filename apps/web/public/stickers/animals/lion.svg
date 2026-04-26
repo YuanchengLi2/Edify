@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="lionMane" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </radialGradient>
+    <radialGradient id="lionFace" cx="50%" cy="42%" r="50%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="100%" stop-color="#FFB300"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="68" r="52" fill="url(#lionMane)" stroke="#E65100" stroke-width="2"/>
+  <circle cx="40" cy="32" r="12" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="88" cy="32" r="12" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="64" cy="14" r="10" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="28" cy="60" r="10" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="100" cy="60" r="10" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="34" cy="96" r="10" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="94" cy="96" r="10" fill="#FFB300" stroke="#E65100" stroke-width="1.5"/>
+  <ellipse cx="64" cy="74" rx="34" ry="32" fill="url(#lionFace)" stroke="#F57F17" stroke-width="2"/>
+  <ellipse cx="64" cy="84" rx="16" ry="12" fill="#FFF8E1"/>
+  <ellipse cx="48" cy="68" rx="8" ry="9" fill="white"/>
+  <ellipse cx="80" cy="68" rx="8" ry="9" fill="white"/>
+  <ellipse cx="50" cy="69" rx="5" ry="6" fill="#4E342E"/>
+  <ellipse cx="82" cy="69" rx="5" ry="6" fill="#4E342E"/>
+  <ellipse cx="52" cy="67" rx="2" ry="2.5" fill="white"/>
+  <ellipse cx="84" cy="67" rx="2" ry="2.5" fill="white"/>
+  <ellipse cx="64" cy="80" rx="4" ry="3" fill="#5D4037" stroke="#4E342E" stroke-width="1"/>
+  <path d="M56 88Q64 96 72 88" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="42" cy="80" r="5" fill="#FFB300" opacity="0.4"/>
+  <circle cx="86" cy="80" r="5" fill="#FFB300" opacity="0.4"/>
+</svg>

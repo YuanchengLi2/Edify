@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="dolphinBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="62" cy="72" rx="46" ry="32" fill="url(#dolphinBody)" stroke="#0D47A1" stroke-width="2.5"/>
+  <path d="M108 58Q120 42 112 52Q106 60 102 64" fill="#42A5F5" stroke="#0D47A1" stroke-width="2"/>
+  <ellipse cx="62" cy="80" rx="36" ry="18" fill="#BBDEFB" opacity="0.5"/>
+  <path d="M62 44Q56 24 48 30Q44 34 48 40" fill="#42A5F5" stroke="#0D47A1" stroke-width="2"/>
+  <circle cx="38" cy="62" r="7" fill="white"/>
+  <circle cx="39" cy="63" r="4" fill="#0D47A1"/>
+  <circle cx="41" cy="61" r="1.5" fill="white"/>
+  <path d="M18 68Q14 74 22 72" fill="#42A5F5" stroke="#0D47A1" stroke-width="1.5"/>
+  <path d="M28 74Q22 86 32 84Q38 82 34 76" fill="#42A5F5" stroke="#0D47A1" stroke-width="1.5"/>
+  <path d="M50 72Q54 76 58 72" fill="none" stroke="#0D47A1" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse cx="42" cy="68" rx="2" ry="1" fill="#BBDEFB" opacity="0.6"/>
+  <circle cx="36" cy="36" r="3" fill="#90CAF9" opacity="0.5"/>
+  <circle cx="88" cy="28" r="2" fill="#90CAF9" opacity="0.5"/>
+  <circle cx="76" cy="22" r="2.5" fill="#90CAF9" opacity="0.4"/>
+</svg>

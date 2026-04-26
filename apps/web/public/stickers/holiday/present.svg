@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="boxGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3498db"/>
+      <stop offset="100%" stop-color="#2176ae"/>
+    </linearGradient>
+  </defs>
+  <rect x="20" y="52" width="88" height="60" rx="4" fill="url(#boxGrad)" stroke="#1a5f8a" stroke-width="1.5"/>
+  <rect x="24" y="56" width="80" height="52" rx="2" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <rect x="14" y="44" width="100" height="14" rx="4" fill="#2980b9" stroke="#1a5f8a" stroke-width="1.5"/>
+  <rect x="58" y="44" width="12" height="68" fill="#f1c40f"/>
+  <rect x="14" y="44" width="100" height="5" rx="2" fill="rgba(255,255,255,0.15)"/>
+  <path d="M64 44 Q64 28 48 24 Q36 20 38 34 Q40 44 52 44" fill="#f1c40f" stroke="#d4a800" stroke-width="1"/>
+  <path d="M64 44 Q64 28 80 24 Q92 20 90 34 Q88 44 76 44" fill="#f1c40f" stroke="#d4a800" stroke-width="1"/>
+  <ellipse cx="52" cy="40" rx="6" ry="4" fill="#ffd700" opacity="0.6"/>
+  <ellipse cx="76" cy="40" rx="6" ry="4" fill="#ffd700" opacity="0.6"/>
+  <circle cx="64" cy="30" r="4" fill="#ffd700" stroke="#d4a800" stroke-width="0.5"/>
+  <path d="M44 52 L44 112" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <path d="M84 52 L84 112" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+</svg>

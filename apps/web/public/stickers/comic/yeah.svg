@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="ht-yeah" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#00E676" opacity="0.3"/>
+    </pattern>
+    <linearGradient id="yeah-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#76FF03"/>
+      <stop offset="100%" stop-color="#00C853"/>
+    </linearGradient>
+  </defs>
+  <polygon points="64,2 80,28 112,14 96,42 126,52 100,66 124,92 90,80 78,112 64,88 50,112 38,80 4,92 28,66 2,52 32,42 16,14 48,28" fill="url(#yeah-grad)" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,2 80,28 112,14 96,42 126,52 100,66 124,92 90,80 78,112 64,88 50,112 38,80 4,92 28,66 2,52 32,42 16,14 48,28" fill="url(#ht-yeah)"/>
+  <rect x="18" y="18" width="4" height="10" fill="#FFD600" stroke="#1a1a1a" stroke-width="1" transform="rotate(30,20,23)"/>
+  <rect x="100" y="14" width="4" height="10" fill="#FF1744" stroke="#1a1a1a" stroke-width="1" transform="rotate(-20,102,19)"/>
+  <rect x="110" y="60" width="4" height="8" fill="#2979FF" stroke="#1a1a1a" stroke-width="1" transform="rotate(10,112,64)"/>
+  <rect x="10" y="70" width="3" height="8" fill="#AA00FF" stroke="#1a1a1a" stroke-width="1" transform="rotate(-15,12,74)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="38" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="2">YEAH!</text>
+</svg>

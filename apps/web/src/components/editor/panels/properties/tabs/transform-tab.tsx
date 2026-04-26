@@ -16,6 +16,15 @@ import {
 	ArrowExpandIcon,
 	Link05Icon,
 	RotateClockwiseIcon,
+	RefreshIcon,
+	ImageFlipHorizontalIcon,
+	ImageFlipVerticalIcon,
+	LayoutAlignLeftIcon,
+	LayoutAlignRightIcon,
+	LayoutAlignTopIcon,
+	LayoutAlignBottomIcon,
+	AlignHorizontalCenterIcon,
+	AlignVerticalCenterIcon,
 } from "@hugeicons/core-free-icons";
 import {
 	getGroupKeyframesAtTime,
@@ -27,6 +36,8 @@ import { useElementPlayhead } from "../hooks/use-element-playhead";
 import { KeyframeToggle } from "../components/keyframe-toggle";
 import { useKeyframedNumberProperty } from "../hooks/use-keyframed-number-property";
 import { usePropertiesStore } from "../stores/properties-store";
+import { STICKER_INTRINSIC_SIZE_FALLBACK } from "@/lib/stickers/intrinsic-size";
+import { DEFAULT_GRAPHIC_SOURCE_SIZE } from "@/lib/graphics";
 
 export function parseNumericInput({ input }: { input: string }): number | null {
 	const parsed = parseFloat(input);
@@ -56,6 +67,39 @@ export function isPropertyAtDefault({
 	return staticValue === defaultValue;
 }
 
+function getElementSourceDimensions({
+	element,
+	mediaAssets,
+	canvasWidth,
+	canvasHeight,
+}: {
+	element: VisualElement;
+	mediaAssets: { id: string; width?: number; height?: number }[];
+	canvasWidth: number;
+	canvasHeight: number;
+}): { sourceWidth: number; sourceHeight: number } {
+	if (element.type === "video" || element.type === "image") {
+		const asset = mediaAssets.find((a) => a.id === element.mediaId);
+		return {
+			sourceWidth: asset?.width ?? canvasWidth,
+			sourceHeight: asset?.height ?? canvasHeight,
+		};
+	}
+	if (element.type === "sticker") {
+		return {
+			sourceWidth: element.intrinsicWidth ?? STICKER_INTRINSIC_SIZE_FALLBACK,
+			sourceHeight: element.intrinsicHeight ?? STICKER_INTRINSIC_SIZE_FALLBACK,
+		};
+	}
+	if (element.type === "graphic") {
+		return {
+			sourceWidth: DEFAULT_GRAPHIC_SOURCE_SIZE,
+			sourceHeight: DEFAULT_GRAPHIC_SOURCE_SIZE,
+		};
+	}
+	return { sourceWidth: canvasWidth, sourceHeight: canvasHeight };
+}
+
 export function TransformTab({
 	element,
 	trackId,
@@ -68,6 +112,10 @@ export function TransformTab({
 	const setTransformScaleLocked = usePropertiesStore(
 		(s) => s.setTransformScaleLocked,
 	);
+	const canvasSize = useEditor(
+		(e) => e.project.getActive().settings.canvasSize,
+	);
+	const mediaAssets = useEditor((e) => e.media.getAssets());
 	const { localTime, isPlayheadWithinElementRange } = useElementPlayhead({
 		startTime: element.startTime,
 		duration: element.duration,
@@ -77,6 +125,22 @@ export function TransformTab({
 		animations: element.animations,
 		localTime,
 	});
+
+	const canvasWidth = canvasSize?.width ?? 1920;
+	const canvasHeight = canvasSize?.height ?? 1080;
+
+	const { sourceWidth, sourceHeight } = getElementSourceDimensions({
+		element,
+		mediaAssets,
+		canvasWidth,
+		canvasHeight,
+	});
+	const containScale = Math.min(
+		canvasWidth / sourceWidth,
+		canvasHeight / sourceHeight,
+	);
+	const renderedWidth = sourceWidth * containScale * resolvedTransform.scaleX;
+	const renderedHeight = sourceHeight * containScale * resolvedTransform.scaleY;
 
 	const positionX = useKeyframedNumberProperty({
 		trackId,
@@ -229,6 +293,26 @@ export function TransformTab({
 		}),
 	});
 
+	const opacity = useKeyframedNumberProperty({
+		trackId,
+		elementId: element.id,
+		animations: element.animations,
+		propertyPath: "opacity",
+		localTime,
+		isPlayheadWithinElementRange,
+		displayValue: Math.round(element.opacity * 100).toString(),
+		parse: (input) => {
+			const parsed = parseNumericInput({ input });
+			if (parsed === null) return null;
+			return clamp({ value: parsed / 100, min: 0, max: 1 });
+		},
+		valueAtPlayhead: element.opacity,
+		step: 0.01,
+		buildBaseUpdates: ({ value }) => ({
+			opacity: value,
+		}),
+	});
+
 	const hasScaleKeyframe = hasGroupKeyframeAtTime({
 		animations: element.animations,
 		group: "transform.scale",
@@ -284,13 +368,197 @@ export function TransformTab({
 		</Button>
 	);
 
+	const updateTransform = (positionX: number, positionY: number) => {
+		editor.timeline.updateElements({
+			updates: [
+				{
+					trackId,
+					elementId: element.id,
+					patch: {
+						transform: {
+							...element.transform,
+							position: { x: positionX, y: positionY },
+						},
+					},
+				},
+			],
+		});
+	};
+
+	const handleResetTransform = () => {
+		editor.timeline.updateElements({
+			updates: [
+				{
+					trackId,
+					elementId: element.id,
+					patch: {
+						transform: {
+							...DEFAULTS.element.transform,
+							position: { ...DEFAULTS.element.transform.position },
+						},
+						opacity: DEFAULTS.element.opacity,
+					},
+				},
+			],
+		});
+	};
+
+	const handleFlipHorizontal = () => {
+		editor.timeline.updateElements({
+			updates: [
+				{
+					trackId,
+					elementId: element.id,
+					patch: {
+						transform: {
+							...element.transform,
+							scaleX: -element.transform.scaleX,
+						},
+					},
+				},
+			],
+		});
+	};
+
+	const handleFlipVertical = () => {
+		editor.timeline.updateElements({
+			updates: [
+				{
+					trackId,
+					elementId: element.id,
+					patch: {
+						transform: {
+							...element.transform,
+							scaleY: -element.transform.scaleY,
+						},
+					},
+				},
+			],
+		});
+	};
+
+	const handleAlignLeft = () =>
+		updateTransform(
+			renderedWidth / 2 - canvasWidth / 2,
+			resolvedTransform.position.y,
+		);
+	const handleAlignCenterH = () =>
+		updateTransform(0, resolvedTransform.position.y);
+	const handleAlignRight = () =>
+		updateTransform(
+			canvasWidth / 2 - renderedWidth / 2,
+			resolvedTransform.position.y,
+		);
+	const handleAlignTop = () =>
+		updateTransform(
+			resolvedTransform.position.x,
+			renderedHeight / 2 - canvasHeight / 2,
+		);
+	const handleAlignCenterV = () =>
+		updateTransform(resolvedTransform.position.x, 0);
+	const handleAlignBottom = () =>
+		updateTransform(
+			resolvedTransform.position.x,
+			canvasHeight / 2 - renderedHeight / 2,
+		);
+
 	return (
 		<Section collapsible sectionKey={`${element.id}:transform`}>
-			<SectionHeader>
+			<SectionHeader
+				trailing={
+					<div className="flex items-center gap-0.5">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleFlipHorizontal}
+							title="Flip Horizontal"
+						>
+							<HugeiconsIcon icon={ImageFlipHorizontalIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleFlipVertical}
+							title="Flip Vertical"
+						>
+							<HugeiconsIcon icon={ImageFlipVerticalIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleResetTransform}
+							title="Reset Transform"
+						>
+							<HugeiconsIcon icon={RefreshIcon} size={14} />
+						</Button>
+					</div>
+				}
+			>
 				<SectionTitle>Transform</SectionTitle>
 			</SectionHeader>
 			<SectionContent>
 				<SectionFields>
+					<div className="flex items-center justify-center gap-0.5">
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignLeft}
+							title="Align Left"
+						>
+							<HugeiconsIcon icon={LayoutAlignLeftIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignCenterV}
+							title="Align Center Vertical"
+						>
+							<HugeiconsIcon icon={AlignVerticalCenterIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignRight}
+							title="Align Right"
+						>
+							<HugeiconsIcon icon={LayoutAlignRightIcon} size={14} />
+						</Button>
+						<div className="mx-1 h-4 w-px bg-border" />
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignTop}
+							title="Align Top"
+						>
+							<HugeiconsIcon icon={LayoutAlignTopIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignCenterH}
+							title="Align Center Horizontal"
+						>
+							<HugeiconsIcon icon={AlignHorizontalCenterIcon} size={14} />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							onClick={handleAlignBottom}
+							title="Align Bottom"
+						>
+							<HugeiconsIcon icon={LayoutAlignBottomIcon} size={14} />
+						</Button>
+					</div>
+
 					<div className="flex items-end gap-2">
 						{isScaleLocked ? (
 							<>
@@ -347,76 +615,76 @@ export function TransformTab({
 							</>
 						)}
 					</div>
-				<div className="flex items-end gap-2">
-					<SectionField
-						label="X"
-						className="min-w-0 flex-1"
-						beforeLabel={
-							<KeyframeToggle
-								isActive={positionX.isKeyframedAtTime}
-								isDisabled={!isPlayheadWithinElementRange}
-								title="Toggle X position keyframe"
-								onToggle={positionX.toggleKeyframe}
-							/>
-						}
-					>
-					<NumberField
-						icon="X"
-						value={positionX.displayValue}
-							onFocus={positionX.onFocus}
-							onChange={positionX.onChange}
-							onBlur={positionX.onBlur}
-							onScrub={positionX.scrubTo}
-							onScrubEnd={positionX.commitScrub}
-							onReset={() =>
-								positionX.commitValue({
-									value: DEFAULTS.element.transform.position.x,
-								})
+					<div className="flex items-end gap-2">
+						<SectionField
+							label="X"
+							className="min-w-0 flex-1"
+							beforeLabel={
+								<KeyframeToggle
+									isActive={positionX.isKeyframedAtTime}
+									isDisabled={!isPlayheadWithinElementRange}
+									title="Toggle X position keyframe"
+									onToggle={positionX.toggleKeyframe}
+								/>
 							}
-							isDefault={isPropertyAtDefault({
-								hasAnimatedKeyframes: positionX.hasAnimatedKeyframes,
-								isPlayheadWithinElementRange,
-								resolvedValue: resolvedTransform.position.x,
-								staticValue: element.transform.position.x,
-								defaultValue: DEFAULTS.element.transform.position.x,
-							})}
-						/>
-					</SectionField>
-					<SectionField
-						label="Y"
-						className="min-w-0 flex-1"
-						beforeLabel={
-							<KeyframeToggle
-								isActive={positionY.isKeyframedAtTime}
-								isDisabled={!isPlayheadWithinElementRange}
-								title="Toggle Y position keyframe"
-								onToggle={positionY.toggleKeyframe}
+						>
+							<NumberField
+								icon="X"
+								value={positionX.displayValue}
+								onFocus={positionX.onFocus}
+								onChange={positionX.onChange}
+								onBlur={positionX.onBlur}
+								onScrub={positionX.scrubTo}
+								onScrubEnd={positionX.commitScrub}
+								onReset={() =>
+									positionX.commitValue({
+										value: DEFAULTS.element.transform.position.x,
+									})
+								}
+								isDefault={isPropertyAtDefault({
+									hasAnimatedKeyframes: positionX.hasAnimatedKeyframes,
+									isPlayheadWithinElementRange,
+									resolvedValue: resolvedTransform.position.x,
+									staticValue: element.transform.position.x,
+									defaultValue: DEFAULTS.element.transform.position.x,
+								})}
 							/>
-						}
-					>
-					<NumberField
-						icon="Y"
-						value={positionY.displayValue}
-							onFocus={positionY.onFocus}
-							onChange={positionY.onChange}
-							onBlur={positionY.onBlur}
-							onScrub={positionY.scrubTo}
-							onScrubEnd={positionY.commitScrub}
-							onReset={() =>
-								positionY.commitValue({
-									value: DEFAULTS.element.transform.position.y,
-								})
+						</SectionField>
+						<SectionField
+							label="Y"
+							className="min-w-0 flex-1"
+							beforeLabel={
+								<KeyframeToggle
+									isActive={positionY.isKeyframedAtTime}
+									isDisabled={!isPlayheadWithinElementRange}
+									title="Toggle Y position keyframe"
+									onToggle={positionY.toggleKeyframe}
+								/>
 							}
-							isDefault={isPropertyAtDefault({
-								hasAnimatedKeyframes: positionY.hasAnimatedKeyframes,
-								isPlayheadWithinElementRange,
-								resolvedValue: resolvedTransform.position.y,
-								staticValue: element.transform.position.y,
-								defaultValue: DEFAULTS.element.transform.position.y,
-							})}
-						/>
-					</SectionField>
-				</div>
+						>
+							<NumberField
+								icon="Y"
+								value={positionY.displayValue}
+								onFocus={positionY.onFocus}
+								onChange={positionY.onChange}
+								onBlur={positionY.onBlur}
+								onScrub={positionY.scrubTo}
+								onScrubEnd={positionY.commitScrub}
+								onReset={() =>
+									positionY.commitValue({
+										value: DEFAULTS.element.transform.position.y,
+									})
+								}
+								isDefault={isPropertyAtDefault({
+									hasAnimatedKeyframes: positionY.hasAnimatedKeyframes,
+									isPlayheadWithinElementRange,
+									resolvedValue: resolvedTransform.position.y,
+									staticValue: element.transform.position.y,
+									defaultValue: DEFAULTS.element.transform.position.y,
+								})}
+							/>
+						</SectionField>
+					</div>
 
 					<SectionField
 						label="Rotation"
@@ -454,6 +722,39 @@ export function TransformTab({
 								})}
 							/>
 						</div>
+					</SectionField>
+
+					<SectionField
+						label="Opacity"
+						beforeLabel={
+							<KeyframeToggle
+								isActive={opacity.isKeyframedAtTime}
+								isDisabled={!isPlayheadWithinElementRange}
+								title="Toggle opacity keyframe"
+								onToggle={opacity.toggleKeyframe}
+							/>
+						}
+					>
+						<NumberField
+							icon="%"
+							value={opacity.displayValue}
+							onFocus={opacity.onFocus}
+							onChange={opacity.onChange}
+							onBlur={opacity.onBlur}
+							dragSensitivity="slow"
+							onScrub={opacity.scrubTo}
+							onScrubEnd={opacity.commitScrub}
+							onReset={() =>
+								opacity.commitValue({ value: DEFAULTS.element.opacity })
+							}
+							isDefault={isPropertyAtDefault({
+								hasAnimatedKeyframes: opacity.hasAnimatedKeyframes,
+								isPlayheadWithinElementRange,
+								resolvedValue: element.opacity,
+								staticValue: element.opacity,
+								defaultValue: DEFAULTS.element.opacity,
+							})}
+						/>
 					</SectionField>
 				</SectionFields>
 			</SectionContent>

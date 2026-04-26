@@ -9,6 +9,7 @@ import { GraphicNode } from "./nodes/graphic-node";
 import { ColorNode } from "./nodes/color-node";
 import { BlurBackgroundNode } from "./nodes/blur-background-node";
 import { EffectLayerNode } from "./nodes/effect-layer-node";
+import { GlobalMaskNode } from "./nodes/global-mask-node";
 import type { AnyBaseNode } from "./nodes/base-node";
 import type { TBackground, TCanvasSize } from "@/lib/project/types";
 import { DEFAULT_BACKGROUND_BLUR_INTENSITY } from "@/lib/background/blur";
@@ -42,6 +43,18 @@ function buildTrackNodes({
 		const elements = getVisibleSortedElements({ track });
 
 		for (const element of elements) {
+			if (element.type === "mask") {
+				nodes.push(
+					new GlobalMaskNode({
+						timeOffset: element.startTime,
+						duration: element.duration,
+						masks: element.masks,
+						activeMaskId: element.activeMaskId,
+					}),
+				);
+				continue;
+			}
+
 			if (element.type === "effect") {
 				nodes.push(
 					new EffectLayerNode({
@@ -66,6 +79,7 @@ function buildTrackNodes({
 							mediaId: mediaAsset.id,
 							url: mediaAsset.url,
 							file: mediaAsset.file,
+							elementId: element.id,
 							duration: element.duration,
 							timeOffset: element.startTime,
 							trimStart: element.trimStart,
@@ -84,6 +98,7 @@ function buildTrackNodes({
 					nodes.push(
 						new ImageNode({
 							url: mediaAsset.url,
+							elementId: element.id,
 							duration: element.duration,
 							timeOffset: element.startTime,
 							trimStart: element.trimStart,
@@ -106,6 +121,7 @@ function buildTrackNodes({
 				nodes.push(
 					new TextNode({
 						...element,
+						elementId: element.id,
 						canvasCenter: { x: canvasSize.width / 2, y: canvasSize.height / 2 },
 						canvasHeight: canvasSize.height,
 						textBaseline: "middle",
@@ -120,6 +136,7 @@ function buildTrackNodes({
 						stickerId: element.stickerId,
 						intrinsicWidth: element.intrinsicWidth,
 						intrinsicHeight: element.intrinsicHeight,
+						elementId: element.id,
 						duration: element.duration,
 						timeOffset: element.startTime,
 						trimStart: element.trimStart,
@@ -138,6 +155,7 @@ function buildTrackNodes({
 					new GraphicNode({
 						definitionId: element.definitionId,
 						params: element.params,
+						elementId: element.id,
 						duration: element.duration,
 						timeOffset: element.startTime,
 						trimStart: element.trimStart,

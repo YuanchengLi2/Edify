@@ -26,6 +26,8 @@ export class ScenesManager {
 	private active: TScene | null = null;
 	private list: TScene[] = [];
 	private listeners = new Set<() => void>();
+	private _batchDepth = 0;
+	private _batchDirty = false;
 
 	constructor(private editor: EditorCore) {}
 
@@ -284,18 +286,38 @@ export class ScenesManager {
 	}
 
 	private notify(): void {
+		if (this._batchDepth > 0) {
+			this._batchDirty = true;
+			return;
+		}
 		this.listeners.forEach((fn) => {
 			fn();
 		});
 	}
 
+	batch(fn: () => void): void {
+		this._batchDepth++;
+		try {
+			fn();
+		} finally {
+			this._batchDepth--;
+			if (this._batchDepth === 0 && this._batchDirty) {
+				this._batchDirty = false;
+				this.listeners.forEach((fn) => {
+					fn();
+				});
+			}
+		}
+	}
+
 	updateSceneTracks({ tracks }: { tracks: SceneTracks }): void {
 		if (!this.active) return;
+
+		if (this.active.tracks === tracks) return;
 
 		const updatedScene: TScene = {
 			...this.active,
 			tracks,
-			updatedAt: new Date(),
 		};
 
 		this.list = this.list.map((s) =>
@@ -303,18 +325,5 @@ export class ScenesManager {
 		);
 		this.active = updatedScene;
 		this.notify();
-
-		const activeProject = this.editor.project.getActive();
-		if (activeProject) {
-			const updatedProject = {
-				...activeProject,
-				scenes: this.list,
-				metadata: {
-					...activeProject.metadata,
-					updatedAt: new Date(),
-				},
-			};
-			this.editor.project.setActiveProject({ project: updatedProject });
-		}
 	}
 }

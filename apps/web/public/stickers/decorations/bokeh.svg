@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bkg1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.3"/>
+      <stop offset="60%" stop-color="#FFD700" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bkg2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#FF69B4" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FF69B4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bkg3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#87CEEB" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#87CEEB" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bkg4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#DDA0DD" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#DDA0DD" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="30" cy="30" r="22" fill="url(#bkg1)" stroke="#FFD700" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="85" cy="25" r="18" fill="url(#bkg2)" stroke="#FF69B4" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="55" cy="65" r="25" fill="url(#bkg3)" stroke="#87CEEB" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="100" cy="70" r="20" fill="url(#bkg4)" stroke="#DDA0DD" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="20" cy="85" r="16" fill="url(#bkg2)" stroke="#FF69B4" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="75" cy="105" r="18" fill="url(#bkg1)" stroke="#FFD700" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="105" cy="110" r="12" fill="url(#bkg3)" stroke="#87CEEB" stroke-width="0.5" stroke-opacity="0.3"/>
+  <circle cx="15" cy="55" r="10" fill="url(#bkg4)" stroke="#DDA0DD" stroke-width="0.5" stroke-opacity="0.3"/>
+</svg>

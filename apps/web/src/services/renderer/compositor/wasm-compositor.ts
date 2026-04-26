@@ -135,7 +135,20 @@ class WasmCompositor {
 				typeof navigator !== "undefined" && "gpu" in navigator,
 			);
 		}
-		renderFrame(frame);
+		try {
+			renderFrame(frame);
+		} catch (e) {
+			console.error("[compositor] render failed:", e);
+			console.error(
+				"[compositor] frame items:",
+				JSON.stringify(
+					frame.items.map((item) => ({
+						type: item.type,
+						hasEffectPassGroups: "effectPassGroups" in item,
+					})),
+				),
+			);
+		}
 	}
 }
 

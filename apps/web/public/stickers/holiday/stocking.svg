@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="stockGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+  </defs>
+  <path d="M40 16 L40 80 Q40 108 60 112 Q80 116 88 100 Q96 84 80 76 L52 76 L52 16 Z" fill="url(#stockGrad)" stroke="#a93226" stroke-width="2"/>
+  <path d="M40 16 L52 16" stroke="#a93226" stroke-width="2"/>
+  <rect x="36" y="10" width="24" height="18" rx="3" fill="white" stroke="#e0e0e0" stroke-width="1.5"/>
+  <rect x="38" y="12" width="20" height="14" rx="2" fill="white"/>
+  <line x1="40" y1="17" x2="54" y2="17" stroke="#eee" stroke-width="1"/>
+  <line x1="40" y1="21" x2="54" y2="21" stroke="#eee" stroke-width="1"/>
+  <path d="M44 28 Q46 34 44 28" stroke="#2ecc71" stroke-width="2" fill="none"/>
+  <path d="M48 30 Q50 38 48 30" stroke="#2ecc71" stroke-width="2" fill="none"/>
+  <circle cx="62" cy="50" r="4" fill="#f1c40f"/>
+  <circle cx="74" cy="60" r="3" fill="#3498db"/>
+  <circle cx="66" cy="70" r="3.5" fill="#f1c40f"/>
+  <circle cx="78" cy="78" r="3" fill="#9b59b6"/>
+  <path d="M56 40 L60 32 L64 40" fill="none" stroke="#2ecc71" stroke-width="1.5"/>
+  <path d="M72 46 L76 38 L80 46" fill="none" stroke="#2ecc71" stroke-width="1.5"/>
+</svg>

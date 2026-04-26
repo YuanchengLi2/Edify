@@ -8,7 +8,6 @@ import { DraggableItem } from "@/components/editor/panels/assets/draggable-item"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEditor } from "@/hooks/use-editor";
 import { resolveStickerIntrinsicSize } from "@/lib/stickers";
 import {
@@ -26,9 +25,7 @@ import type {
 } from "@/lib/stickers";
 import { useStickersStore } from "@/stores/stickers-store";
 import { cn } from "@/utils/ui";
-import {
-	HappyIcon,
-} from "@hugeicons/core-free-icons";
+import { HappyIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
 export function StickersView() {
@@ -50,12 +47,12 @@ export function StickersView() {
 	}, [browseContent, browseStickers, viewMode]);
 
 	return (
-		<div className="flex h-full flex-col py-2">
-			<div className="px-2">
+		<div className="flex h-full flex-col">
+			<div className="px-3 pt-2 pb-1">
 				<Input
 					size="sm"
 					variant="default"
-					placeholder="Search..."
+					placeholder="Search stickers..."
 					value={searchQuery}
 					onChange={(e) => {
 						setSearchQuery({ query: e.target.value });
@@ -71,26 +68,51 @@ export function StickersView() {
 				/>
 			</div>
 
-			<Tabs
-				value={selectedCategory}
-				onValueChange={(value) => {
-					setSelectedCategory({ category: value as StickerCategory });
-				}}
-				variant="underline"
-				className="mt-2 flex min-h-0 flex-1 flex-col"
-			>
-				<TabsList aria-label="Sticker categories">
-					{Object.entries(STICKER_CATEGORIES).map(([key, label]) => (
-						<TabsTrigger key={key} value={key}>
-							{label}
-						</TabsTrigger>
-					))}
-				</TabsList>
-				<div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4">
-					<StickersContentView />
-				</div>
-			</Tabs>
+			<div className="flex gap-0.5 overflow-x-auto border-b border-border px-2 py-1 scrollbar-hidden">
+				{Object.entries(STICKER_CATEGORIES).map(([key, label]) => (
+					<CategoryButton
+						key={key}
+						categoryKey={key}
+						label={label}
+						isActive={selectedCategory === key}
+						onClick={() =>
+							setSelectedCategory({ category: key as StickerCategory })
+						}
+					/>
+				))}
+			</div>
+
+			<div className="min-h-0 flex-1 overflow-y-auto px-3 pt-2 pb-4">
+				<StickersContentView />
+			</div>
 		</div>
+	);
+}
+
+function CategoryButton({
+	categoryKey,
+	label,
+	isActive,
+	onClick,
+}: {
+	categoryKey: string;
+	label: string;
+	isActive: boolean;
+	onClick: () => void;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			className={cn(
+				"flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
+				isActive
+					? "bg-secondary text-secondary-foreground font-medium"
+					: "text-muted-foreground hover:bg-muted hover:text-foreground",
+			)}
+		>
+			{label}
+		</button>
 	);
 }
 
@@ -106,14 +128,14 @@ function StickerGrid({
 		"--sticker-max"?: string;
 	} = {
 		gridTemplateColumns: shouldCapSize
-			? "repeat(auto-fill, minmax(var(--sticker-min, 80px), var(--sticker-max, 140px)))"
-			: "repeat(auto-fill, minmax(var(--sticker-min, 80px), 1fr))",
-		"--sticker-min": "80px",
-		...(shouldCapSize ? { "--sticker-max": "140px" } : {}),
+			? "repeat(auto-fill, minmax(var(--sticker-min, 72px), var(--sticker-max, 120px)))"
+			: "repeat(auto-fill, minmax(var(--sticker-min, 72px), 1fr))",
+		"--sticker-min": "72px",
+		...(shouldCapSize ? { "--sticker-max": "120px" } : {}),
 	};
 
 	return (
-		<div className="grid gap-2" style={gridStyle}>
+		<div className="grid gap-1.5" style={gridStyle}>
 			{items.map((item) => (
 				<StickerItem key={item.id} item={item} shouldCapSize={shouldCapSize} />
 			))}
@@ -123,9 +145,9 @@ function StickerGrid({
 
 function StickerRow({ items }: { items: StickerData[] }) {
 	return (
-		<div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hidden">
+		<div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hidden">
 			{items.map((item) => (
-				<div key={item.id} className="w-20 shrink-0">
+				<div key={item.id} className="w-[72px] shrink-0">
 					<StickerItem item={item} shouldCapSize containerClassName="w-full" />
 				</div>
 			))}
@@ -201,7 +223,7 @@ function StickersContentView() {
 			const regionLabel = getRegionLabel({ query: normalizedQuery });
 
 			return (
-				<div className="flex flex-col gap-3 pb-4">
+				<div className="flex flex-col gap-3">
 					{isRegionSearch && <RegionBanner region={regionLabel} />}
 					<div className="flex items-center justify-between">
 						<span className="text-muted-foreground text-sm">
@@ -213,7 +235,6 @@ function StickersContentView() {
 			);
 		}
 
-		// "all" tab search — sections are in browseContent, fall through to section rendering below
 		if (selectedCategory !== "all" && searchQuery) {
 			return <EmptyView message={`No stickers found for "${searchQuery}"`} />;
 		}
@@ -243,7 +264,7 @@ function StickersContentView() {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 pb-4">
+		<div className="flex flex-col gap-4">
 			{browseContent.sections.map((section) => (
 				<StickerSection
 					key={section.id}
@@ -343,7 +364,9 @@ function StickerItem({
 
 	const displayName = item.name;
 	const shapePreset =
-		item.provider === "shapes" ? parseShapeStickerId({ stickerId: item.id }) : null;
+		item.provider === "shapes"
+			? parseShapeStickerId({ stickerId: item.id })
+			: null;
 
 	const handleAdd = async () => {
 		setIsAdding(true);
@@ -387,23 +410,23 @@ function StickerItem({
 	};
 
 	const preview = (
-		<div className="flex size-full items-center justify-center p-3">
+		<div className="flex size-full items-center justify-center p-2">
 			{hasImageError ? (
-				<span className="text-muted-foreground text-center text-xs break-all">
+				<span className="text-muted-foreground text-center text-[10px] break-all leading-tight">
 					{displayName}
 				</span>
 			) : (
 				<Image
 					src={item.previewUrl}
 					alt={displayName}
-					width={64}
-					height={64}
+					width={56}
+					height={56}
 					className="size-full object-contain"
 					style={
 						shouldCapSize
 							? {
-									maxWidth: "var(--sticker-max, 160px)",
-									maxHeight: "var(--sticker-max, 160px)",
+									maxWidth: "var(--sticker-max, 120px)",
+									maxHeight: "var(--sticker-max, 120px)",
 								}
 							: undefined
 					}

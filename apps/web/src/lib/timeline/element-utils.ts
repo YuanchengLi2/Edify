@@ -3,6 +3,7 @@ import {
 	MASKABLE_ELEMENT_TYPES,
 	RETIMABLE_ELEMENT_TYPES,
 	VISUAL_ELEMENT_TYPES,
+	type CreateMaskOverlayElement,
 	type CreateEffectElement,
 	type CreateGraphicElement,
 	type CreateTimelineElement,
@@ -15,7 +16,6 @@ import {
 	type TextElement,
 	type SceneTracks,
 	type TimelineElement,
-	type TimelineTrack,
 	type AudioElement,
 	type VideoElement,
 	type ImageElement,
@@ -28,7 +28,9 @@ import { DEFAULTS } from "@/lib/timeline/defaults";
 import type { MediaType } from "@/lib/media/types";
 import { buildDefaultEffectInstance } from "@/lib/effects";
 import { buildDefaultGraphicInstance } from "@/lib/graphics";
+import { buildDefaultMaskInstance } from "@/lib/masks";
 import type { ParamValues } from "@/lib/params";
+import type { MaskType } from "@/lib/masks/types";
 import { capitalizeFirstLetter } from "@/utils/string";
 
 export function canElementHaveAudio(
@@ -123,6 +125,8 @@ export function buildTextElement({
 		fontSize: t.fontSize ?? DEFAULTS.text.element.fontSize,
 		fontFamily: t.fontFamily ?? DEFAULTS.text.element.fontFamily,
 		color: t.color ?? DEFAULTS.text.element.color,
+		strokeColor: t.strokeColor ?? DEFAULTS.text.element.strokeColor,
+		strokeWidth: t.strokeWidth ?? DEFAULTS.text.element.strokeWidth,
 		background: buildTextBackground(t.background),
 		textAlign: t.textAlign ?? DEFAULTS.text.element.textAlign,
 		fontWeight: t.fontWeight ?? DEFAULTS.text.element.fontWeight,
@@ -133,6 +137,8 @@ export function buildTextElement({
 		transform: t.transform ?? DEFAULTS.text.element.transform,
 		opacity: t.opacity ?? DEFAULTS.text.element.opacity,
 		blendMode: t.blendMode ?? DEFAULTS.element.blendMode,
+		effects: t.effects,
+		...(t.captionStyle ? { captionStyle: t.captionStyle } : {}),
 	};
 }
 
@@ -155,6 +161,30 @@ export function buildEffectElement({
 		startTime,
 		trimStart: 0,
 		trimEnd: 0,
+	};
+}
+
+export function buildMaskOverlayElement({
+	maskType,
+	startTime,
+	duration,
+	elementSize,
+}: {
+	maskType: MaskType;
+	startTime: number;
+	duration?: number;
+	elementSize?: { width: number; height: number };
+}): CreateMaskOverlayElement {
+	const mask = buildDefaultMaskInstance({ maskType, elementSize });
+	return {
+		type: "mask",
+		name: capitalizeFirstLetter({ string: maskType.replaceAll("-", " ") }),
+		duration: duration ?? DEFAULT_NEW_ELEMENT_DURATION,
+		startTime,
+		trimStart: 0,
+		trimEnd: 0,
+		masks: [mask],
+		activeMaskId: mask.id,
 	};
 }
 

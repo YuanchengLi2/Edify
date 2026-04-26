@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="coneGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="30%" stop-color="#ff6b6b"/>
+      <stop offset="60%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 10 L24 104 Q24 112 64 112 Q104 112 104 104 Z" fill="url(#coneGrad)" stroke="#a93226" stroke-width="2"/>
+  <path d="M64 10 L52 40 L76 40 Z" fill="#f1c40f"/>
+  <circle cx="64" cy="28" r="6" fill="#f1c40f"/>
+  <circle cx="64" cy="28" r="4" fill="#ffd700"/>
+  <path d="M34 60 L94 60" stroke="rgba(255,255,255,0.2)" stroke-width="3"/>
+  <path d="M28 80 L100 80" stroke="rgba(255,255,255,0.2)" stroke-width="3"/>
+  <circle cx="48" cy="52" r="4" fill="#3498db"/>
+  <circle cx="80" cy="52" r="4" fill="#2ecc71"/>
+  <circle cx="64" cy="70" r="5" fill="#f1c40f"/>
+  <circle cx="44" cy="72" r="3" fill="#9b59b6"/>
+  <circle cx="84" cy="72" r="3" fill="#e74c3c"/>
+  <circle cx="64" cy="90" r="4" fill="#e74c3c"/>
+  <circle cx="48" cy="90" r="3.5" fill="#f1c40f"/>
+  <circle cx="80" cy="90" r="3.5" fill="#3498db"/>
+  <circle cx="40" cy="100" r="3" fill="#2ecc71"/>
+  <circle cx="56" cy="100" r="3" fill="#9b59b6"/>
+  <circle cx="72" cy="100" r="3" fill="#f1c40f"/>
+  <circle cx="88" cy="100" r="3" fill="#e74c3c"/>
+  <ellipse cx="64" cy="108" rx="36" ry="6" fill="rgba(0,0,0,0.05)"/>
+  <path d="M60 14 Q64 6 68 14" fill="none" stroke="#f1c40f" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="64" cy="8" r="3" fill="#f1c40f"/>
+  <circle cx="64" cy="8" r="1.5" fill="#ffd700"/>
+</svg>

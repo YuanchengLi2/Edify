@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="ltG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F39C12"/>
+      <stop offset="100%" stop-color="#E67E22"/>
+    </linearGradient>
+    <linearGradient id="ltLid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B6914"/>
+      <stop offset="100%" stop-color="#6B4F12"/>
+    </linearGradient>
+    <filter id="ltGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <rect x="28" y="52" width="72" height="52" rx="4" fill="url(#ltG)" stroke="#D4A017" stroke-width="2"/>
+  <rect x="24" y="28" width="80" height="28" rx="4" fill="url(#ltLid)" stroke="#8B6914" stroke-width="2" transform="rotate(-15,64,42)"/>
+  <rect x="30" y="56" width="68" height="4" rx="2" fill="#D4A017"/>
+  <rect x="30" y="64" width="68" height="3" rx="1.5" fill="#D4A017" opacity="0.6"/>
+  <rect x="56" y="56" width="16" height="48" rx="2" fill="#C0870A"/>
+  <circle cx="64" cy="34" r="3" fill="#FFE66D" filter="url(#ltGlow)"/>
+  <path d="M58 50l6-12 6 12" fill="#FFE66D" filter="url(#ltGlow)" opacity="0.8"/>
+  <circle cx="50" cy="72" r="3" fill="#FFE66D" filter="url(#ltGlow)" opacity="0.6"/>
+  <circle cx="80" cy="68" r="2" fill="#FFE66D" filter="url(#ltGlow)" opacity="0.5"/>
+  <circle cx="44" cy="84" r="2" fill="#FFE66D" filter="url(#ltGlow)" opacity="0.4"/>
+  <circle cx="86" cy="82" r="2.5" fill="#FFE66D" filter="url(#ltGlow)" opacity="0.5"/>
+</svg>

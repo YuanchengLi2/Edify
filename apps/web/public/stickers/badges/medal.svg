@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="medalGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF9800"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M44,0 L44,40 L64,52 L84,40 L84,0 Z" fill="#DC2626"/>
+    <path d="M48,0 L48,38 L64,48 L80,38 L80,0 Z" fill="#EF4444"/>
+    <line x1="44" y1="0" x2="44" y2="16" stroke="#B91C1C" stroke-width="4"/>
+    <line x1="84" y1="0" x2="84" y2="16" stroke="#B91C1C" stroke-width="4"/>
+    <circle cx="64" cy="76" r="36" fill="url(#medalGold)" stroke="#E65100" stroke-width="2.5"/>
+    <circle cx="64" cy="76" r="28" fill="none" stroke="#FFF8E1" stroke-width="2" stroke-dasharray="4,3"/>
+    <circle cx="64" cy="76" r="22" fill="none" stroke="#FFB300" stroke-width="1"/>
+    <polygon points="64,58 67,68 78,68 69,74 72,84 64,78 56,84 59,74 50,68 61,68" fill="#FFF8E1" opacity="0.8"/>
+  </g>
+</svg>

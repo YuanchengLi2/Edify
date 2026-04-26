@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import type { EditorCore } from "@/core";
 import { useEditor } from "@/hooks/use-editor";
 import type { BookmarkDragState } from "@/hooks/timeline/use-bookmark-drag";
-import {
-	DEFAULT_TIMELINE_BOOKMARK_COLOR,
-} from "./theme";
+import { DEFAULT_TIMELINE_BOOKMARK_COLOR } from "./theme";
 import { TIMELINE_BOOKMARK_ROW_HEIGHT_PX } from "./layout";
 import { DEFAULT_FPS } from "@/lib/fps/defaults";
 import { snappedSeekTime } from "opencut-wasm";
@@ -64,7 +62,7 @@ interface TimelineBookmarksRowProps {
 	handleWheel: (event: React.WheelEvent) => void;
 	handleTimelineContentClick: (event: React.MouseEvent) => void;
 	handleRulerTrackingMouseDown: (event: React.MouseEvent) => void;
-	handleRulerMouseDown: (event: React.MouseEvent) => void;
+	handleSelectionMouseDown?: (event: React.MouseEvent) => void;
 }
 
 export function TimelineBookmarksRow({
@@ -75,7 +73,7 @@ export function TimelineBookmarksRow({
 	handleWheel,
 	handleTimelineContentClick,
 	handleRulerTrackingMouseDown,
-	handleRulerMouseDown,
+	handleSelectionMouseDown,
 }: TimelineBookmarksRowProps) {
 	const bookmarks = useEditor((e) => e.scenes.getActiveScene().bookmarks);
 
@@ -84,14 +82,17 @@ export function TimelineBookmarksRow({
 			className="relative flex-1 overflow-hidden"
 			style={{ height: TIMELINE_BOOKMARK_ROW_HEIGHT_PX }}
 		>
-			<button
+			{/* biome-ignore lint/a11y/useSemanticElements: timeline bookmark row is mouse-driven and styled as a ruler surface */}
+			<div
 				className="relative w-full cursor-default select-none border-0 bg-transparent p-0"
 				style={{
 					height: TIMELINE_BOOKMARK_ROW_HEIGHT_PX,
 					width: `${dynamicTimelineWidth}px`,
 				}}
+				role="button"
+				tabIndex={0}
 				aria-label="Timeline ruler"
-				type="button"
+				onKeyDown={() => {}}
 				onWheel={handleWheel}
 				onClick={(event) => {
 					if (!event.currentTarget.contains(event.target as Node)) return;
@@ -99,7 +100,7 @@ export function TimelineBookmarksRow({
 				}}
 				onMouseDown={(event) => {
 					if (!event.currentTarget.contains(event.target as Node)) return;
-					handleRulerMouseDown(event);
+					handleSelectionMouseDown?.(event);
 					handleRulerTrackingMouseDown(event);
 				}}
 			>
@@ -112,7 +113,7 @@ export function TimelineBookmarksRow({
 						onBookmarkMouseDown={onBookmarkMouseDown}
 					/>
 				))}
-			</button>
+			</div>
 		</div>
 	);
 }
@@ -360,7 +361,10 @@ function BookmarkPopoverContent({
 					/>
 					{bookmark.color &&
 						bookmark.color.replace(/^#/, "").toUpperCase() !==
-							DEFAULT_TIMELINE_BOOKMARK_COLOR.replace(/^#/, "").toUpperCase() && (
+							DEFAULT_TIMELINE_BOOKMARK_COLOR.replace(
+								/^#/,
+								"",
+							).toUpperCase() && (
 							<Button
 								type="button"
 								variant="text"

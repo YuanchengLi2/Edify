@@ -1,23 +1,5 @@
-import { Hero } from "@/components/landing/hero";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { Features } from "@/components/landing/features";
-import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/site/brand";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-	alternates: {
-		canonical: SITE_URL,
-	},
-};
-
-export default async function Home() {
-	return (
-		<div>
-			<Header />
-			<Hero />
-			<Features />
-			<Footer />
-		</div>
-	);
+export default function Home() {
+	redirect("/projects");
 }

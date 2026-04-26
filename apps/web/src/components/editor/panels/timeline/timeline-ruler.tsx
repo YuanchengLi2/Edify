@@ -1,7 +1,5 @@
 import { type JSX, useLayoutEffect, useRef } from "react";
-import {
-	BASE_TIMELINE_PIXELS_PER_SECOND,
-} from "@/lib/timeline/scale";
+import { BASE_TIMELINE_PIXELS_PER_SECOND } from "@/lib/timeline/scale";
 import { mediaTimeToSeconds } from "opencut-wasm";
 import { TICKS_PER_SECOND } from "@/lib/wasm";
 import { TIMELINE_RULER_HEIGHT_PX } from "./layout";
@@ -19,7 +17,7 @@ interface TimelineRulerProps {
 	handleWheel: (e: React.WheelEvent) => void;
 	handleTimelineContentClick: (e: React.MouseEvent) => void;
 	handleRulerTrackingMouseDown: (e: React.MouseEvent) => void;
-	handleRulerMouseDown: (e: React.MouseEvent) => void;
+	handleSelectionMouseDown?: (e: React.MouseEvent) => void;
 }
 
 export function TimelineRuler({
@@ -30,20 +28,24 @@ export function TimelineRuler({
 	handleWheel,
 	handleTimelineContentClick,
 	handleRulerTrackingMouseDown,
-	handleRulerMouseDown,
+	handleSelectionMouseDown,
 }: TimelineRulerProps) {
 	const durationTicks = useEditor((e) => e.timeline.getTotalDuration());
 	const durationSeconds = mediaTimeToSeconds({ time: durationTicks });
 	const pixelsPerSecond = BASE_TIMELINE_PIXELS_PER_SECOND * zoomLevel;
 	const visibleDurationSeconds = dynamicTimelineWidth / pixelsPerSecond;
-	const effectiveDurationSeconds = Math.max(durationSeconds, visibleDurationSeconds);
+	const effectiveDurationSeconds = Math.max(
+		durationSeconds,
+		visibleDurationSeconds,
+	);
 	const fps =
 		useEditor((e) => e.project.getActiveOrNull()?.settings.fps) ?? DEFAULT_FPS;
 	const { labelIntervalSeconds, tickIntervalSeconds } = getRulerConfig({
 		zoomLevel,
 		fps,
 	});
-	const tickCount = Math.ceil(effectiveDurationSeconds / tickIntervalSeconds) + 1;
+	const tickCount =
+		Math.ceil(effectiveDurationSeconds / tickIntervalSeconds) + 1;
 
 	const { scrollLeft, viewportWidth } = useScrollPosition({
 		scrollRef: tracksScrollRef,
@@ -90,7 +92,10 @@ export function TimelineRuler({
 		if (timeSeconds > effectiveDurationSeconds) break;
 
 		const timeTicks = Math.round(timeSeconds * TICKS_PER_SECOND);
-		const showLabel = shouldShowLabel({ time: timeSeconds, labelIntervalSeconds });
+		const showLabel = shouldShowLabel({
+			time: timeSeconds,
+			labelIntervalSeconds,
+		});
 		timelineTicks.push(
 			<TimelineTick
 				key={tickIndex}
@@ -121,7 +126,10 @@ export function TimelineRuler({
 					handleTimelineContentClick(event);
 				}
 			}}
-			onMouseDown={handleRulerTrackingMouseDown}
+			onMouseDown={(event) => {
+				handleSelectionMouseDown?.(event);
+				handleRulerTrackingMouseDown(event);
+			}}
 			onKeyDown={() => {}}
 		>
 			<div
@@ -132,7 +140,6 @@ export function TimelineRuler({
 					height: TIMELINE_RULER_HEIGHT_PX,
 					width: `${dynamicTimelineWidth}px`,
 				}}
-				onMouseDown={handleRulerMouseDown}
 			>
 				{timelineTicks}
 			</div>

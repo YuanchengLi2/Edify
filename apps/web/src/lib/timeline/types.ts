@@ -1,4 +1,5 @@
 import type { ElementAnimations } from "@/lib/animation/types";
+import type { CaptionStyle } from "@/lib/captions/types";
 import type { Effect } from "@/lib/effects/types";
 import type { Mask } from "@/lib/masks/types";
 import type { ParamValues } from "@/lib/params";
@@ -26,7 +27,13 @@ export interface TScene {
 	updatedAt: Date;
 }
 
-export type TrackType = "video" | "text" | "audio" | "graphic" | "effect";
+export type TrackType =
+	| "video"
+	| "text"
+	| "audio"
+	| "graphic"
+	| "effect"
+	| "mask";
 
 interface BaseTrack {
 	id: string;
@@ -64,14 +71,26 @@ export interface EffectTrack extends BaseTrack {
 	hidden: boolean;
 }
 
+export interface MaskTrack extends BaseTrack {
+	type: "mask";
+	elements: MaskOverlayElement[];
+	hidden: boolean;
+}
+
 export type TimelineTrack =
 	| VideoTrack
 	| TextTrack
 	| AudioTrack
 	| GraphicTrack
-	| EffectTrack;
+	| EffectTrack
+	| MaskTrack;
 
-export type OverlayTrack = VideoTrack | TextTrack | GraphicTrack | EffectTrack;
+export type OverlayTrack =
+	| VideoTrack
+	| TextTrack
+	| GraphicTrack
+	| EffectTrack
+	| MaskTrack;
 
 export interface SceneTracks {
 	overlay: OverlayTrack[];
@@ -161,6 +180,8 @@ export interface TextElement extends BaseTimelineElement {
 	fontSize: number;
 	fontFamily: string;
 	color: string;
+	strokeColor?: string;
+	strokeWidth?: number;
 	background: TextBackground;
 	textAlign: "left" | "center" | "right";
 	fontWeight: "normal" | "bold";
@@ -173,6 +194,7 @@ export interface TextElement extends BaseTimelineElement {
 	opacity: number;
 	blendMode?: BlendMode;
 	effects?: Effect[];
+	captionStyle?: CaptionStyle;
 }
 
 export interface StickerElement extends BaseTimelineElement {
@@ -206,6 +228,13 @@ export interface EffectElement extends BaseTimelineElement {
 	params: ParamValues;
 }
 
+export interface MaskOverlayElement extends BaseTimelineElement {
+	type: "mask";
+	hidden?: boolean;
+	masks: Mask[];
+	activeMaskId?: string | null;
+}
+
 export type ElementUpdatePatch =
 	| { transform: Transform }
 	| { opacity: number }
@@ -218,7 +247,8 @@ export type TimelineElement =
 	| TextElement
 	| StickerElement
 	| GraphicElement
-	| EffectElement;
+	| EffectElement
+	| MaskOverlayElement;
 
 export type ElementType = TimelineElement["type"];
 
@@ -226,7 +256,12 @@ function elementTypes<T extends ElementType[]>(...types: T): T {
 	return types;
 }
 
-export const MASKABLE_ELEMENT_TYPES = elementTypes("video", "image", "graphic");
+export const MASKABLE_ELEMENT_TYPES = elementTypes(
+	"video",
+	"image",
+	"graphic",
+	"mask",
+);
 
 export type MaskableElement = Extract<
 	TimelineElement,
@@ -264,6 +299,7 @@ export type CreateTextElement = Omit<TextElement, "id">;
 export type CreateStickerElement = Omit<StickerElement, "id">;
 export type CreateGraphicElement = Omit<GraphicElement, "id">;
 export type CreateEffectElement = Omit<EffectElement, "id">;
+export type CreateMaskOverlayElement = Omit<MaskOverlayElement, "id">;
 export type CreateTimelineElement =
 	| CreateAudioElement
 	| CreateVideoElement
@@ -271,7 +307,8 @@ export type CreateTimelineElement =
 	| CreateTextElement
 	| CreateStickerElement
 	| CreateGraphicElement
-	| CreateEffectElement;
+	| CreateEffectElement
+	| CreateMaskOverlayElement;
 
 export interface ElementDragState {
 	isDragging: boolean;

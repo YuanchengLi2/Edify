@@ -110,9 +110,7 @@ export function Footer() {
 
 				<div className="flex flex-col items-start justify-between gap-4 pt-2 md:flex-row">
 					<div className="text-muted-foreground flex items-center gap-4 text-sm">
-						<span>
-							© {new Date().getFullYear()} Edify, All Rights Reserved
-						</span>
+						<span>© {new Date().getFullYear()} Edify, All Rights Reserved</span>
 					</div>
 				</div>
 			</div>

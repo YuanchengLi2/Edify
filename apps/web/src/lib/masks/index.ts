@@ -14,5 +14,9 @@ export function buildDefaultMaskInstance({
 }): Mask {
 	const definition = masksRegistry.get(maskType);
 	const context: MaskDefaultContext = { elementSize };
-	return { ...definition.buildDefault(context), id: generateUUID() } as Mask;
+	return {
+		...definition.buildDefault(context),
+		id: generateUUID(),
+		visible: true,
+	} as Mask;
 }

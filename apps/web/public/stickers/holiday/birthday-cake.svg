@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="cakeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff85a2"/>
+      <stop offset="100%" stop-color="#ff5c8a"/>
+    </linearGradient>
+    <linearGradient id="frostGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff0f5"/>
+      <stop offset="100%" stop-color="#ffe0eb"/>
+    </linearGradient>
+  </defs>
+  <rect x="22" y="56" width="84" height="44" rx="6" fill="url(#cakeGrad)" stroke="#e0456f" stroke-width="1.5"/>
+  <rect x="22" y="56" width="84" height="10" rx="3" fill="url(#frostGrad)" stroke="#e0c0cc" stroke-width="1"/>
+  <path d="M22 66 Q28 62 34 66 Q40 62 46 66 Q52 62 58 66 Q64 62 70 66 Q76 62 82 66 Q88 62 94 66 Q100 62 106 66" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="40" cy="72" r="3" fill="#f1c40f"/>
+  <circle cx="64" cy="74" r="3" fill="#3498db"/>
+  <circle cx="88" cy="72" r="3" fill="#2ecc71"/>
+  <rect x="22" y="96" width="84" height="12" rx="3" fill="url(#cakeGrad)" stroke="#e0456f" stroke-width="1"/>
+  <rect x="22" y="96" width="84" height="4" rx="2" fill="#ffb6c1"/>
+  <rect x="34" y="108" width="60" height="8" rx="2" fill="#e0456f" opacity="0.3"/>
+  <rect x="40" y="44" width="6" height="14" rx="1" fill="#f1c40f"/>
+  <rect x="61" y="40" width="6" height="18" rx="1" fill="#3498db"/>
+  <rect x="82" y="44" width="6" height="14" rx="1" fill="#2ecc71"/>
+  <ellipse cx="43" cy="44" rx="5" ry="7" fill="#ff6b6b"/>
+  <ellipse cx="43" cy="44" rx="3" ry="4.5" fill="#ff4757"/>
+  <ellipse cx="64" cy="40" rx="5" ry="7" fill="#ff6b6b"/>
+  <ellipse cx="64" cy="40" rx="3" ry="4.5" fill="#ff4757"/>
+  <ellipse cx="85" cy="44" rx="5" ry="7" fill="#ff6b6b"/>
+  <ellipse cx="85" cy="44" rx="3" ry="4.5" fill="#ff4757"/>
+  <ellipse cx="41" cy="41" rx="2" ry="1.5" fill="rgba(255,255,255,0.4)"/>
+  <ellipse cx="62" cy="37" rx="2" ry="1.5" fill="rgba(255,255,255,0.4)"/>
+  <ellipse cx="83" cy="41" rx="2" ry="1.5" fill="rgba(255,255,255,0.4)"/>
+</svg>

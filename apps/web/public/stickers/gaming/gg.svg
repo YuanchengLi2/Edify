@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="ggG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6C63FF"/>
+      <stop offset="50%" stop-color="#8B83FF"/>
+      <stop offset="100%" stop-color="#4ECDC4"/>
+    </linearGradient>
+    <filter id="ggGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <text x="64" y="80" font-family="monospace" font-size="52" font-weight="bold" fill="url(#ggG)" text-anchor="middle" filter="url(#ggGlow)" letter-spacing="6">GG</text>
+  <circle cx="24" cy="24" r="2" fill="#6C63FF" opacity="0.5"/>
+  <circle cx="104" cy="24" r="2" fill="#4ECDC4" opacity="0.5"/>
+  <circle cx="16" cy="104" r="1.5" fill="#8B83FF" opacity="0.4"/>
+  <circle cx="112" cy="104" r="1.5" fill="#4ECDC4" opacity="0.4"/>
+  <circle cx="20" cy="60" r="1" fill="#6C63FF" opacity="0.3"/>
+  <circle cx="108" cy="60" r="1" fill="#4ECDC4" opacity="0.3"/>
+</svg>

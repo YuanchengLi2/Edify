@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="idg1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A2E"/>
+      <stop offset="100%" stop-color="#16213E"/>
+    </linearGradient>
+    <linearGradient id="idg2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F3460"/>
+      <stop offset="100%" stop-color="#533483"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="4" width="108" height="20" rx="4" fill="url(#idg1)" opacity="0.9"/>
+  <path d="M20 24 L20 28 Q20 32 18 36 Q16 40 20 44 Q22 46 20 50 Q18 54 20 58 Q22 60 20 64 L20 68 Q20 72 18 76" stroke="url(#idg1)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="18" cy="76" r="5" fill="url(#idg1)" opacity="0.85"/>
+  <path d="M45 24 L45 30 Q45 34 43 38 Q41 42 45 46 Q47 48 45 52 Q43 56 45 60 Q47 64 45 68 L45 80" stroke="url(#idg1)" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <circle cx="45" cy="80" r="6" fill="url(#idg1)" opacity="0.8"/>
+  <circle cx="45" cy="85" r="3" fill="url(#idg2)" opacity="0.6"/>
+  <path d="M70 24 L70 26 Q70 30 68 34 Q66 38 70 42 Q72 44 70 48" stroke="url(#idg2)" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.75"/>
+  <circle cx="70" cy="48" r="4" fill="url(#idg2)" opacity="0.75"/>
+  <path d="M95 24 L95 28 Q95 34 93 40 Q91 46 95 52 Q97 56 95 62 Q93 68 95 74 Q97 80 95 88" stroke="url(#idg1)" stroke-width="5.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="95" cy="88" r="7" fill="url(#idg1)" opacity="0.85"/>
+  <circle cx="95" cy="95" r="3.5" fill="url(#idg2)" opacity="0.5"/>
+  <path d="M30 24 L30 32 Q30 36 28 40" stroke="url(#idg2)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.65"/>
+  <circle cx="28" cy="40" r="3" fill="url(#idg2)" opacity="0.65"/>
+  <path d="M85 24 L85 30 Q85 34 83 38 Q81 42 85 46" stroke="url(#idg2)" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="85" cy="46" r="3.5" fill="url(#idg2)" opacity="0.7"/>
+  <circle cx="110" cy="35" r="2.5" fill="url(#idg1)" opacity="0.5"/>
+  <circle cx="112" cy="50" r="2" fill="url(#idg2)" opacity="0.45"/>
+  <circle cx="15" cy="45" r="2" fill="url(#idg2)" opacity="0.4"/>
+  <path d="M110 24 L110 26 Q110 28 109 30" stroke="url(#idg1)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <circle cx="109" cy="30" r="2.5" fill="url(#idg1)" opacity="0.5"/>
+</svg>

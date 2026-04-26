@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#BE185D"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <polygon points="0,44 100,44 128,64 100,84 0,84 16,64" fill="url(#arrowGrad)"/>
+    <polygon points="8,48 96,48 120,64 96,80 8,80 22,64" fill="none" stroke="#FCE7F3" stroke-width="1" opacity="0.4"/>
+    <text x="52" y="70" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="14" font-weight="bold" letter-spacing="2">NOTICE</text>
+  </g>
+</svg>

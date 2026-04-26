@@ -44,7 +44,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export function isVectorValue(value: unknown): value is VectorValue {
-	return isRecord(value) && typeof value.x === "number" && typeof value.y === "number";
+	return (
+		isRecord(value) &&
+		typeof value.x === "number" &&
+		typeof value.y === "number"
+	);
 }
 
 export type EasingMode = "independent" | "shared";
@@ -162,7 +166,11 @@ export function createAnimationBinding({
 }
 
 const animationBindingCloners = {
-	color: ({ binding }: { binding: ColorAnimationBinding }): ColorAnimationBinding => ({
+	color: ({
+		binding,
+	}: {
+		binding: ColorAnimationBinding;
+	}): ColorAnimationBinding => ({
 		...binding,
 		components: cloneBindingComponents({
 			components: binding.components,
@@ -247,11 +255,7 @@ export function parseColorToLinearRgba({
 	};
 }
 
-export function formatLinearRgba({
-	color,
-}: {
-	color: LinearRgba;
-}): string {
+export function formatLinearRgba({ color }: { color: LinearRgba }): string {
 	const rgb = {
 		mode: "rgb",
 		r: linearToSrgb({ value: color.r }),

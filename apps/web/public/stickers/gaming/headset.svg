@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B6B"/>
+      <stop offset="100%" stop-color="#EE5A24"/>
+    </linearGradient>
+    <filter id="hglow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <path d="M30 72c0-20 14-36 34-36s34 16 34 36" fill="none" stroke="url(#hg)" stroke-width="8" stroke-linecap="round" filter="url(#hglow)"/>
+  <rect x="22" y="62" width="18" height="30" rx="9" fill="url(#hg)" filter="url(#hglow)"/>
+  <rect x="88" y="62" width="18" height="30" rx="9" fill="url(#hg)" filter="url(#hglow)"/>
+  <rect x="24" y="68" width="14" height="18" rx="7" fill="#FF8A80"/>
+  <rect x="90" y="68" width="14" height="18" rx="7" fill="#FF8A80"/>
+  <path d="M97 88c0 0 2 8 2 14s-4 10-8 10" fill="none" stroke="#C4C4C4" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="91" cy="112" r="4" fill="#666"/>
+  <path d="M91 108v-4c0-2 2-4 4-2l4 4c2 2 0 4-2 4h-6z" fill="#888"/>
+</svg>

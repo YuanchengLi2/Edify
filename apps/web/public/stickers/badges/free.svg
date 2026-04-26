@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="freeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#16A34A"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="56" fill="url(#freeGrad)"/>
+    <circle cx="64" cy="64" r="50" fill="none" stroke="#BBF7D0" stroke-width="2"/>
+    <circle cx="64" cy="64" r="45" fill="none" stroke="#BBF7D0" stroke-width="1" stroke-dasharray="5,3"/>
+    <text x="64" y="72" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="32" font-weight="bold" letter-spacing="3">FREE</text>
+    <circle cx="24" cy="24" r="4" fill="#BBF7D0" opacity="0.4"/>
+    <circle cx="104" cy="104" r="4" fill="#BBF7D0" opacity="0.4"/>
+  </g>
+</svg>

@@ -3,6 +3,11 @@ import { effectsRegistry, resolveEffectPasses } from "@/lib/effects";
 import { buildDefaultParamValues } from "@/lib/registry";
 import type { ParamValues } from "@/lib/params";
 import { gpuRenderer } from "./gpu-renderer";
+import {
+	applyCanvasFilterEffects,
+	isCanvasFilterEffectType,
+} from "@/lib/effects/canvas-filters";
+import { generateUUID } from "@/utils/id";
 
 const PREVIEW_SIZE = 160;
 const PREVIEW_IMAGE_PATH = "/effects/preview.jpg";
@@ -18,11 +23,7 @@ class EffectPreviewService {
 		this.loadPreviewImage();
 	}
 
-	onPreviewImageReady({
-		callback,
-	}: {
-		callback: () => void;
-	}): () => void {
+	onPreviewImageReady({ callback }: { callback: () => void }): () => void {
 		this.onReadyCallbacks.add(callback);
 		return () => this.onReadyCallbacks.delete(callback);
 	}
@@ -47,6 +48,32 @@ class EffectPreviewService {
 			Object.keys(params).length > 0
 				? params
 				: buildDefaultParamValues(definition.params);
+
+		if (isCanvasFilterEffectType(effectType)) {
+			const result = applyCanvasFilterEffects({
+				source,
+				width: size,
+				height: size,
+				previewBoost: 1.7,
+				effects: [
+					{
+						id: generateUUID(),
+						type: effectType,
+						params: resolvedParams,
+						enabled: true,
+					},
+				],
+			});
+			const targetCtx = targetCanvas.getContext(
+				"2d",
+			) as CanvasRenderingContext2D | null;
+			if (targetCtx) {
+				targetCanvas.width = size;
+				targetCanvas.height = size;
+				targetCtx.drawImage(result, 0, 0, size, size);
+			}
+			return;
+		}
 
 		const passes = resolveEffectPasses({
 			definition,

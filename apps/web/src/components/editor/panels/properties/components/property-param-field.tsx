@@ -8,6 +8,7 @@ import {
 } from "@/utils/math";
 import { SectionField } from "@/components/section";
 import { NumberField } from "@/components/ui/number-field";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { ColorPicker } from "@/components/ui/color-picker";
 import {
@@ -154,9 +155,7 @@ function NumberParamField({
 		);
 
 	const previewFromDisplay = (displayVal: number) => {
-		const clamped = clampDisplayValue(
-			snapToStep({ value: displayVal, step }),
-		);
+		const clamped = clampDisplayValue(snapToStep({ value: displayVal, step }));
 		onPreview(clamped / displayMultiplier);
 	};
 
@@ -182,17 +181,37 @@ function NumberParamField({
 	};
 
 	return (
-		<NumberField
-			icon={param.shortLabel}
-			value={draft.displayValue}
-			dragSensitivity="slow"
-			isDefault={value === param.default}
-			onFocus={draft.onFocus}
-			onChange={draft.onChange}
-			onBlur={draft.onBlur}
-			onScrub={previewFromDisplay}
-			onScrubEnd={onCommit}
-			onReset={handleReset}
-		/>
+		<div className="flex items-center gap-3">
+			<Slider
+				className="flex-1"
+				min={min}
+				max={max}
+				step={step}
+				value={[displayValue]}
+				onValueChange={([next]) => {
+					if (next === undefined) return;
+					previewFromDisplay(next);
+				}}
+				onValueCommit={([next]) => {
+					if (next === undefined) return;
+					previewFromDisplay(next);
+					onCommit();
+				}}
+			/>
+			<div className="w-24 shrink-0">
+				<NumberField
+					icon={param.shortLabel}
+					value={draft.displayValue}
+					dragSensitivity="slow"
+					isDefault={value === param.default}
+					onFocus={draft.onFocus}
+					onChange={draft.onChange}
+					onBlur={draft.onBlur}
+					onScrub={previewFromDisplay}
+					onScrubEnd={onCommit}
+					onReset={handleReset}
+				/>
+			</div>
+		</div>
 	);
 }

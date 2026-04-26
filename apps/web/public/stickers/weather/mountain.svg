@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="mtg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5D4037"/>
+      <stop offset="100%" stop-color="#3E2723"/>
+    </linearGradient>
+    <linearGradient id="mtg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6D4C41"/>
+      <stop offset="100%" stop-color="#4E342E"/>
+    </linearGradient>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#81D4FA"/>
+      <stop offset="100%" stop-color="#B3E5FC"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="128" height="128" fill="url(#sky2)"/>
+  <polygon points="20,108 64,28 108,108" fill="url(#mtg)" stroke="#3E2723" stroke-width="1.5"/>
+  <polygon points="64,28 56,44 72,44" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.5"/>
+  <polygon points="0,108 42,52 84,108" fill="url(#mtg2)" stroke="#3E2723" stroke-width="1"/>
+  <polygon points="42,52 36,64 48,64" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.5"/>
+  <polygon points="0,108 128,108 128,128 0,128" fill="#2E7D32" opacity="0.4"/>
+  <circle cx="104" cy="24" r="12" fill="#FFF176" opacity="0.8"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bronze3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="40%" stop-color="#B45309"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M40,2 L40,48 L64,62 L88,48 L88,2 Z" fill="#DC2626"/>
+    <path d="M44,2 L44,46 L64,58 L84,46 L84,2 Z" fill="#EF4444"/>
+    <line x1="40" y1="2" x2="40" y2="18" stroke="#B91C1C" stroke-width="4"/>
+    <line x1="88" y1="2" x2="88" y2="18" stroke="#B91C1C" stroke-width="4"/>
+    <circle cx="64" cy="84" r="40" fill="url(#bronze3)" stroke="#78350F" stroke-width="3"/>
+    <circle cx="64" cy="84" r="32" fill="none" stroke="#FEF3C7" stroke-width="2"/>
+    <circle cx="64" cy="84" r="26" fill="none" stroke="#D97706" stroke-width="1"/>
+    <text x="64" y="96" text-anchor="middle" fill="#FEF3C7" font-family="Arial Black,sans-serif" font-size="32" font-weight="bold">3rd</text>
+  </g>
+</svg>

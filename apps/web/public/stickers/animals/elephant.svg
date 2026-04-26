@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="elephantFace" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#B0BEC5"/>
+      <stop offset="100%" stop-color="#78909C"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="36" cy="34" rx="20" ry="24" fill="#90A4AE" stroke="#546E7A" stroke-width="2"/>
+  <ellipse cx="92" cy="34" rx="20" ry="24" fill="#90A4AE" stroke="#546E7A" stroke-width="2"/>
+  <ellipse cx="36" cy="32" rx="12" ry="16" fill="#B0BEC5"/>
+  <ellipse cx="92" cy="32" rx="12" ry="16" fill="#B0BEC5"/>
+  <ellipse cx="64" cy="68" rx="44" ry="42" fill="url(#elephantFace)" stroke="#546E7A" stroke-width="2.5"/>
+  <ellipse cx="48" cy="60" rx="9" ry="10" fill="white"/>
+  <ellipse cx="80" cy="60" rx="9" ry="10" fill="white"/>
+  <ellipse cx="49" cy="61" rx="5" ry="6" fill="#37474F"/>
+  <ellipse cx="81" cy="61" rx="5" ry="6" fill="#37474F"/>
+  <ellipse cx="51" cy="59" rx="2" ry="2.5" fill="white"/>
+  <ellipse cx="83" cy="59" rx="2" ry="2.5" fill="white"/>
+  <path d="M52 80Q48 96 54 104Q58 108 56 96Q56 90 60 84" fill="#90A4AE" stroke="#546E7A" stroke-width="2"/>
+  <path d="M76 80Q80 96 74 104Q70 108 72 96Q72 90 68 84" fill="#90A4AE" stroke="#546E7A" stroke-width="2"/>
+  <path d="M50 96Q52 100 54 96" fill="none" stroke="#546E7A" stroke-width="1" stroke-linecap="round"/>
+  <path d="M74 96Q76 100 78 96" fill="none" stroke="#546E7A" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="42" cy="76" r="4" fill="#B0BEC5" opacity="0.5"/>
+  <circle cx="86" cy="76" r="4" fill="#B0BEC5" opacity="0.5"/>
+  <ellipse cx="64" cy="70" rx="20" ry="8" fill="#CFD8DC" opacity="0.3"/>
+</svg>

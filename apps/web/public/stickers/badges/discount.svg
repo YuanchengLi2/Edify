@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="discGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48"/>
+      <stop offset="100%" stop-color="#BE123C"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="56" fill="url(#discGrad)"/>
+    <circle cx="64" cy="64" r="50" fill="none" stroke="#FFF1F2" stroke-width="2"/>
+    <circle cx="64" cy="64" r="46" fill="none" stroke="#FECDD3" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="64" y="52" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="28" font-weight="bold">50%</text>
+    <text x="64" y="78" text-anchor="middle" fill="#FFF1F2" font-family="Arial Black,sans-serif" font-size="20" font-weight="bold" letter-spacing="2">OFF</text>
+    <line x1="36" y1="60" x2="92" y2="60" stroke="#FFF1F2" stroke-width="1.5" opacity="0.5"/>
+  </g>
+</svg>

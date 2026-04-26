@@ -12,6 +12,7 @@ import {
 	intensityToSigma,
 } from "@/lib/effects/definitions/blur";
 import { effectsRegistry, resolveEffectPasses } from "@/lib/effects";
+import { isCanvasFilterEffectType } from "@/lib/effects/canvas-filters";
 import type { Effect, EffectPass } from "@/lib/effects/types";
 import { getSourceTimeAtClipTime } from "@/lib/retime";
 import { DEFAULT_GRAPHIC_SOURCE_SIZE } from "@/lib/graphics";
@@ -27,7 +28,10 @@ import {
 	type BackdropSource,
 	type ResolvedBlurBackgroundNodeState,
 } from "./nodes/blur-background-node";
-import { EffectLayerNode, type ResolvedEffectLayerNodeState } from "./nodes/effect-layer-node";
+import {
+	EffectLayerNode,
+	type ResolvedEffectLayerNodeState,
+} from "./nodes/effect-layer-node";
 import {
 	GraphicNode,
 	type ResolvedGraphicNodeState,
@@ -36,11 +40,17 @@ import { ImageNode, loadImageSource } from "./nodes/image-node";
 import { StickerNode, loadStickerSource } from "./nodes/sticker-node";
 import { TextNode, type ResolvedTextNodeState } from "./nodes/text-node";
 import { VideoNode } from "./nodes/video-node";
+import {
+	GlobalMaskNode,
+	type ResolvedGlobalMaskNodeState,
+} from "./nodes/global-mask-node";
 import type {
 	ResolvedVisualNodeState,
 	ResolvedVisualSourceNodeState,
 	VisualNodeParams,
 } from "./nodes/visual-node";
+import { TICKS_PER_SECOND } from "@/lib/wasm";
+import { getRenderableMask } from "@/lib/masks/browser-and-visibility";
 
 type ResolveContext = {
 	renderer: CanvasRenderer;
@@ -86,6 +96,8 @@ async function resolveNode({
 		node.resolved = await resolveBlurBackgroundNode({ node, context });
 	} else if (node instanceof EffectLayerNode) {
 		node.resolved = resolveEffectLayerNode({ node, context });
+	} else if (node instanceof GlobalMaskNode) {
+		node.resolved = resolveGlobalMaskNode({ node, context });
 	}
 
 	await Promise.all(
@@ -107,7 +119,9 @@ function resolveEffectPassGroups({
 	height: number;
 }): EffectPass[][] {
 	return (effects ?? [])
-		.filter((effect) => effect.enabled)
+		.filter(
+			(effect) => effect.enabled && !isCanvasFilterEffectType(effect.type),
+		)
 		.map((effect) => {
 			const resolvedParams = resolveEffectParamsAtTime({
 				effect,
@@ -232,7 +246,10 @@ async function resolveImageNode({
 	node: ImageNode;
 	context: ResolveContext;
 }): Promise<ResolvedVisualSourceNodeState | null> {
-	const source = await loadImageSource(node.params.url, node.params.maxSourceSize);
+	const source = await loadImageSource(
+		node.params.url,
+		node.params.maxSourceSize,
+	);
 	const visualState = resolveVisualState({
 		params: node.params,
 		context,
@@ -325,6 +342,8 @@ function resolveTextNode({
 		elementDuration: node.params.duration,
 	});
 
+	const localTimeSeconds = localTime / TICKS_PER_SECOND;
+
 	return {
 		transform: resolveTransformAtTime({
 			baseTransform: node.params.transform,
@@ -342,6 +361,8 @@ function resolveTextNode({
 			propertyPath: "color",
 			localTime,
 		}),
+		strokeColor: node.params.strokeColor ?? "#000000",
+		strokeWidth: node.params.strokeWidth ?? 0,
 		backgroundColor: resolveColorAtTime({
 			baseColor: node.params.background.color,
 			animations: node.params.animations,
@@ -361,6 +382,8 @@ function resolveTextNode({
 			localTime,
 			ctx: getTextMeasurementContext(),
 		}),
+		localTimeSeconds,
+		captionStyle: node.params.captionStyle,
 	};
 }
 
@@ -451,6 +474,10 @@ function resolveEffectLayerNode({
 		return null;
 	}
 
+	if (isCanvasFilterEffectType(node.params.effectType)) {
+		return null;
+	}
+
 	const definition = effectsRegistry.get(node.params.effectType);
 	const passes = resolveEffectPasses({
 		definition,
@@ -464,5 +491,26 @@ function resolveEffectLayerNode({
 
 	return {
 		passes,
+	};
+}
+
+function resolveGlobalMaskNode({
+	node,
+	context,
+}: {
+	node: GlobalMaskNode;
+	context: ResolveContext;
+}): ResolvedGlobalMaskNodeState {
+	const clipTime = context.time - node.params.timeOffset;
+	const active = clipTime >= 0 && clipTime < node.params.duration;
+
+	return {
+		active,
+		renderableMask: active
+			? getRenderableMask({
+					masks: node.params.masks,
+					activeMaskId: node.params.activeMaskId,
+				})
+			: null,
 	};
 }

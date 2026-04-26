@@ -9,6 +9,7 @@ import { glitchEffectDefinition } from "./glitch";
 import { zoomPunchEffectDefinition } from "./zoom-punch";
 import { blurBackgroundEffectDefinition } from "./blur-background";
 import { clarityEffectDefinition } from "./clarity";
+import { presetPackEffectDefinitions } from "./preset-pack";
 
 const defaultEffects = [
 	blurEffectDefinition,
@@ -21,6 +22,7 @@ const defaultEffects = [
 	zoomPunchEffectDefinition,
 	blurBackgroundEffectDefinition,
 	clarityEffectDefinition,
+	...presetPackEffectDefinitions,
 ];
 
 export function registerDefaultEffects(): void {

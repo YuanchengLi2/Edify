@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#E11D48"/>
+    </linearGradient>
+    <filter id="s"><feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/></filter>
+  </defs>
+  <g filter="url(#s)">
+    <polygon points="16,36 88,36 104,64 88,92 16,92" fill="url(#g)" stroke="#BE123C" stroke-width="1.5"/>
+    <polygon points="104,36 120,64 104,92 96,64" fill="#FB7185" stroke="#BE123C" stroke-width="1.5"/>
+    <path d="M88,36 L104,36 L120,64 L104,92 L88,92" fill="none" stroke="#FFF1F2" stroke-width="1" opacity="0.3"/>
+    <rect x="16" y="36" width="72" height="6" fill="#FFF1F2" opacity="0.3" rx="1"/>
+  </g>
+</svg>

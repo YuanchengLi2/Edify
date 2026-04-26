@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePreviewViewport } from "@/components/editor/panels/preview/preview-viewport";
 import type { OnSnapLinesChange } from "@/hooks/use-preview-interaction";
 import { useEditor } from "@/hooks/use-editor";
@@ -24,18 +24,15 @@ import {
 	setChannel,
 } from "@/lib/animation";
 import type { Transform } from "@/lib/rendering";
-import type { ElementAnimations } from "@/lib/animation/types";
+import type { ElementAnimations, AnimationPath } from "@/lib/animation/types";
+import type { TimelineElement } from "@/lib/timeline";
 import { registerCanceller } from "@/lib/cancel-interaction";
 
 type Corner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 type Edge = "right" | "left" | "bottom";
 type HandleType = Corner | Edge | "rotation";
 
-function getPreferredEdge({
-	edge,
-}: {
-	edge: Edge;
-}): ScaleEdgePreference {
+function getPreferredEdge({ edge }: { edge: Edge }): ScaleEdgePreference {
 	return edge === "right"
 		? { right: true }
 		: edge === "left"
@@ -52,6 +49,8 @@ interface ScaleState {
 	initialBoundsCy: number;
 	baseWidth: number;
 	baseHeight: number;
+	finalScaleX: number;
+	finalScaleY: number;
 	shouldClearScaleAnimation: boolean;
 	animationsWithoutScale: ElementAnimations | undefined;
 }
@@ -60,6 +59,7 @@ interface RotationState {
 	trackId: string;
 	elementId: string;
 	initialTransform: Transform;
+	finalRotate: number;
 	initialAngle: number;
 	initialBoundsCx: number;
 	initialBoundsCy: number;
@@ -69,6 +69,8 @@ interface EdgeScaleState {
 	trackId: string;
 	elementId: string;
 	initialTransform: Transform;
+	finalScaleX: number;
+	finalScaleY: number;
 	initialBoundsCx: number;
 	initialBoundsCy: number;
 	baseWidth: number;
@@ -130,6 +132,12 @@ export function useTransformHandles({
 	const captureRef = useRef<{ element: HTMLElement; pointerId: number } | null>(
 		null,
 	);
+	const pendingPreviewUpdatesRef = useRef<Array<{
+		trackId: string;
+		elementId: string;
+		updates: Partial<TimelineElement>;
+	}> | null>(null);
+	const pendingPreviewFrameRef = useRef<number | null>(null);
 
 	const selectedElements = useEditor((e) => e.selection.getSelectedElements());
 	const tracks = useEditor(
@@ -143,12 +151,16 @@ export function useTransformHandles({
 		(e) => e.project.getActive().settings.canvasSize,
 	);
 
-	const elementsWithBounds = getVisibleElementsWithBounds({
-		tracks,
-		currentTime,
-		canvasSize,
-		mediaAssets,
-	});
+	const elementsWithBounds = useMemo(
+		() =>
+			getVisibleElementsWithBounds({
+				tracks,
+				currentTime,
+				canvasSize,
+				mediaAssets,
+			}),
+		[tracks, currentTime, canvasSize, mediaAssets],
+	);
 
 	const selectedWithBounds: ElementWithBounds | null =
 		selectedElements.length === 1
@@ -181,17 +193,71 @@ export function useTransformHandles({
 		captureRef.current = null;
 	}, []);
 
+	const clearScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		pendingPreviewUpdatesRef.current = null;
+	}, []);
+
+	const flushScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		const pendingUpdates = pendingPreviewUpdatesRef.current;
+		pendingPreviewUpdatesRef.current = null;
+		if (pendingUpdates && pendingUpdates.length > 0) {
+			editor.timeline.previewElements({ updates: pendingUpdates });
+		}
+	}, [editor.timeline]);
+
+	const schedulePreviewElements = useCallback(
+		(
+			updates: Array<{
+				trackId: string;
+				elementId: string;
+				updates: Partial<TimelineElement>;
+			}>,
+		) => {
+			pendingPreviewUpdatesRef.current = updates;
+			if (pendingPreviewFrameRef.current !== null) {
+				return;
+			}
+
+			pendingPreviewFrameRef.current = requestAnimationFrame(() => {
+				pendingPreviewFrameRef.current = null;
+				const pendingUpdates = pendingPreviewUpdatesRef.current;
+				pendingPreviewUpdatesRef.current = null;
+				if (pendingUpdates && pendingUpdates.length > 0) {
+					editor.timeline.previewElements({ updates: pendingUpdates });
+				}
+			});
+		},
+		[editor.timeline],
+	);
+
+	useEffect(() => () => clearScheduledPreview(), [clearScheduledPreview]);
+
 	useEffect(() => {
 		if (!activeHandle) return;
 
 		return registerCanceller({
 			fn: () => {
+				clearScheduledPreview();
 				editor.timeline.discardPreview();
 				clearActiveHandleState();
 				releaseCapturedPointer();
 			},
 		});
-	}, [activeHandle, clearActiveHandleState, editor.timeline, releaseCapturedPointer]);
+	}, [
+		clearScheduledPreview,
+		activeHandle,
+		clearActiveHandleState,
+		editor.timeline,
+		releaseCapturedPointer,
+	]);
 
 	const handleCornerPointerDown = useCallback(
 		({ event, corner }: { event: React.PointerEvent; corner: Corner }) => {
@@ -240,6 +306,8 @@ export function useTransformHandles({
 				trackId,
 				elementId,
 				initialTransform: resolvedTransform,
+				finalScaleX: resolvedTransform.scaleX,
+				finalScaleY: resolvedTransform.scaleY,
 				initialDistance,
 				initialBoundsCx: bounds.cx,
 				initialBoundsCy: bounds.cy,
@@ -291,6 +359,7 @@ export function useTransformHandles({
 				trackId,
 				elementId,
 				initialTransform: resolvedTransform,
+				finalRotate: resolvedTransform.rotate,
 				initialAngle,
 				initialBoundsCx: bounds.cx,
 				initialBoundsCy: bounds.cy,
@@ -333,11 +402,10 @@ export function useTransformHandles({
 				edge === "right" || edge === "left"
 					? "transform.scaleX"
 					: "transform.scaleY";
-			const shouldClearScaleAnimation =
-				hasKeyframesForPath({
-					animations: element.animations,
-					propertyPath,
-				});
+			const shouldClearScaleAnimation = hasKeyframesForPath({
+				animations: element.animations,
+				propertyPath,
+			});
 			const animationsWithoutScale = shouldClearScaleAnimation
 				? setChannel({
 						animations: element.animations,
@@ -350,6 +418,8 @@ export function useTransformHandles({
 				trackId,
 				elementId,
 				initialTransform: resolvedTransform,
+				finalScaleX: resolvedTransform.scaleX,
+				finalScaleY: resolvedTransform.scaleY,
 				initialBoundsCx: bounds.cx,
 				initialBoundsCy: bounds.cy,
 				baseWidth,
@@ -432,28 +502,32 @@ export function useTransformHandles({
 
 				onSnapLinesChange?.(activeLines);
 
-				editor.timeline.previewElements({
-					updates: [
-						{
-							trackId,
-							elementId,
-							updates: {
-								transform: {
-									...initialTransform,
-									scaleX: clampScaleNonZero(
-										initialTransform.scaleX * snappedFactor,
-									),
-									scaleY: clampScaleNonZero(
-										initialTransform.scaleY * snappedFactor,
-									),
-								},
-								...(shouldClearScaleAnimation && {
-									animations: animationsWithoutScale,
-								}),
+				schedulePreviewElements([
+					{
+						trackId,
+						elementId,
+						updates: {
+							transform: {
+								...initialTransform,
+								scaleX: clampScaleNonZero(
+									initialTransform.scaleX * snappedFactor,
+								),
+								scaleY: clampScaleNonZero(
+									initialTransform.scaleY * snappedFactor,
+								),
 							},
+							...(shouldClearScaleAnimation && {
+								animations: animationsWithoutScale,
+							}),
 						},
-					],
-				});
+					},
+				]);
+				scaleStateRef.current.finalScaleX = clampScaleNonZero(
+					initialTransform.scaleX * snappedFactor,
+				);
+				scaleStateRef.current.finalScaleY = clampScaleNonZero(
+					initialTransform.scaleY * snappedFactor,
+				);
 				return;
 			}
 
@@ -533,30 +607,34 @@ export function useTransformHandles({
 					edge === "right" || edge === "left" ? xSnap : ySnap;
 				onSnapLinesChange?.(relevantSnap.activeLines);
 
-				editor.timeline.previewElements({
-					updates: [
-						{
-							trackId,
-							elementId,
-							updates: {
-								transform: {
-									...initialTransform,
-									scaleX:
-										edge === "right" || edge === "left"
-											? xSnap.snappedScale
-											: initialTransform.scaleX,
-									scaleY:
-										edge === "bottom"
-											? ySnap.snappedScale
-											: initialTransform.scaleY,
-								},
-								...(shouldClearScaleAnimation && {
-									animations: animationsWithoutScale,
-								}),
+				schedulePreviewElements([
+					{
+						trackId,
+						elementId,
+						updates: {
+							transform: {
+								...initialTransform,
+								scaleX:
+									edge === "right" || edge === "left"
+										? xSnap.snappedScale
+										: initialTransform.scaleX,
+								scaleY:
+									edge === "bottom"
+										? ySnap.snappedScale
+										: initialTransform.scaleY,
 							},
+							...(shouldClearScaleAnimation && {
+								animations: animationsWithoutScale,
+							}),
 						},
-					],
-				});
+					},
+				]);
+				edgeScaleStateRef.current.finalScaleX =
+					edge === "right" || edge === "left"
+						? xSnap.snappedScale
+						: initialTransform.scaleX;
+				edgeScaleStateRef.current.finalScaleY =
+					edge === "bottom" ? ySnap.snappedScale : initialTransform.scaleY;
 				return;
 			}
 
@@ -581,42 +659,124 @@ export function useTransformHandles({
 					? { snappedRotation: newRotate }
 					: snapRotation({ proposedRotation: newRotate });
 
-				editor.timeline.previewElements({
-					updates: [
-						{
-							trackId,
-							elementId,
-							updates: {
-								transform: { ...initialTransform, rotate: snappedRotation },
-							},
+				schedulePreviewElements([
+					{
+						trackId,
+						elementId,
+						updates: {
+							transform: { ...initialTransform, rotate: snappedRotation },
 						},
-					],
-				});
+					},
+				]);
+				rotationStateRef.current.finalRotate = snappedRotation;
 			}
 		},
 		[
 			activeHandle,
 			canvasSize,
-			editor,
 			isShiftHeldRef,
 			onSnapLinesChange,
+			schedulePreviewElements,
 			viewport,
 		],
 	);
 
 	const handlePointerUp = useCallback(() => {
-			if (
-				scaleStateRef.current ||
-				rotationStateRef.current ||
-				edgeScaleStateRef.current
-			) {
-				editor.timeline.commitPreview();
-				clearActiveHandleState();
+		const scaleState = scaleStateRef.current;
+		const rotationState = rotationStateRef.current;
+		const edgeScaleState = edgeScaleStateRef.current;
+
+		if (scaleState || rotationState || edgeScaleState) {
+			flushScheduledPreview();
+			editor.timeline.discardPreview();
+
+			const activeState = scaleState ?? rotationState ?? edgeScaleState;
+			if (activeState) {
+				const element = editor.timeline.getElementsWithTracks({
+					elements: [
+						{
+							trackId: activeState.trackId,
+							elementId: activeState.elementId,
+						},
+					],
+				})[0]?.element;
+				if (element && isVisualElement(element)) {
+					const currentTime = editor.playback.getCurrentTime();
+					const localTime = getElementLocalTime({
+						timelineTime: currentTime,
+						elementStartTime: element.startTime,
+						elementDuration: element.duration,
+					});
+					if (localTime >= 0) {
+						const keyframes: Array<{
+							trackId: string;
+							elementId: string;
+							propertyPath: AnimationPath;
+							time: number;
+							value: number;
+						}> = [];
+						if (scaleState) {
+							keyframes.push(
+								{
+									trackId: activeState.trackId,
+									elementId: activeState.elementId,
+									propertyPath: "transform.scaleX",
+									time: localTime,
+									value: scaleState.finalScaleX,
+								},
+								{
+									trackId: activeState.trackId,
+									elementId: activeState.elementId,
+									propertyPath: "transform.scaleY",
+									time: localTime,
+									value: scaleState.finalScaleY,
+								},
+							);
+						} else if (edgeScaleState) {
+							keyframes.push(
+								{
+									trackId: activeState.trackId,
+									elementId: activeState.elementId,
+									propertyPath: "transform.scaleX",
+									time: localTime,
+									value: edgeScaleState.finalScaleX,
+								},
+								{
+									trackId: activeState.trackId,
+									elementId: activeState.elementId,
+									propertyPath: "transform.scaleY",
+									time: localTime,
+									value: edgeScaleState.finalScaleY,
+								},
+							);
+						}
+						if (rotationState) {
+							keyframes.push({
+								trackId: activeState.trackId,
+								elementId: activeState.elementId,
+								propertyPath: "transform.rotate",
+								time: localTime,
+								value: rotationState.finalRotate,
+							});
+						}
+						if (keyframes.length > 0) {
+							editor.timeline.upsertKeyframes({ keyframes });
+						}
+					}
+				}
 			}
-			releaseCapturedPointer();
-		},
-		[clearActiveHandleState, editor, releaseCapturedPointer],
-	);
+
+			clearScheduledPreview();
+			clearActiveHandleState();
+		}
+		releaseCapturedPointer();
+	}, [
+		clearActiveHandleState,
+		clearScheduledPreview,
+		editor,
+		flushScheduledPreview,
+		releaseCapturedPointer,
+	]);
 
 	return {
 		selectedWithBounds,

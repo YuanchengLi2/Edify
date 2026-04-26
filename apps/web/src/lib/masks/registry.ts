@@ -1,6 +1,10 @@
 import { MAX_FEATHER } from "@/lib/masks/feather";
 import type { ParamDefinition } from "@/lib/params";
-import type { BaseMaskParams, MaskDefinition, MaskType } from "@/lib/masks/types";
+import type {
+	BaseMaskParams,
+	MaskDefinition,
+	MaskType,
+} from "@/lib/masks/types";
 import type { HugeiconsIconProps } from "@hugeicons/react";
 import { DefinitionRegistry } from "@/lib/registry";
 
@@ -21,6 +25,21 @@ const BASE_MASK_PARAM_DEFINITIONS: ParamDefinition<
 		max: MAX_FEATHER,
 		step: 1,
 		unit: "percent",
+	},
+	{
+		key: "fillOpacity",
+		label: "Fill Opacity",
+		type: "number",
+		default: 0,
+		min: 0,
+		max: 100,
+		step: 1,
+	},
+	{
+		key: "fillColor",
+		label: "Fill Color",
+		type: "color",
+		default: "#000000",
 	},
 	{
 		key: "strokeWidth",

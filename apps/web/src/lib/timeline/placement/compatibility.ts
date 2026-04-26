@@ -2,6 +2,7 @@ import type { ElementType, TrackType } from "@/lib/timeline";
 
 const ELEMENT_TRACK_MAP: Record<ElementType, TrackType> = {
 	audio: "audio",
+	mask: "mask",
 	text: "text",
 	sticker: "graphic",
 	graphic: "graphic",

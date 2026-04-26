@@ -7,10 +7,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useReducer, useRef, useState } from "react";
-import { extractTimelineAudio } from "@/lib/media/mediabunny";
+import { useReducer, useRef, useState, useEffect } from "react";
 import { useEditor } from "@/hooks/use-editor";
-import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/lib/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/lib/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/lib/transcription/supported-languages";
 import type {
@@ -18,11 +16,12 @@ import type {
 	TranscriptionLanguage,
 	TranscriptionProgress,
 } from "@/lib/transcription/types";
+import type { SubtitleCue } from "@/lib/subtitles/types";
 import { transcriptionService } from "@/services/transcription/service";
-import { decodeAudioToFloat32 } from "@/lib/media/audio";
 import { buildCaptionChunks } from "@/lib/transcription/caption";
 import { insertCaptionChunksAsTextTrack } from "@/lib/subtitles/insert";
 import { parseSubtitleFile } from "@/lib/subtitles/parse";
+import type { EditorCore } from "@/core";
 import { Spinner } from "@/components/ui/spinner";
 import {
 	Section,
@@ -30,39 +29,86 @@ import {
 	SectionField,
 	SectionFields,
 } from "@/components/section";
-import { AlertCircleIcon, CloudUploadIcon } from "@hugeicons/core-free-icons";
+import { CloudUploadIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { DiagnosticSeverity } from "@/lib/diagnostics/types";
-
-const DIAGNOSTIC_BUTTON_VARIANT: Record<
-	DiagnosticSeverity,
-	"caution" | "destructive-foreground"
-> = {
-	caution: "caution",
-	error: "destructive-foreground",
-};
+	type CaptionStyle,
+	type CaptionPreset,
+	getDefaultCaptionPreset,
+	presetToSubtitleStyle,
+} from "@/lib/captions";
+import { loadFonts } from "@/lib/fonts/google-fonts";
+import { collectAudibleCandidates } from "@/lib/media/audio";
+import { extractTimelineAudio } from "@/lib/media/mediabunny";
 
 type ProcessingState =
 	| { status: "idle"; error: string | null; warnings: string[] }
-	| { status: "processing"; step: string };
+	| { status: "processing"; step: string }
+	| { status: "confirm-overwrite" };
 
 type ProcessingAction =
 	| { type: "start"; step: string }
 	| { type: "update_step"; step: string }
 	| { type: "succeed"; warnings: string[] }
-	| { type: "fail"; error: string };
+	| { type: "fail"; error: string }
+	| { type: "confirm_overwrite" }
+	| { type: "cancel_overwrite" };
 
 const IDLE_STATE: ProcessingState = {
 	status: "idle",
 	error: null,
 	warnings: [],
 };
+
+function buildApproximateCaptionChunks({
+	text,
+	durationSeconds,
+	chunkMode,
+}: {
+	text: string;
+	durationSeconds: number;
+	chunkMode: "single" | "short" | "sentence";
+}): CaptionChunk[] {
+	const words = text
+		.trim()
+		.split(/\s+/)
+		.filter((word) => word.length > 0);
+	if (words.length === 0 || durationSeconds <= 0) {
+		return [];
+	}
+
+	const chunkSize = chunkMode === "single" ? 1 : chunkMode === "short" ? 3 : 4;
+	const groups: string[][] = [];
+	for (let index = 0; index < words.length; index += chunkSize) {
+		groups.push(words.slice(index, index + chunkSize));
+	}
+
+	const chunkDuration = Math.max(0.8, durationSeconds / groups.length);
+	return groups.map((group, index) => {
+		const startTime = index * chunkDuration;
+		const endTime = Math.min(durationSeconds, startTime + chunkDuration);
+		const localWordDuration = Math.max(
+			0.12,
+			(endTime - startTime) / group.length,
+		);
+		return {
+			text: group.join(" "),
+			startTime,
+			duration: Math.max(0.4, endTime - startTime),
+			wordTimings: group.map((word, wordIndex) => ({
+				word,
+				start: wordIndex * localWordDuration,
+				end: Math.min(endTime - startTime, (wordIndex + 1) * localWordDuration),
+			})),
+		};
+	});
+}
+
+function hasExistingCaptionTracks(editor: EditorCore): boolean {
+	const tracks = editor.scenes.getActiveScene().tracks;
+	const textTracks = tracks.overlay.filter((t) => t.type === "text");
+	return textTracks.some((t) => t.elements.length > 0);
+}
 
 function processingReducer(
 	state: ProcessingState,
@@ -78,6 +124,10 @@ function processingReducer(
 			return { status: "idle", error: null, warnings: action.warnings };
 		case "fail":
 			return { status: "idle", error: action.error, warnings: [] };
+		case "confirm_overwrite":
+			return { status: "confirm-overwrite" };
+		case "cancel_overwrite":
+			return IDLE_STATE;
 	}
 }
 
@@ -85,61 +135,150 @@ export function Captions() {
 	const [selectedLanguage, setSelectedLanguage] =
 		useState<TranscriptionLanguage>("auto");
 	const [processing, dispatch] = useReducer(processingReducer, IDLE_STATE);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const editor = useEditor();
+	const replaceModeRef = useRef(false);
+	const selectedPreset: CaptionPreset = getDefaultCaptionPreset();
 
 	const isProcessing = processing.status === "processing";
+	const isConfirmOverwrite = processing.status === "confirm-overwrite";
 
-	const activeDiagnostics = useEditor((e) =>
-		e.diagnostics.getActive({ scope: TRANSCRIPTION_DIAGNOSTICS_SCOPE }),
-	);
+	useEffect(() => {
+		transcriptionService.preload();
+	}, []);
 
 	const handleProgress = (progress: TranscriptionProgress) => {
 		if (progress.status === "loading-model") {
 			dispatch({
 				type: "update_step",
-				step: `Loading model ${Math.round(progress.progress)}%`,
+				step:
+					progress.message ?? `Loading model ${Math.round(progress.progress)}%`,
 			});
 		} else if (progress.status === "transcribing") {
 			dispatch({ type: "update_step", step: "Transcribing..." });
 		}
 	};
 
-	const insertCaptions = ({
+	const buildCaptionStyle = (): CaptionStyle | undefined => {
+		return {
+			presetId: selectedPreset.id,
+			chunkMode: selectedPreset.chunkMode,
+			category: selectedPreset.category,
+			highlightColor: selectedPreset.style.highlightColor,
+			highlightMode: selectedPreset.style.highlightMode,
+			wordTimings: [],
+			wordAnimation: selectedPreset.style.wordAnimation,
+			wordAnimationDuration: selectedPreset.style.wordAnimationDuration,
+			wordColorPalette: selectedPreset.style.wordColorPalette,
+			highlightColorPalette: selectedPreset.style.highlightColorPalette,
+		};
+	};
+
+	const insertCaptions = async ({
 		captions,
+		replaceExisting = false,
 	}: {
 		captions: CaptionChunk[];
-	}): boolean => {
-		const trackId = insertCaptionChunksAsTextTrack({ editor, captions });
+		replaceExisting?: boolean;
+	}): Promise<boolean> => {
+		await loadFonts({ families: [selectedPreset.style.fontFamily] });
+		const captionStyle = buildCaptionStyle();
+		const styleOverrides = presetToSubtitleStyle(selectedPreset);
+		const styledCaptions: SubtitleCue[] = captions.map((c) => ({
+			...c,
+			style: { ...styleOverrides },
+		}));
+		const trackId = insertCaptionChunksAsTextTrack({
+			editor,
+			captions: styledCaptions,
+			captionStyle,
+			replaceExisting,
+		});
 		return trackId !== null;
+	};
+
+	const handleGenerateClick = () => {
+		if (hasExistingCaptionTracks(editor)) {
+			replaceModeRef.current = true;
+			dispatch({ type: "confirm_overwrite" });
+			return;
+		}
+		replaceModeRef.current = false;
+		void handleGenerateTranscript();
 	};
 
 	const handleGenerateTranscript = async () => {
 		dispatch({ type: "start", step: "Extracting audio..." });
 		try {
+			const tracks = editor.scenes.getActiveScene().tracks;
+			const mediaAssets = editor.media.getAssets();
+			const candidates = collectAudibleCandidates({ tracks, mediaAssets });
+
+			if (candidates.length === 0) {
+				dispatch({
+					type: "fail",
+					error:
+						"No audio found on the timeline. Add a video or audio clip with audio first.",
+				});
+				return;
+			}
+
+			dispatch({ type: "update_step", step: "Mixing timeline audio..." });
+
 			const audioBlob = await extractTimelineAudio({
-				tracks: editor.scenes.getActiveScene().tracks,
-				mediaAssets: editor.media.getAssets(),
+				tracks,
+				mediaAssets,
 				totalDuration: editor.timeline.getTotalDuration(),
 			});
 
-			dispatch({ type: "update_step", step: "Preparing audio..." });
-			const { samples } = await decodeAudioToFloat32({
-				audioBlob,
+			dispatch({ type: "update_step", step: "Decoding timeline audio..." });
+
+			const audioContext = new AudioContext({
 				sampleRate: DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
 			});
+			const arrayBuffer = await audioBlob.arrayBuffer();
+			const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+			const numChannels = audioBuffer.numberOfChannels;
+			const length = audioBuffer.length;
+			const samples = new Float32Array(length);
+			for (let i = 0; i < length; i++) {
+				let sum = 0;
+				for (let ch = 0; ch < numChannels; ch++) {
+					sum += audioBuffer.getChannelData(ch)[i];
+				}
+				samples[i] = sum / numChannels;
+			}
+			const audioDurationSeconds = length / audioBuffer.sampleRate;
+			await audioContext.close();
 
 			const result = await transcriptionService.transcribe({
 				audioData: samples,
+				sampleRate: audioBuffer.sampleRate,
 				language: selectedLanguage === "auto" ? undefined : selectedLanguage,
 				onProgress: handleProgress,
 			});
 
 			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildCaptionChunks({ segments: result.segments });
+			let captionChunks = buildCaptionChunks({
+				segments: result.segments,
+				words: result.words,
+				chunkMode: selectedPreset.chunkMode,
+			});
 
-			if (!insertCaptions({ captions: captionChunks })) {
+			if (captionChunks.length === 0 && result.text.trim().length > 0) {
+				captionChunks = buildApproximateCaptionChunks({
+					text: result.text,
+					durationSeconds: audioDurationSeconds,
+					chunkMode: selectedPreset.chunkMode,
+				});
+			}
+
+			if (
+				!(await insertCaptions({
+					captions: captionChunks,
+					replaceExisting: replaceModeRef.current,
+				}))
+			) {
 				dispatch({ type: "fail", error: "No captions were generated" });
 				return;
 			}
@@ -180,7 +319,12 @@ export function Captions() {
 
 			dispatch({ type: "update_step", step: "Importing subtitles..." });
 
-			if (!insertCaptions({ captions: result.captions })) {
+			if (
+				!(await insertCaptions({
+					captions: result.captions,
+					replaceExisting: true,
+				}))
+			) {
 				dispatch({ type: "fail", error: "No captions were generated" });
 				return;
 			}
@@ -232,49 +376,16 @@ export function Captions() {
 		setSelectedLanguage(matchedLanguage.code);
 	};
 
+	const handleCancel = () => {
+		transcriptionService.cancel();
+		dispatch({ type: "fail", error: "Cancelled" });
+	};
+
 	const error = processing.status === "idle" ? processing.error : null;
 	const warnings = processing.status === "idle" ? processing.warnings : [];
 
 	return (
-		<PanelView
-			title="Captions"
-			contentClassName="px-0 flex flex-col h-full"
-			actions={
-				<TooltipProvider>
-					<div className="flex items-center gap-1.5">
-						{!isProcessing &&
-							activeDiagnostics.map((diagnostic) => (
-								<Tooltip key={diagnostic.id}>
-									<TooltipTrigger asChild>
-										<Button
-											variant={DIAGNOSTIC_BUTTON_VARIANT[diagnostic.severity]}
-											size="icon"
-											aria-label={diagnostic.message}
-										>
-											<HugeiconsIcon icon={AlertCircleIcon} size={16} />
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>
-										{diagnostic.message}
-									</TooltipContent>
-								</Tooltip>
-							))}
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							onClick={handleImportClick}
-							disabled={isProcessing}
-							className="items-center justify-center gap-1.5"
-						>
-							<HugeiconsIcon icon={CloudUploadIcon} />
-							Import
-						</Button>
-					</div>
-				</TooltipProvider>
-			}
-			ref={containerRef}
-		>
+		<PanelView title="Captions" contentClassName="px-0 flex flex-col h-full">
 			<input
 				ref={fileInputRef}
 				type="file"
@@ -287,7 +398,7 @@ export function Captions() {
 				showBottomBorder={false}
 				className="flex-1"
 			>
-				<SectionContent className="flex flex-col gap-4 h-full pt-1">
+				<SectionContent className="flex flex-col gap-3 h-full pt-1">
 					<SectionFields>
 						<SectionField label="Language">
 							<Select
@@ -309,15 +420,62 @@ export function Captions() {
 						</SectionField>
 					</SectionFields>
 
-					<Button
-						type="button"
-						className="mt-auto w-full"
-						onClick={handleGenerateTranscript}
-						disabled={isProcessing || activeDiagnostics.length > 0}
-					>
-						{isProcessing && <Spinner className="mr-1" />}
-						{isProcessing ? processing.step : "Generate transcript"}
-					</Button>
+					<div className="flex gap-2">
+						<Button
+							type="button"
+							className="flex-1"
+							onClick={isProcessing ? handleCancel : handleGenerateClick}
+							variant={isProcessing ? "destructive" : "default"}
+						>
+							{isProcessing && <Spinner className="mr-1" />}
+							{isProcessing ? "Cancel" : "Generate captions"}
+						</Button>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							onClick={handleImportClick}
+							disabled={isProcessing}
+							className="shrink-0"
+							aria-label="Import subtitle file"
+						>
+							<HugeiconsIcon icon={CloudUploadIcon} size={16} />
+						</Button>
+					</div>
+
+					{isProcessing && (
+						<p className="text-muted-foreground text-xs text-center">
+							{processing.status === "processing" ? processing.step : ""}
+						</p>
+					)}
+
+					{isConfirmOverwrite && (
+						<div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 space-y-2">
+							<p className="text-sm text-amber-700">
+								Existing captions found. Replace them?
+							</p>
+							<div className="flex gap-2">
+								<Button
+									type="button"
+									size="sm"
+									onClick={() => {
+										void handleGenerateTranscript();
+									}}
+								>
+									Replace
+								</Button>
+								<Button
+									type="button"
+									size="sm"
+									variant="outline"
+									onClick={() => dispatch({ type: "cancel_overwrite" })}
+								>
+									Cancel
+								</Button>
+							</div>
+						</div>
+					)}
+
 					{error && (
 						<div className="bg-destructive/10 border-destructive/20 rounded-md border p-3">
 							<p className="text-destructive text-sm">{error}</p>

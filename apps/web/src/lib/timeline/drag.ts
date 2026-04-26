@@ -1,4 +1,5 @@
 import type { MaskableElement, VisualElement } from "./types";
+import type { MaskType } from "@/lib/masks/types";
 import type { ParamValues } from "@/lib/params";
 
 interface BaseDragData {
@@ -34,9 +35,15 @@ export interface EffectDragData extends BaseDragData {
 	targetElementTypes: VisualElement["type"][];
 }
 
+export interface MaskDragData extends BaseDragData {
+	type: "mask";
+	maskType: MaskType;
+}
+
 export type TimelineDragData =
 	| MediaDragData
 	| TextDragData
 	| StickerDragData
 	| GraphicDragData
-	| EffectDragData;
+	| EffectDragData
+	| MaskDragData;

@@ -8,6 +8,15 @@ import { rectangleMaskDefinition } from "./rectangle";
 import { splitMaskDefinition } from "./split";
 import { starMaskDefinition } from "./star";
 import {
+	triangleMaskDefinition,
+	hexagonMaskDefinition,
+	octagonMaskDefinition,
+	pentagonMaskDefinition,
+} from "./polygons";
+import { arrowMaskDefinition } from "./arrow";
+import { crossMaskDefinition } from "./cross";
+import { roundedRectMaskDefinition } from "./rounded-rect";
+import {
 	MinusSignIcon,
 	PanelRightDashedIcon,
 	SquareIcon,
@@ -15,6 +24,8 @@ import {
 	FavouriteIcon,
 	DiamondIcon,
 	StarsIcon,
+	PlusSignIcon,
+	ArrowUpIcon,
 } from "@hugeicons/core-free-icons";
 
 function registerDefaultMask<TParams extends BaseMaskParams>({
@@ -59,5 +70,33 @@ export function registerDefaultMasks(): void {
 	registerDefaultMask({
 		definition: starMaskDefinition,
 		icon: { icon: StarsIcon },
+	});
+	registerDefaultMask({
+		definition: triangleMaskDefinition,
+		icon: { icon: FavouriteIcon, strokeWidth: 1 },
+	});
+	registerDefaultMask({
+		definition: hexagonMaskDefinition,
+		icon: { icon: DiamondIcon, strokeWidth: 1 },
+	});
+	registerDefaultMask({
+		definition: octagonMaskDefinition,
+		icon: { icon: CircleIcon, strokeWidth: 1 },
+	});
+	registerDefaultMask({
+		definition: pentagonMaskDefinition,
+		icon: { icon: StarsIcon, strokeWidth: 1 },
+	});
+	registerDefaultMask({
+		definition: arrowMaskDefinition,
+		icon: { icon: ArrowUpIcon },
+	});
+	registerDefaultMask({
+		definition: crossMaskDefinition,
+		icon: { icon: PlusSignIcon },
+	});
+	registerDefaultMask({
+		definition: roundedRectMaskDefinition,
+		icon: { icon: SquareIcon, strokeWidth: 1 },
 	});
 }

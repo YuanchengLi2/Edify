@@ -85,10 +85,7 @@ export function MaskHandles({
 	const onPointerUp = () => handlePointerUp();
 
 	return (
-		<div
-			className="pointer-events-none absolute inset-0 overflow-hidden"
-			aria-hidden
-		>
+		<div className="pointer-events-none absolute inset-0" aria-hidden>
 			{def.overlayShape === "line" && linePoints && (
 				<LineOverlay
 					start={toOverlay({
@@ -106,35 +103,37 @@ export function MaskHandles({
 					onPointerUp={onPointerUp}
 				/>
 			)}
-			{def.overlayShape === "box" && rectangleOutlineProps && (
-				def.buildOverlayPath ? (
-						<>
+			{def.overlayShape === "box" &&
+				rectangleOutlineProps &&
+				(def.buildOverlayPath ? (
+					<>
+						{selectedWithMask.mask.type !== "cinematic-bars" ? (
 							<BoundingBoxOutline {...rectangleOutlineProps} dashed />
-							<ShapeOutline
-								{...rectangleOutlineProps}
-								pathData={def.buildOverlayPath({
-									width: rectangleOutlineProps.outlineWidth,
-									height: rectangleOutlineProps.outlineHeight,
-								})}
-								onPointerDown={(event) =>
-									handlePointerDown({ event, handleId: "position" })
-								}
-								onPointerMove={onPointerMove}
-								onPointerUp={onPointerUp}
-							/>
-						</>
-					) : (
-						<BoundingBoxOutline
+						) : null}
+						<ShapeOutline
 							{...rectangleOutlineProps}
-							cursor="cursor-move"
+							pathData={def.buildOverlayPath({
+								width: rectangleOutlineProps.outlineWidth,
+								height: rectangleOutlineProps.outlineHeight,
+							})}
 							onPointerDown={(event) =>
 								handlePointerDown({ event, handleId: "position" })
 							}
 							onPointerMove={onPointerMove}
 							onPointerUp={onPointerUp}
 						/>
-					)
-			)}
+					</>
+				) : (
+					<BoundingBoxOutline
+						{...rectangleOutlineProps}
+						cursor="cursor-move"
+						onPointerDown={(event) =>
+							handlePointerDown({ event, handleId: "position" })
+						}
+						onPointerMove={onPointerMove}
+						onPointerUp={onPointerUp}
+					/>
+				))}
 			{handlePositions.map((handle) => {
 				const screen = toOverlay({ canvasX: handle.x, canvasY: handle.y });
 

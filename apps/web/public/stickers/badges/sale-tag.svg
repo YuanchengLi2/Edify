@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#BE123C"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M20,16 L88,16 L112,52 L88,88 L20,88 Z" fill="url(#tagGrad)"/>
+    <circle cx="34" cy="52" r="8" fill="none" stroke="#FFF1F2" stroke-width="2.5"/>
+    <circle cx="34" cy="52" r="3" fill="#FFF1F2"/>
+    <line x1="50" y1="30" x2="100" y2="74" stroke="#FFF1F2" stroke-width="1" opacity="0.3"/>
+    <line x1="44" y1="40" x2="96" y2="82" stroke="#FFF1F2" stroke-width="1" opacity="0.2"/>
+    <text x="68" y="48" text-anchor="middle" fill="#FFF1F2" font-family="Arial Black,sans-serif" font-size="14" font-weight="bold">$9.99</text>
+    <text x="68" y="68" text-anchor="middle" fill="#FECDD3" font-family="Arial,sans-serif" font-size="9" letter-spacing="1">SPECIAL PRICE</text>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="trGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="56" r="50" fill="url(#trGrad)"/>
+    <circle cx="64" cy="56" r="44" fill="none" stroke="#D1FAE5" stroke-width="1.5"/>
+    <polygon points="64,16 70,34 88,34 74,44 78,62 64,52 50,62 54,44 40,34 58,34" fill="#FDE68A" stroke="#F59E0B" stroke-width="1"/>
+    <polygon points="64,22 68,34 80,34 70,42 74,54 64,47 54,54 58,42 48,34 60,34" fill="#FEF3C7" opacity="0.4"/>
+    <text x="64" y="80" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="10" font-weight="bold" letter-spacing="2">TOP RATED</text>
+    <text x="64" y="94" text-anchor="middle" fill="#D1FAE5" font-family="Arial,sans-serif" font-size="8" letter-spacing="1">★★★★★</text>
+    <rect x="28" y="100" width="72" height="18" rx="9" fill="#065F46"/>
+    <text x="64" y="113" text-anchor="middle" fill="#D1FAE5" font-family="Arial,sans-serif" font-size="8" font-weight="bold" letter-spacing="1">5.0 / 5.0</text>
+  </g>
+</svg>

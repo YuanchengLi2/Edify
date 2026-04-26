@@ -200,8 +200,21 @@ export class PlaybackManager {
 			return;
 		}
 
+		const ticksPerFrame = fps
+			? Math.round((TICKS_PER_SECOND * fps.denominator) / fps.numerator)
+			: 0;
+		const timeChanged =
+			ticksPerFrame > 0
+				? Math.floor(newTime / ticksPerFrame) !==
+					Math.floor(this.currentTime / ticksPerFrame)
+				: newTime !== this.currentTime;
+
 		this.currentTime = newTime;
-		this.dispatchUpdateEvent(newTime);
+
+		if (timeChanged) {
+			this.dispatchUpdateEvent(newTime);
+		}
+
 		this.playbackTimer = requestAnimationFrame(this.updateTime);
 	};
 

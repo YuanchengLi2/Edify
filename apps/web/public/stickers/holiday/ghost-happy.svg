@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="ghostGrad" cx="0.5" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="100%" stop-color="#e8e8e8"/>
+    </radialGradient>
+  </defs>
+  <path d="M32 50 Q32 16 64 16 Q96 16 96 50 L96 104 Q88 96 80 104 Q72 112 64 104 Q56 96 48 104 Q40 112 32 104 Z" fill="url(#ghostGrad)" stroke="#d0d0d0" stroke-width="2"/>
+  <ellipse cx="50" cy="52" rx="8" ry="10" fill="#2c3e50"/>
+  <ellipse cx="78" cy="52" rx="8" ry="10" fill="#2c3e50"/>
+  <circle cx="50" cy="50" r="3" fill="white"/>
+  <circle cx="78" cy="50" r="3" fill="white"/>
+  <circle cx="48" cy="49" r="1.2" fill="white"/>
+  <circle cx="76" cy="49" r="1.2" fill="white"/>
+  <ellipse cx="64" cy="68" rx="8" ry="6" fill="#2c3e50"/>
+  <path d="M58 66 Q64 62 70 66" fill="none" stroke="#1a252f" stroke-width="1"/>
+  <ellipse cx="64" cy="64" rx="3" ry="2" fill="rgba(255,255,255,0.3)"/>
+  <ellipse cx="40" cy="40" rx="8" ry="3" fill="rgba(255,255,255,0.6)" transform="rotate(-10,40,40)"/>
+  <ellipse cx="88" cy="38" rx="6" ry="2.5" fill="rgba(255,255,255,0.4)" transform="rotate(10,88,38)"/>
+  <path d="M56 76 Q64 82 72 76" fill="none" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

@@ -13,6 +13,7 @@ import {
 	buildStickerElement,
 	buildElementFromMedia,
 	buildEffectElement,
+	buildMaskOverlayElement,
 } from "@/lib/timeline/element-utils";
 import { AddTrackCommand, InsertElementCommand } from "@/lib/commands/timeline";
 import { BatchCommand } from "@/lib/commands";
@@ -24,6 +25,7 @@ import type {
 	GraphicDragData,
 	StickerDragData,
 	EffectDragData,
+	MaskDragData,
 } from "@/lib/timeline/drag";
 
 interface UseTimelineDragDropProps {
@@ -61,6 +63,7 @@ export function useTimelineDragDrop({
 			if (dragData.type === "graphic") return "graphic";
 			if (dragData.type === "sticker") return "sticker";
 			if (dragData.type === "effect") return "effect";
+			if (dragData.type === "mask") return "mask";
 			if (dragData.type === "media") {
 				return dragData.mediaType;
 			}
@@ -81,7 +84,8 @@ export function useTimelineDragDrop({
 				elementType === "text" ||
 				elementType === "graphic" ||
 				elementType === "sticker" ||
-				elementType === "effect"
+				elementType === "effect" ||
+				elementType === "mask"
 			) {
 				return DEFAULT_NEW_ELEMENT_DURATION;
 			}
@@ -89,8 +93,8 @@ export function useTimelineDragDrop({
 				const mediaAssets = editor.media.getAssets();
 				const media = mediaAssets.find((m) => m.id === mediaId);
 				return media?.duration != null
-				? Math.round(media.duration * TICKS_PER_SECOND)
-				: DEFAULT_NEW_ELEMENT_DURATION;
+					? Math.round(media.duration * TICKS_PER_SECOND)
+					: DEFAULT_NEW_ELEMENT_DURATION;
 			}
 			return DEFAULT_NEW_ELEMENT_DURATION;
 		},
@@ -383,6 +387,42 @@ export function useTimelineDragDrop({
 		[editor],
 	);
 
+	const executeMaskDrop = useCallback(
+		({ target, dragData }: { target: DropTarget; dragData: MaskDragData }) => {
+			const canvasSize = editor.project.getActive().settings.canvasSize;
+			const element = buildMaskOverlayElement({
+				maskType: dragData.maskType,
+				startTime: target.xPosition,
+				elementSize: canvasSize,
+			});
+
+			if (target.isNewTrack) {
+				const addTrackCmd = new AddTrackCommand("mask", target.trackIndex);
+				const insertCmd = new InsertElementCommand({
+					element,
+					placement: { mode: "explicit", trackId: addTrackCmd.getTrackId() },
+				});
+				editor.command.execute({
+					command: new BatchCommand([addTrackCmd, insertCmd]),
+				});
+				return;
+			}
+
+			const tracks = [
+				...editor.scenes.getActiveScene().tracks.overlay,
+				editor.scenes.getActiveScene().tracks.main,
+				...editor.scenes.getActiveScene().tracks.audio,
+			];
+			const track = tracks[target.trackIndex];
+			if (!track) return;
+			editor.timeline.insertElement({
+				placement: { mode: "explicit", trackId: track.id },
+				element,
+			});
+		},
+		[editor],
+	);
+
 	const executeEffectDrop = useCallback(
 		({
 			target,
@@ -468,10 +508,10 @@ export function useTimelineDragDrop({
 						});
 						if (!createdAsset) continue;
 
-					const duration =
-						createdAsset.duration != null
-							? Math.round(createdAsset.duration * TICKS_PER_SECOND)
-							: DEFAULT_NEW_ELEMENT_DURATION;
+						const duration =
+							createdAsset.duration != null
+								? Math.round(createdAsset.duration * TICKS_PER_SECOND)
+								: DEFAULT_NEW_ELEMENT_DURATION;
 						const sceneTracks = editor.scenes.getActiveScene().tracks;
 						const currentTime = editor.playback.getCurrentTime();
 						const reuseMainTrackId =
@@ -584,8 +624,16 @@ export function useTimelineDragDrop({
 							target: currentTarget,
 							dragData: dragData as EffectDragData,
 						});
+					} else if (dragData.type === "mask") {
+						executeMaskDrop({
+							target: currentTarget,
+							dragData: dragData as MaskDragData,
+						});
 					} else {
-						executeMediaDrop({ target: currentTarget, dragData });
+						executeMediaDrop({
+							target: currentTarget,
+							dragData: dragData as MediaDragData,
+						});
 					}
 				} else if (hasFiles) {
 					const scrollContainer = tracksScrollRef?.current;
@@ -615,6 +663,7 @@ export function useTimelineDragDrop({
 			executeTextDrop,
 			executeGraphicDrop,
 			executeStickerDrop,
+			executeMaskDrop,
 			executeMediaDrop,
 			executeEffectDrop,
 			executeFileDrop,

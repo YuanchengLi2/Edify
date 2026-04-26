@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <rect x="20" y="30" width="88" height="24" rx="6" fill="#333" stroke="#555" stroke-width="2"/>
+  <rect x="22" y="32" width="84" height="20" rx="5" fill="#1a1a2e"/>
+  <defs>
+    <linearGradient id="hbG" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4CAF50"/>
+      <stop offset="70%" stop-color="#4CAF50"/>
+      <stop offset="70%" stop-color="#E53935"/>
+      <stop offset="100%" stop-color="#E53935"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="34" width="80" height="16" rx="4" fill="url(#hbG)"/>
+  <rect x="24" y="34" width="56" height="8" rx="4" fill="#69F0AE" opacity="0.3"/>
+  <text x="64" y="46" font-family="monospace" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">HP 350/500</text>
+  <rect x="20" y="66" width="88" height="24" rx="6" fill="#333" stroke="#555" stroke-width="2"/>
+  <rect x="22" y="68" width="84" height="20" rx="5" fill="#1a1a2e"/>
+  <rect x="24" y="70" width="28" height="16" rx="4" fill="#E53935"/>
+  <rect x="24" y="70" width="28" height="8" rx="4" fill="#EF5350" opacity="0.3"/>
+  <text x="64" y="82" font-family="monospace" font-size="10" font-weight="bold" fill="#FF8A80" text-anchor="middle">LOW HP!</text>
+  <rect x="20" y="102" width="88" height="16" rx="6" fill="#333" stroke="#555" stroke-width="2"/>
+  <rect x="22" y="104" width="84" height="12" rx="5" fill="#1a1a2e"/>
+  <rect x="24" y="106" width="80" height="8" rx="4" fill="#4CAF50"/>
+  <rect x="24" y="106" width="80" height="4" rx="4" fill="#69F0AE" opacity="0.3"/>
+</svg>

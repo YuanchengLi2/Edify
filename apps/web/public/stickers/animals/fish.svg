@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="fishBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6F00"/>
+      <stop offset="50%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#FF6F00"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="58" cy="64" rx="40" ry="32" fill="url(#fishBody)" stroke="#E65100" stroke-width="2.5"/>
+  <path d="M98 64L120 44L118 64L120 84Z" fill="#FF6F00" stroke="#E65100" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M98 64L116 48L115 64L116 80Z" fill="#FFB300" opacity="0.5"/>
+  <path d="M56 32Q64 18 72 32" fill="#FF6F00" stroke="#E65100" stroke-width="2"/>
+  <path d="M56 96Q64 110 72 96" fill="#FF6F00" stroke="#E65100" stroke-width="2"/>
+  <ellipse cx="44" cy="60" rx="10" ry="10" fill="white" stroke="#E65100" stroke-width="1"/>
+  <circle cx="46" cy="61" r="5" fill="#0D47A1"/>
+  <circle cx="48" cy="59" r="2" fill="white"/>
+  <path d="M36 72Q42 78 48 72" fill="#E65100" stroke="#BF360C" stroke-width="1.5"/>
+  <path d="M26 56Q34 52 36 58" fill="none" stroke="#BF360C" stroke-width="1" stroke-linecap="round"/>
+  <path d="M26 62Q34 58 36 64" fill="none" stroke="#BF360C" stroke-width="1" stroke-linecap="round"/>
+  <path d="M26 68Q34 64 36 70" fill="none" stroke="#BF360C" stroke-width="1" stroke-linecap="round"/>
+  <ellipse cx="66" cy="60" rx="8" ry="4" fill="#FFAB00" opacity="0.5"/>
+  <circle cx="56" cy="56" r="3" fill="#FFE082" opacity="0.6"/>
+  <circle cx="70" cy="72" r="2" fill="#FFE082" opacity="0.6"/>
+  <circle cx="50" cy="76" r="2.5" fill="#FFE082" opacity="0.5"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="newGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="8" y="38" width="112" height="36" rx="4" fill="url(#newGrad)"/>
+    <polygon points="8,38 8,74 -4,56" fill="#6D28D9"/>
+    <polygon points="120,38 120,74 132,56" fill="#6D28D9"/>
+    <polygon points="8,74 8,74 -4,74 -4,56" fill="#4C1D95" opacity="0"/>
+    <path d="M8,38 L-4,56 L8,74" fill="#5B21B6"/>
+    <path d="M120,38 L132,56 L120,74" fill="#5B21B6"/>
+    <text x="64" y="62" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="24" font-weight="bold" letter-spacing="6">NEW</text>
+    <circle cx="24" cy="56" r="3" fill="#DDD6FE" opacity="0.6"/>
+    <circle cx="104" cy="56" r="3" fill="#DDD6FE" opacity="0.6"/>
+  </g>
+</svg>

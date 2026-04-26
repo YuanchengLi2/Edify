@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="limGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" transform="rotate(-15, 64, 64)">
+    <rect x="12" y="36" width="104" height="56" rx="8" fill="url(#limGrad)"/>
+    <rect x="18" y="42" width="92" height="44" rx="5" fill="none" stroke="#FEF3C7" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="64" y="62" text-anchor="middle" fill="#FFFFFF" font-family="Arial Black,sans-serif" font-size="22" font-weight="bold" letter-spacing="4">LIMITED</text>
+    <text x="64" y="78" text-anchor="middle" fill="#FEF3C7" font-family="Arial,sans-serif" font-size="9" letter-spacing="2">EDITION</text>
+    <circle cx="20" cy="38" r="4" fill="#FEF3C7" opacity="0.5"/>
+    <circle cx="108" cy="38" r="4" fill="#FEF3C7" opacity="0.5"/>
+  </g>
+</svg>

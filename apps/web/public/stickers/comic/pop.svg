@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="pop-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF80AB"/>
+      <stop offset="100%" stop-color="#F50057"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="54" fill="url(#pop-grad)" stroke="#1a1a1a" stroke-width="5"/>
+  <circle cx="64" cy="64" r="40" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+  <ellipse cx="48" cy="42" rx="12" ry="16" fill="#FFFFFF" opacity="0.3" transform="rotate(-15,48,42)"/>
+  <circle cx="88" cy="22" r="8" fill="#FF80AB" stroke="#1a1a1a" stroke-width="3"/>
+  <circle cx="100" cy="36" r="5" fill="#FF80AB" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="64" y="74" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="40" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="3">POP!</text>
+</svg>

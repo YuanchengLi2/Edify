@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <filter id="ghGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <path d="M28 64 A36 36 0 1 1 100 64 L100 96 L90 86 L80 96 L70 86 L60 96 L50 86 L40 96 L28 96 Z" fill="#4DD0E1" stroke="#80DEEA" stroke-width="2" filter="url(#ghGlow)"/>
+  <ellipse cx="50" cy="56" rx="8" ry="10" fill="#fff"/>
+  <ellipse cx="78" cy="56" rx="8" ry="10" fill="#fff"/>
+  <circle cx="52" cy="58" r="5" fill="#1a1a2e"/>
+  <circle cx="80" cy="58" r="5" fill="#1a1a2e"/>
+  <circle cx="53" cy="56" r="2" fill="#fff"/>
+  <circle cx="81" cy="56" r="2" fill="#fff"/>
+  <path d="M54 74 Q64 80 74 74" fill="none" stroke="#80DEEA" stroke-width="2" opacity="0.5"/>
+  <ellipse cx="64" cy="38" rx="14" ry="3" fill="#80DEEA" opacity="0.3"/>
+</svg>

@@ -1,12 +1,12 @@
 import type {
 	AudioTrack,
 	EffectTrack,
+	MaskTrack,
 	GraphicTrack,
 	OverlayTrack,
 	SceneTracks,
 	TextTrack,
 	TimelineElement,
-	TimelineTrack,
 	VideoTrack,
 } from "@/lib/timeline";
 import { generateUUID } from "@/utils/id";
@@ -153,6 +153,11 @@ function buildPlacedOverlayTrack({
 			return {
 				...buildEmptyTrack({ id, type: "effect" }),
 				elements: elements as EffectTrack["elements"],
+			};
+		case "mask":
+			return {
+				...buildEmptyTrack({ id, type: "mask" }),
+				elements: elements as MaskTrack["elements"],
 			};
 	}
 }

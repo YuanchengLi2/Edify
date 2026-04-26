@@ -2,6 +2,7 @@ import { DEFAULT_TRACK_NAMES } from "@/lib/timeline/tracks";
 import type {
 	AudioTrack,
 	EffectTrack,
+	MaskTrack,
 	GraphicTrack,
 	TextTrack,
 	TrackType,
@@ -54,6 +55,15 @@ export function buildEmptyTrack({
 	type: "effect";
 	name?: string;
 }): EffectTrack;
+export function buildEmptyTrack({
+	id,
+	type,
+	name,
+}: {
+	id: string;
+	type: "mask";
+	name?: string;
+}): MaskTrack;
 
 export function buildEmptyTrack({
 	id,
@@ -114,6 +124,14 @@ export function buildEmptyTrack({
 				id,
 				name: trackName,
 				type: "effect",
+				elements: [],
+				hidden: false,
+			};
+		case "mask":
+			return {
+				id,
+				name: trackName,
+				type: "mask",
 				elements: [],
 				hidden: false,
 			};

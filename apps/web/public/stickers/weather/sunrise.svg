@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="srg" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#1A237E"/>
+      <stop offset="40%" stop-color="#FF8A65"/>
+      <stop offset="70%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#FFF176"/>
+    </linearGradient>
+    <radialGradient id="srs" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#FFEE58"/>
+      <stop offset="100%" stop-color="#FFB300"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="128" height="128" fill="url(#srg)"/>
+  <g stroke="#FFB300" stroke-width="3" stroke-linecap="round" opacity="0.8">
+    <line x1="64" y1="38" x2="64" y2="28"/>
+    <line x1="40" y1="56" x2="32" y2="48"/>
+    <line x1="88" y1="56" x2="96" y2="48"/>
+    <line x1="28" y1="72" x2="18" y2="72"/>
+    <line x1="100" y1="72" x2="110" y2="72"/>
+  </g>
+  <path d="M28,72 A36,36 0 0,1 100,72Z" fill="url(#srs)"/>
+  <rect x="0" y="72" width="128" height="56" fill="#1A237E"/>
+  <line x1="0" y1="72" x2="128" y2="72" stroke="#FFB74D" stroke-width="2"/>
+  <g stroke="#FFB74D" stroke-width="1.5" opacity="0.5">
+    <line x1="20" y1="84" x2="44" y2="84"/>
+    <line x1="70" y1="90" x2="100" y2="90"/>
+    <line x1="30" y1="98" x2="56" y2="98"/>
+    <line x1="80" y1="104" x2="108" y2="104"/>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="trG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE66D"/>
+      <stop offset="100%" stop-color="#F39C12"/>
+    </linearGradient>
+    <linearGradient id="trCup" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF9C4"/>
+      <stop offset="100%" stop-color="#FFE66D"/>
+    </linearGradient>
+    <filter id="trGlow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <path d="M34 36 L94 36 L88 80 Q88 92 64 92 Q40 92 40 80 Z" fill="url(#trG)" stroke="#FFB300" stroke-width="2" filter="url(#trGlow)"/>
+  <path d="M34 36 L40 80 Q40 92 64 92 L34 36 Z" fill="#F39C12" opacity="0.3"/>
+  <path d="M34 36 L28 42 L24 56 L30 56 L34 48 Z" fill="url(#trG)" stroke="#FFB300" stroke-width="1.5"/>
+  <path d="M94 36 L100 42 L104 56 L98 56 L94 48 Z" fill="url(#trG)" stroke="#FFB300" stroke-width="1.5"/>
+  <rect x="52" y="92" width="24" height="8" rx="2" fill="#B8860B"/>
+  <rect x="44" y="100" width="40" height="8" rx="3" fill="#8B6914"/>
+  <ellipse cx="64" cy="36" rx="30" ry="4" fill="#FFF9C4" opacity="0.5"/>
+  <path d="M56 18 L60 10 L64 18 L68 10 L72 18" fill="none" stroke="#FFE66D" stroke-width="2.5" stroke-linecap="round" filter="url(#trGlow)"/>
+  <polygon points="64,8 60,14 68,14" fill="#FFE66D" filter="url(#trGlow)"/>
+  <text x="64" y="72" font-family="monospace" font-size="16" font-weight="bold" fill="#8B6914" text-anchor="middle">#1</text>
+  <ellipse cx="64" cy="44" rx="18" ry="3" fill="#FFB300" opacity="0.4"/>
+</svg>

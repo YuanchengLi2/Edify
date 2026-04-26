@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="swg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="50%" stop-color="#F472B6"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 64 Q64 44 84 44 Q104 44 104 64 Q104 94 74 94 Q34 94 34 54 Q34 14 74 14 Q114 14 114 54 Q114 104 64 104 Q14 104 14 54 Q14 4 64 4" fill="none" stroke="url(#swg1)" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+  <path d="M64 64 Q64 44 84 44 Q104 44 104 64 Q104 94 74 94 Q34 94 34 54 Q34 14 74 14 Q114 14 114 54 Q114 104 64 104 Q14 104 14 54 Q14 4 64 4" fill="none" stroke="#FFF" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+  <circle cx="64" cy="4" r="3" fill="#60A5FA" opacity="0.9"/>
+  <circle cx="64" cy="4" r="1.5" fill="#FFF" opacity="0.6"/>
+  <circle cx="64" cy="64" r="2" fill="#A78BFA" opacity="0.7"/>
+</svg>

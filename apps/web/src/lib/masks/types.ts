@@ -8,7 +8,14 @@ export type MaskType =
 	| "ellipse"
 	| "heart"
 	| "diamond"
-	| "star";
+	| "star"
+	| "triangle"
+	| "hexagon"
+	| "octagon"
+	| "pentagon"
+	| "arrow"
+	| "cross"
+	| "rounded-rect";
 
 export interface BaseMaskParams extends ParamValues {
 	feather: number;
@@ -16,6 +23,8 @@ export interface BaseMaskParams extends ParamValues {
 	strokeColor: string;
 	strokeWidth: number;
 	strokeAlign: "inside" | "center" | "outside";
+	fillColor: string;
+	fillOpacity: number;
 }
 
 export interface SplitMaskParams extends BaseMaskParams {
@@ -33,44 +42,43 @@ export interface RectangleMaskParams extends BaseMaskParams {
 	scale: number;
 }
 
-export interface SplitMask {
+export interface BaseMask {
 	id: string;
+	name?: string;
+	visible?: boolean;
+}
+
+export interface SplitMask extends BaseMask {
 	type: "split";
 	params: SplitMaskParams;
 }
 
-export interface CinematicBarsMask {
-	id: string;
+export interface CinematicBarsMask extends BaseMask {
 	type: "cinematic-bars";
 	params: RectangleMaskParams;
 }
 
-export interface RectangleMask {
-	id: string;
+export interface RectangleMask extends BaseMask {
 	type: "rectangle";
 	params: RectangleMaskParams;
 }
 
-export interface EllipseMask {
-	id: string;
+export interface EllipseMask extends BaseMask {
 	type: "ellipse";
 	params: RectangleMaskParams;
 }
 
-export interface HeartMask {
-	id: string;
+export interface HeartMask extends BaseMask {
 	type: "heart";
 	params: RectangleMaskParams;
 }
 
-export interface DiamondMask {
-	id: string;
+export interface DiamondMask extends BaseMask {
 	type: "diamond";
 	params: RectangleMaskParams;
 }
 
-export interface StarMask {
-	id: string;
+export interface StarMask extends BaseMask {
 	type: "star";
 	params: RectangleMaskParams;
 }
@@ -82,7 +90,49 @@ export type Mask =
 	| EllipseMask
 	| HeartMask
 	| DiamondMask
-	| StarMask;
+	| StarMask
+	| TriangleMask
+	| HexagonMask
+	| OctagonMask
+	| PentagonMask
+	| ArrowMask
+	| CrossMask
+	| RoundedRectMask;
+
+export interface TriangleMask extends BaseMask {
+	type: "triangle";
+	params: RectangleMaskParams;
+}
+
+export interface HexagonMask extends BaseMask {
+	type: "hexagon";
+	params: RectangleMaskParams;
+}
+
+export interface OctagonMask extends BaseMask {
+	type: "octagon";
+	params: RectangleMaskParams;
+}
+
+export interface PentagonMask extends BaseMask {
+	type: "pentagon";
+	params: RectangleMaskParams;
+}
+
+export interface ArrowMask extends BaseMask {
+	type: "arrow";
+	params: RectangleMaskParams;
+}
+
+export interface CrossMask extends BaseMask {
+	type: "cross";
+	params: RectangleMaskParams;
+}
+
+export interface RoundedRectMask extends BaseMask {
+	type: "rounded-rect";
+	params: RectangleMaskParams;
+}
 
 export interface MaskRenderer {
 	buildPath(params: {
@@ -129,7 +179,9 @@ export interface MaskDefaultContext {
 	elementSize?: { width: number; height: number };
 }
 
-export interface MaskParamUpdateArgs<TParams extends BaseMaskParams = BaseMaskParams> {
+export interface MaskParamUpdateArgs<
+	TParams extends BaseMaskParams = BaseMaskParams,
+> {
 	handleId: string;
 	startParams: TParams;
 	deltaX: number;
@@ -140,7 +192,9 @@ export interface MaskParamUpdateArgs<TParams extends BaseMaskParams = BaseMaskPa
 	canvasSize: { width: number; height: number };
 }
 
-export interface MaskDefinition<TParams extends BaseMaskParams = BaseMaskParams> {
+export interface MaskDefinition<
+	TParams extends BaseMaskParams = BaseMaskParams,
+> {
 	type: MaskType;
 	name: string;
 	overlayShape: MaskOverlayShape;

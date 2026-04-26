@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="jg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B6B"/>
+      <stop offset="100%" stop-color="#C0392B"/>
+    </linearGradient>
+    <radialGradient id="jb" cx="50%" cy="30%">
+      <stop offset="0%" stop-color="#FF8A80"/>
+      <stop offset="100%" stop-color="#C0392B"/>
+    </radialGradient>
+    <filter id="jglow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <ellipse cx="64" cy="98" rx="40" ry="12" fill="#333" stroke="#555" stroke-width="2"/>
+  <rect x="56" y="46" width="16" height="52" rx="4" fill="#666" stroke="#888" stroke-width="1.5"/>
+  <circle cx="64" cy="38" r="18" fill="url(#jb)" stroke="#FF6B6B" stroke-width="3" filter="url(#jglow)"/>
+  <circle cx="64" cy="38" r="10" fill="#FF8A80"/>
+  <circle cx="64" cy="38" r="5" fill="#FFCDD2"/>
+  <ellipse cx="64" cy="96" rx="8" ry="3" fill="#222"/>
+  <rect x="28" y="90" width="10" height="6" rx="2" fill="#4ECDC4" filter="url(#jglow)"/>
+  <rect x="90" y="90" width="10" height="6" rx="2" fill="#FFE66D" filter="url(#jglow)"/>
+</svg>

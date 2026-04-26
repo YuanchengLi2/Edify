@@ -5,6 +5,7 @@ import type { BlendMode, Transform } from "@/lib/rendering";
 import type { RetimeConfig, VisualElement } from "@/lib/timeline";
 
 export interface VisualNodeParams {
+	elementId: string;
 	duration: number;
 	timeOffset: number;
 	trimStart: number;
@@ -25,8 +26,7 @@ export interface ResolvedVisualNodeState {
 	effectPasses: EffectPass[][];
 }
 
-export interface ResolvedVisualSourceNodeState
-	extends ResolvedVisualNodeState {
+export interface ResolvedVisualSourceNodeState extends ResolvedVisualNodeState {
 	source: CanvasImageSource;
 	sourceWidth: number;
 	sourceHeight: number;

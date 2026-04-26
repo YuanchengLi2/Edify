@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="wG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE66D"/>
+      <stop offset="100%" stop-color="#F39C12"/>
+    </linearGradient>
+    <filter id="wGlow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <polygon points="64,12 70,28 80,24 74,36 88,38 76,46 82,58 70,52 64,64 58,52 46,58 52,46 40,38 54,36 48,24 58,28" fill="url(#wG)" filter="url(#wGlow)"/>
+  <circle cx="64" cy="38" r="10" fill="#FFF9C4"/>
+  <text x="64" y="94" font-family="monospace" font-size="26" font-weight="bold" fill="url(#wG)" text-anchor="middle" filter="url(#wGlow)" letter-spacing="5">WINNER</text>
+  <line x1="24" y1="104" x2="104" y2="104" stroke="#FFE66D" stroke-width="1.5" opacity="0.4"/>
+  <circle cx="34" cy="114" r="2" fill="#FFE66D" opacity="0.5"/>
+  <circle cx="54" cy="116" r="1.5" fill="#FFE66D" opacity="0.4"/>
+  <circle cx="94" cy="112" r="2" fill="#FFE66D" opacity="0.5"/>
+  <circle cx="74" cy="118" r="1.5" fill="#FFE66D" opacity="0.3"/>
+</svg>

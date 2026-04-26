@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="premGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="crownGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="56" fill="url(#premGrad)"/>
+    <circle cx="64" cy="64" r="50" fill="none" stroke="#818CF8" stroke-width="1.5"/>
+    <circle cx="64" cy="64" r="46" fill="none" stroke="#818CF8" stroke-width="0.5" stroke-dasharray="3,3"/>
+    <path d="M36,56 L42,36 L52,48 L64,28 L76,48 L86,36 L92,56 Z" fill="url(#crownGold)"/>
+    <rect x="36" y="56" width="56" height="6" rx="1" fill="url(#crownGold)"/>
+    <circle cx="42" cy="36" r="3" fill="#FDE68A"/>
+    <circle cx="64" cy="28" r="3" fill="#FDE68A"/>
+    <circle cx="86" cy="36" r="3" fill="#FDE68A"/>
+    <text x="64" y="84" text-anchor="middle" fill="#FDE68A" font-family="Arial Black,sans-serif" font-size="13" font-weight="bold" letter-spacing="4">PREMIUM</text>
+    <text x="64" y="100" text-anchor="middle" fill="#A5B4FC" font-family="Arial,sans-serif" font-size="8" letter-spacing="2">QUALITY</text>
+  </g>
+</svg>

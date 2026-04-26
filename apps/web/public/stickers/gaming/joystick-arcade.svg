@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="amG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6C63FF"/>
+      <stop offset="100%" stop-color="#3F3D9E"/>
+    </linearGradient>
+    <linearGradient id="amS" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B83FF"/>
+      <stop offset="100%" stop-color="#6C63FF"/>
+    </linearGradient>
+    <filter id="amGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <rect x="24" y="28" width="80" height="80" rx="10" fill="url(#amG)" stroke="#8B83FF" stroke-width="2"/>
+  <rect x="30" y="34" width="68" height="52" rx="6" fill="#111" stroke="#444" stroke-width="1.5"/>
+  <rect x="32" y="36" width="64" height="48" rx="5" fill="#0a1628"/>
+  <circle cx="64" cy="28" r="6" fill="#FF6B6B" filter="url(#amGlow)"/>
+  <circle cx="42" cy="28" r="3" fill="#4ECDC4" filter="url(#amGlow)"/>
+  <circle cx="86" cy="28" r="3" fill="#4ECDC4" filter="url(#amGlow)"/>
+  <text x="64" y="66" font-family="monospace" font-size="20" font-weight="bold" fill="#4ECDC4" text-anchor="middle" filter="url(#amGlow)">INSERT</text>
+  <text x="64" y="80" font-family="monospace" font-size="12" fill="#6C63FF" text-anchor="middle">COIN</text>
+  <rect x="36" y="88" width="8" height="12" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+  <rect x="48" y="88" width="8" height="12" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+  <rect x="60" y="88" width="8" height="12" rx="2" fill="#FF6B6B" stroke="#EF5350" stroke-width="1" filter="url(#amGlow)"/>
+  <rect x="72" y="88" width="8" height="12" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+  <rect x="84" y="88" width="8" height="12" rx="2" fill="#333" stroke="#555" stroke-width="1"/>
+  <line x1="34" y1="38" x2="34" y2="82" stroke="#4ECDC4" stroke-width="1" opacity="0.2"/>
+  <line x1="94" y1="38" x2="94" y2="82" stroke="#4ECDC4" stroke-width="1" opacity="0.2"/>
+</svg>

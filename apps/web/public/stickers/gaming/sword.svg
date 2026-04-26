@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="swG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B0BEC5"/>
+      <stop offset="50%" stop-color="#ECEFF1"/>
+      <stop offset="100%" stop-color="#90A4AE"/>
+    </linearGradient>
+    <filter id="swGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <rect x="56" y="16" width="16" height="8" rx="1" fill="#6C63FF"/>
+  <rect x="60" y="24" width="8" height="8" rx="1" fill="#6C63FF"/>
+  <polygon points="60,32 68,32 80,90 48,90" fill="url(#swG)" stroke="#B0BEC5" stroke-width="1"/>
+  <polygon points="56,32 72,32 68,32 60,32" fill="#CFD8DC"/>
+  <line x1="64" y1="36" x2="64" y2="86" stroke="#fff" stroke-width="1.5" opacity="0.3"/>
+  <polygon points="48,90 80,90 84,98 44,98" fill="#8D6E63"/>
+  <polygon points="44,98 84,98 88,104 40,104" fill="#6D4C41"/>
+  <polygon points="40,104 88,104 90,110 38,110" fill="#5D4037"/>
+  <rect x="56" y="96" width="16" height="4" rx="1" fill="#4ECDC4" filter="url(#swGlow)"/>
+  <polygon points="48,90 56,90 52,96" fill="#A1887F" opacity="0.5"/>
+  <polygon points="72,90 80,90 76,96" fill="#A1887F" opacity="0.5"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="l-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#90A4AE"/>
+      <stop offset="100%" stop-color="#546E7A"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="56" fill="url(#l-grad)" stroke="#1a1a1a" stroke-width="5"/>
+  <text x="64" y="82" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="64" font-weight="900" fill="#B0BEC5" stroke="#1a1a1a" stroke-width="5" letter-spacing="2">L</text>
+  <text x="64" y="38" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="1.5" letter-spacing="2">LOSSER</text>
+  <line x1="40" y1="96" x2="88" y2="96" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="4,3"/>
+</svg>

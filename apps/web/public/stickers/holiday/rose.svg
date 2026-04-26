@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#27ae60"/>
+      <stop offset="100%" stop-color="#1a7a42"/>
+    </linearGradient>
+    <radialGradient id="roseGrad" cx="0.5" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="#ff4757"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </radialGradient>
+  </defs>
+  <path d="M64 118 Q62 90 60 70" fill="none" stroke="url(#stemGrad)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M60 80 Q44 72 40 82 Q44 88 56 84" fill="#2ecc71" stroke="#1a9c56" stroke-width="1"/>
+  <path d="M60 70 Q48 58 44 66 Q46 74 56 72" fill="#27ae60" stroke="#1a7a42" stroke-width="1"/>
+  <path d="M60 94 Q74 86 78 94 Q76 102 66 98" fill="#2ecc71" stroke="#1a9c56" stroke-width="1"/>
+  <ellipse cx="64" cy="42" rx="28" ry="30" fill="url(#roseGrad)"/>
+  <path d="M44 42 Q52 28 64 24 Q76 28 84 42 Q76 38 64 36 Q52 38 44 42 Z" fill="#e74c3c" opacity="0.8"/>
+  <path d="M48 50 Q56 36 64 32 Q72 36 80 50 Q72 44 64 42 Q56 44 48 50 Z" fill="#d63031" opacity="0.7"/>
+  <path d="M52 56 Q58 44 64 40 Q70 44 76 56 Q70 50 64 48 Q58 50 52 56 Z" fill="#c0392b" opacity="0.7"/>
+  <path d="M56 60 Q60 52 64 48 Q68 52 72 60 Q68 56 64 54 Q60 56 56 60 Z" fill="#a93226" opacity="0.7"/>
+  <ellipse cx="64" cy="52" rx="6" ry="4" fill="#922B21" opacity="0.6"/>
+  <path d="M56 32 Q52 22 58 18" fill="none" stroke="#1a7a42" stroke-width="2" stroke-linecap="round"/>
+  <path d="M72 32 Q76 22 70 18" fill="none" stroke="#1a7a42" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="50" cy="36" rx="4" ry="2" fill="rgba(255,255,255,0.15)" transform="rotate(-20,50,36)"/>
+</svg>

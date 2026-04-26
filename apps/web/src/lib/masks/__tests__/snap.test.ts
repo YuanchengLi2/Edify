@@ -32,6 +32,7 @@ function buildSplitParams(
 		strokeColor: "#ffffff",
 		strokeWidth: 0,
 		strokeAlign: "center",
+		fillColor: null,
 		centerX: 0,
 		centerY: 0,
 		rotation: 0,

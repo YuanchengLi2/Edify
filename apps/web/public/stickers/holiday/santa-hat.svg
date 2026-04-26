@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hatGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="64" cy="100" rx="52" ry="16" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+  <path d="M16 96 Q20 52 40 36 Q56 22 80 28 Q100 34 108 56 Q112 68 104 76" fill="url(#hatGrad)" stroke="#a93226" stroke-width="1.5"/>
+  <path d="M20 92 Q24 56 42 40 Q56 28 76 32" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="104" cy="76" r="14" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+  <circle cx="104" cy="76" r="10" fill="white" opacity="0.6"/>
+  <ellipse cx="36" cy="98" rx="8" ry="6" fill="rgba(255,255,255,0.4)"/>
+</svg>

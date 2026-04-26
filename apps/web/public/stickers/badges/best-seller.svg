@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="4" y="28" width="120" height="40" rx="6" fill="url(#bsGrad)"/>
+    <polygon points="4,28 4,68 -10,48" fill="#D97706"/>
+    <polygon points="124,28 124,68 138,48" fill="#D97706"/>
+    <polygon points="20,68 12,98 28,88 44,98 36,68" fill="#D97706"/>
+    <polygon points="108,68 116,98 100,88 84,98 92,68" fill="#D97706"/>
+    <polygon points="22,68 16,92 28,84 40,92 34,68" fill="#B45309"/>
+    <polygon points="110,68 116,92 104,84 92,92 98,68" fill="#B45309"/>
+    <text x="64" y="54" text-anchor="middle" fill="#78350F" font-family="Arial Black,sans-serif" font-size="16" font-weight="bold" letter-spacing="2">BEST SELLER</text>
+    <polygon points="16,42 18,38 20,42 16,40 20,40" fill="#FEF3C7" opacity="0.5"/>
+    <polygon points="110,42 112,38 114,42 110,40 114,40" fill="#FEF3C7" opacity="0.5"/>
+  </g>
+</svg>

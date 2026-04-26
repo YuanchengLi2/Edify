@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="certGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="56" fill="url(#certGrad)"/>
+    <path d="M64,8 L66,14 L72,14 L67,18 L69,24 L64,20 L59,24 L61,18 L56,14 L62,14 Z" fill="#FDE68A"/>
+    <path d="M108,42 L110,48 L116,48 L111,52 L113,58 L108,54 L103,58 L105,52 L100,48 L106,48 Z" fill="#FDE68A"/>
+    <path d="M20,42 L22,48 L28,48 L23,52 L25,58 L20,54 L15,58 L17,52 L12,48 L18,48 Z" fill="#FDE68A"/>
+    <path d="M36,108 L38,114 L44,114 L39,118 L41,124 L36,120 L31,124 L33,118 L28,114 L34,114 Z" fill="#FDE68A"/>
+    <path d="M92,108 L94,114 L100,114 L95,118 L97,124 L92,120 L87,124 L89,118 L84,114 L90,114 Z" fill="#FDE68A"/>
+    <circle cx="64" cy="64" r="42" fill="none" stroke="#BAE6FD" stroke-width="2"/>
+    <circle cx="64" cy="64" r="36" fill="none" stroke="#BAE6FD" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="64" y="56" text-anchor="middle" fill="#FFFFFF" font-family="Georgia,serif" font-size="12" font-weight="bold" letter-spacing="2">CERTIFIED</text>
+    <line x1="40" y1="62" x2="88" y2="62" stroke="#BAE6FD" stroke-width="1"/>
+    <text x="64" y="78" text-anchor="middle" fill="#BAE6FD" font-family="Georgia,serif" font-size="9" letter-spacing="1">EXCELLENCE</text>
+    <line x1="44" y1="84" x2="84" y2="84" stroke="#BAE6FD" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6b81"/>
+      <stop offset="100%" stop-color="#e74c3c"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 108 Q20 76 20 44 Q20 20 40 20 Q56 20 64 36 Q72 20 88 20 Q108 20 108 44 Q108 76 64 108 Z" fill="url(#heartGrad)" stroke="#c0392b" stroke-width="2"/>
+  <path d="M64 108 Q20 76 20 44 Q20 20 40 20 Q56 20 64 36" fill="rgba(255,255,255,0.1)"/>
+  <path d="M32 36 Q36 30 42 34" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="86" y1="56" x2="120" y2="90" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="120,90 116,82 124,84 112,78 122,76" fill="#8B4513"/>
+  <polygon points="120,90 118,84 122,86" fill="#A0522D"/>
+  <line x1="86" y1="56" x2="82" y2="52" stroke="#8B4513" stroke-width="3"/>
+  <line x1="86" y1="56" x2="84" y2="60" stroke="#8B4513" stroke-width="3"/>
+  <line x1="86" y1="56" x2="90" y2="54" stroke="#8B4513" stroke-width="3"/>
+  <path d="M40 32 Q50 28 54 36" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+</svg>

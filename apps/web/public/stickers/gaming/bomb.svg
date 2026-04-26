@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bmG" cx="40%" cy="35%">
+      <stop offset="0%" stop-color="#616161"/>
+      <stop offset="100%" stop-color="#212121"/>
+    </radialGradient>
+    <filter id="bmGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <ellipse cx="64" cy="80" rx="28" ry="32" fill="url(#bmG)" stroke="#424242" stroke-width="2"/>
+  <ellipse cx="64" cy="80" rx="24" ry="28" fill="#333"/>
+  <ellipse cx="56" cy="72" rx="10" ry="14" fill="#444" opacity="0.4"/>
+  <rect x="56" y="44" width="16" height="12" rx="3" fill="#424242" stroke="#555" stroke-width="1.5"/>
+  <path d="M64 44 L64 28 Q64 18 72 14" fill="none" stroke="#8D6E63" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="74" cy="12" rx="4" ry="5" fill="#FF6B6B" filter="url(#bmGlow)">
+    <animate attributeName="opacity" values="1;0.5;1" dur="0.8s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="74" cy="12" rx="6" ry="7" fill="#FF6B6B" opacity="0.3" filter="url(#bmGlow)">
+    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="0.8s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="74" cy="10" rx="2" ry="3" fill="#FFE66D" opacity="0.8"/>
+  <path d="M44 92 Q42 100 46 108" fill="none" stroke="#9E9E9E" stroke-width="1.5" opacity="0.4"/>
+  <path d="M84 92 Q86 100 82 108" fill="none" stroke="#9E9E9E" stroke-width="1.5" opacity="0.4"/>
+</svg>

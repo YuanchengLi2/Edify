@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useEditor } from "@/hooks/use-editor";
 import { useShiftKey } from "@/hooks/use-shift-key";
 import { usePreviewViewport } from "@/components/editor/panels/preview/preview-viewport";
-import type { Transform } from "@/lib/rendering";
-import type { ElementRef, TextElement } from "@/lib/timeline";
+import type { ElementRef, TextElement, TimelineElement } from "@/lib/timeline";
 import {
 	getVisibleElementsWithBounds,
 	type ElementWithBounds,
+	type ElementBounds,
 } from "@/lib/preview/element-bounds";
 import {
 	getHitElements,
@@ -20,8 +20,21 @@ import {
 	type SnapLine,
 } from "@/lib/preview/preview-snap";
 import { registerCanceller } from "@/lib/cancel-interaction";
+import {
+	getElementLocalTime,
+	hasKeyframesForPath,
+	resolveTransformAtTime,
+	setChannel,
+} from "@/lib/animation";
 
 export type OnSnapLinesChange = (lines: SnapLine[]) => void;
+
+export interface MarqueeRect {
+	startX: number;
+	startY: number;
+	endX: number;
+	endY: number;
+}
 
 const MIN_DRAG_DISTANCE = 0.5;
 
@@ -30,28 +43,46 @@ interface CapturedPointerState {
 	captureTarget: HTMLElement;
 }
 
-interface PendingGestureState extends CapturedPointerState {
-	startX: number;
-	startY: number;
-	topmostHit: ElementWithBounds | null;
-	selectedHit: ElementWithBounds | null;
-	selectedElements: ElementRef[];
-}
-
-interface DragState extends CapturedPointerState {
-	startX: number;
-	startY: number;
-	bounds: {
-		width: number;
-		height: number;
-		rotation: number;
-	};
-	elements: Array<{
-		trackId: string;
-		elementId: string;
-		initialTransform: Transform;
-	}>;
-}
+type InteractionState =
+	| { kind: "idle" }
+	| {
+			kind: "pending";
+			startX: number;
+			startY: number;
+			pointerId: number;
+			captureTarget: HTMLElement;
+			topmostHit: ElementWithBounds | null;
+			selectedHit: ElementWithBounds | null;
+			selectedElements: ElementRef[];
+	  }
+	| {
+			kind: "marquee";
+			startX: number;
+			startY: number;
+			pointerId: number;
+			captureTarget: HTMLElement;
+			rect: MarqueeRect;
+	  }
+	| {
+			kind: "dragging";
+			startX: number;
+			startY: number;
+			pointerId: number;
+			captureTarget: HTMLElement;
+			bounds: {
+				width: number;
+				height: number;
+				rotation: number;
+			};
+			elements: Array<{
+				trackId: string;
+				elementId: string;
+				initialTransform: Transform;
+				finalPosition: { x: number; y: number };
+				animationsWithoutPosition?: ReturnType<typeof setChannel>;
+				shouldClearPositionAnimation: boolean;
+			}>;
+	  };
 
 function isSameElementRef({
 	left,
@@ -92,6 +123,25 @@ function buildDragSelection({
 	];
 }
 
+function boundsOverlapMarquee(
+	bounds: ElementBounds,
+	rect: { x1: number; y1: number; x2: number; y2: number },
+): boolean {
+	const left = Math.min(rect.x1, rect.x2);
+	const right = Math.max(rect.x1, rect.x2);
+	const top = Math.min(rect.y1, rect.y2);
+	const bottom = Math.max(rect.y1, rect.y2);
+
+	const halfW = bounds.width / 2;
+	const halfH = bounds.height / 2;
+	const elLeft = bounds.cx - halfW;
+	const elRight = bounds.cx + halfW;
+	const elTop = bounds.cy - halfH;
+	const elBottom = bounds.cy + halfH;
+
+	return elLeft < right && elRight > left && elTop < bottom && elBottom > top;
+}
+
 export function usePreviewInteraction({
 	onSnapLinesChange,
 	isMaskMode = false,
@@ -109,11 +159,77 @@ export function usePreviewInteraction({
 		element: TextElement;
 		originalOpacity: number;
 	} | null>(null);
-	const dragStateRef = useRef<DragState | null>(null);
-	const pendingGestureRef = useRef<PendingGestureState | null>(null);
+	const [marqueeRect, setMarqueeRect] = useState<MarqueeRect | null>(null);
+	const marqueeRectRef = useRef<MarqueeRect | null>(null);
+	const interactionRef = useRef<InteractionState>({ kind: "idle" });
+	const pendingPreviewUpdatesRef = useRef<Array<{
+		trackId: string;
+		elementId: string;
+		updates: Partial<TimelineElement>;
+	}> | null>(null);
+	const pendingPreviewFrameRef = useRef<number | null>(null);
 	const wasPlayingRef = useRef(editor.playback.getIsPlaying());
 	const editingTextRef = useRef(editingText);
 	editingTextRef.current = editingText;
+	useEffect(() => {
+		marqueeRectRef.current = marqueeRect;
+	}, [marqueeRect]);
+
+	const clearScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		pendingPreviewUpdatesRef.current = null;
+	}, []);
+
+	const flushScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		const pendingUpdates = pendingPreviewUpdatesRef.current;
+		pendingPreviewUpdatesRef.current = null;
+		if (pendingUpdates && pendingUpdates.length > 0) {
+			editor.timeline.previewElements({ updates: pendingUpdates });
+		}
+	}, [editor.timeline]);
+
+	const clearInteractionState = useCallback(() => {
+		interactionRef.current = { kind: "idle" };
+		marqueeRectRef.current = null;
+		setMarqueeRect(null);
+		setIsDragging(false);
+		onSnapLinesChange?.([]);
+		clearScheduledPreview();
+	}, [clearScheduledPreview, onSnapLinesChange]);
+
+	const schedulePreviewElements = useCallback(
+		(
+			updates: Array<{
+				trackId: string;
+				elementId: string;
+				updates: Partial<TimelineElement>;
+			}>,
+		) => {
+			pendingPreviewUpdatesRef.current = updates;
+			if (pendingPreviewFrameRef.current !== null) {
+				return;
+			}
+
+			pendingPreviewFrameRef.current = requestAnimationFrame(() => {
+				pendingPreviewFrameRef.current = null;
+				const pendingUpdates = pendingPreviewUpdatesRef.current;
+				pendingPreviewUpdatesRef.current = null;
+				if (pendingUpdates && pendingUpdates.length > 0) {
+					editor.timeline.previewElements({ updates: pendingUpdates });
+				}
+			});
+		},
+		[editor.timeline],
+	);
+
+	useEffect(() => () => clearScheduledPreview(), [clearScheduledPreview]);
 
 	const releaseCapturedPointer = useCallback(
 		(pointerState: CapturedPointerState | null) => {
@@ -154,18 +270,23 @@ export function usePreviewInteraction({
 
 		return registerCanceller({
 			fn: () => {
-				const dragState = dragStateRef.current;
-				if (!dragState) return;
+				const state = interactionRef.current;
+				if (state.kind === "idle") return;
 
-				editor.timeline.discardPreview();
-				dragStateRef.current = null;
-				pendingGestureRef.current = null;
-				setIsDragging(false);
-				onSnapLinesChange?.([]);
-				releaseCapturedPointer(dragState);
+				if (state.kind === "dragging") {
+					editor.timeline.discardPreview();
+				}
+
+				clearInteractionState();
+				releaseCapturedPointer(state.kind === "idle" ? null : state);
 			},
 		});
-	}, [editor.timeline, isDragging, onSnapLinesChange, releaseCapturedPointer]);
+	}, [
+		clearInteractionState,
+		editor.timeline,
+		isDragging,
+		releaseCapturedPointer,
+	]);
 
 	const handleDoubleClick = useCallback(
 		({ clientX, clientY }: React.MouseEvent) => {
@@ -209,16 +330,13 @@ export function usePreviewInteraction({
 	);
 
 	const handlePointerDown = useCallback(
-		({
-			clientX,
-			clientY,
-			currentTarget,
-			pointerId,
-			button,
-		}: React.PointerEvent) => {
+		(event: React.PointerEvent) => {
 			if (editingText) return;
 			if (isMaskMode) return;
-			if (button !== 0) return;
+			if (event.button !== 0) return;
+			event.preventDefault();
+
+			const { clientX, clientY, currentTarget, pointerId } = event;
 
 			const tracks = editor.scenes.getActiveScene().tracks;
 			const currentTime = editor.playback.getCurrentTime();
@@ -238,19 +356,50 @@ export function usePreviewInteraction({
 				mediaAssets,
 			});
 
-			const hits = getHitElements({
-				canvasX: startPos.x,
-				canvasY: startPos.y,
-				elementsWithBounds,
-			});
+			const isOutsideCanvas =
+				startPos.x < -0.5 ||
+				startPos.y < -0.5 ||
+				startPos.x > canvasSize.width + 0.5 ||
+				startPos.y > canvasSize.height + 0.5;
+			const hits = isOutsideCanvas
+				? []
+				: getHitElements({
+						canvasX: startPos.x,
+						canvasY: startPos.y,
+						elementsWithBounds,
+					});
 			const selectedElements = editor.selection.getSelectedElements();
 			const topmostHit = hits[0] ?? null;
+			const captureTarget = currentTarget as HTMLElement;
 
-			pendingGestureRef.current = {
+			if (topmostHit === null) {
+				const rect = {
+					startX: startPos.x,
+					startY: startPos.y,
+					endX: startPos.x,
+					endY: startPos.y,
+				};
+				interactionRef.current = {
+					kind: "marquee",
+					startX: startPos.x,
+					startY: startPos.y,
+					pointerId,
+					captureTarget,
+					rect,
+				};
+				marqueeRectRef.current = rect;
+				setMarqueeRect(rect);
+				setIsDragging(true);
+				captureTarget.setPointerCapture(pointerId);
+				return;
+			}
+
+			interactionRef.current = {
+				kind: "pending",
 				startX: startPos.x,
 				startY: startPos.y,
 				pointerId,
-				captureTarget: currentTarget as HTMLElement,
+				captureTarget,
 				topmostHit,
 				selectedHit: resolvePreferredHit({
 					hits,
@@ -258,7 +407,7 @@ export function usePreviewInteraction({
 				}),
 				selectedElements,
 			};
-			currentTarget.setPointerCapture(pointerId);
+			captureTarget.setPointerCapture(pointerId);
 		},
 		[editor, editingText, isMaskMode, viewport],
 	);
@@ -266,6 +415,7 @@ export function usePreviewInteraction({
 	const handlePointerMove = useCallback(
 		({ clientX, clientY }: React.PointerEvent) => {
 			const canvasSize = editor.project.getActive().settings.canvasSize;
+			const currentTime = editor.playback.getCurrentTime();
 
 			const currentPos = viewport.screenToCanvas({
 				clientX,
@@ -273,14 +423,31 @@ export function usePreviewInteraction({
 			});
 			if (!currentPos) return;
 
-			let dragState = dragStateRef.current;
+			const state = interactionRef.current;
 
-			if (!dragState) {
-				const pendingGesture = pendingGestureRef.current;
-				if (!pendingGesture) return;
+			if (state.kind === "marquee") {
+				const nextMarqueeRect = {
+					startX: state.startX,
+					startY: state.startY,
+					endX: currentPos.x,
+					endY: currentPos.y,
+				};
+				state.rect = nextMarqueeRect;
+				marqueeRectRef.current = nextMarqueeRect;
+				setMarqueeRect(nextMarqueeRect);
+				return;
+			}
 
-				const deltaX = currentPos.x - pendingGesture.startX;
-				const deltaY = currentPos.y - pendingGesture.startY;
+			let activeDragState: Extract<
+				InteractionState,
+				{ kind: "dragging" }
+			> | null = null;
+
+			if (state.kind === "dragging") {
+				activeDragState = state;
+			} else if (state.kind === "pending") {
+				const deltaX = currentPos.x - state.startX;
+				const deltaY = currentPos.y - state.startY;
 				const hasMovement =
 					Math.abs(deltaX) > MIN_DRAG_DISTANCE ||
 					Math.abs(deltaY) > MIN_DRAG_DISTANCE;
@@ -290,16 +457,30 @@ export function usePreviewInteraction({
 					return;
 				}
 
-				const dragTarget = pendingGesture.selectedHit ?? pendingGesture.topmostHit;
+				const dragTarget = state.selectedHit ?? state.topmostHit;
 				if (!dragTarget) {
-					pendingGestureRef.current = null;
-					onSnapLinesChange?.([]);
-					releaseCapturedPointer(pendingGesture);
+					const nextMarqueeRect = {
+						startX: state.startX,
+						startY: state.startY,
+						endX: currentPos.x,
+						endY: currentPos.y,
+					};
+					interactionRef.current = {
+						kind: "marquee",
+						startX: state.startX,
+						startY: state.startY,
+						pointerId: state.pointerId,
+						captureTarget: state.captureTarget,
+						rect: nextMarqueeRect,
+					};
+					marqueeRectRef.current = nextMarqueeRect;
+					setMarqueeRect(nextMarqueeRect);
+					setIsDragging(true);
 					return;
 				}
 
 				const dragSelection = buildDragSelection({
-					selectedElements: pendingGesture.selectedElements,
+					selectedElements: state.selectedElements,
 					dragTarget,
 				});
 				const elementsWithTracks = editor.timeline.getElementsWithTracks({
@@ -310,47 +491,84 @@ export function usePreviewInteraction({
 				);
 
 				if (draggableElements.length === 0) {
-					pendingGestureRef.current = null;
-					onSnapLinesChange?.([]);
-					releaseCapturedPointer(pendingGesture);
+					clearInteractionState();
+					releaseCapturedPointer(state);
 					return;
 				}
 
-			if (pendingGesture.selectedHit === null) {
-				editor.selection.setSelectedElements({
-					elements: [
-						{
-							trackId: dragTarget.trackId,
-							elementId: dragTarget.elementId,
-						},
-					],
-				});
-			}
+				if (state.selectedHit === null) {
+					editor.selection.setSelectedElements({
+						elements: [
+							{
+								trackId: dragTarget.trackId,
+								elementId: dragTarget.elementId,
+							},
+						],
+					});
+				}
 
-				dragState = {
-					startX: pendingGesture.startX,
-					startY: pendingGesture.startY,
-					pointerId: pendingGesture.pointerId,
-					captureTarget: pendingGesture.captureTarget,
+				activeDragState = {
+					kind: "dragging",
+					startX: state.startX,
+					startY: state.startY,
+					pointerId: state.pointerId,
+					captureTarget: state.captureTarget,
 					bounds: {
 						width: dragTarget.bounds.width,
 						height: dragTarget.bounds.height,
 						rotation: dragTarget.bounds.rotation,
 					},
-					elements: draggableElements.map(({ track, element }) => ({
-						trackId: track.id,
-						elementId: element.id,
-						initialTransform: (element as { transform: Transform }).transform,
-					})),
+					elements: draggableElements.map(({ track, element }) => {
+						const localTime = getElementLocalTime({
+							timelineTime: currentTime,
+							elementStartTime: element.startTime,
+							elementDuration: element.duration,
+						});
+						const shouldClearPositionAnimation =
+							hasKeyframesForPath({
+								animations: element.animations,
+								propertyPath: "transform.positionX",
+							}) ||
+							hasKeyframesForPath({
+								animations: element.animations,
+								propertyPath: "transform.positionY",
+							});
+
+						const resolvedTransform = resolveTransformAtTime({
+							baseTransform: (element as { transform: Transform }).transform,
+							animations: element.animations,
+							localTime,
+						});
+
+						return {
+							trackId: track.id,
+							elementId: element.id,
+							initialTransform: resolvedTransform,
+							finalPosition: resolvedTransform.position,
+							shouldClearPositionAnimation,
+							animationsWithoutPosition: shouldClearPositionAnimation
+								? setChannel({
+										animations: setChannel({
+											animations: element.animations,
+											propertyPath: "transform.positionX",
+											channel: undefined,
+										}),
+										propertyPath: "transform.positionY",
+										channel: undefined,
+									})
+								: undefined,
+						};
+					}),
 				};
-				dragStateRef.current = dragState;
-				pendingGestureRef.current = null;
+				interactionRef.current = activeDragState;
 				setIsDragging(true);
+			} else {
+				return;
 			}
 
-			const deltaX = currentPos.x - dragState.startX;
-			const deltaY = currentPos.y - dragState.startY;
-			const firstElement = dragState.elements[0];
+			const deltaX = currentPos.x - activeDragState.startX;
+			const deltaY = currentPos.y - activeDragState.startY;
+			const firstElement = activeDragState.elements[0];
 			const proposedPosition = {
 				x: firstElement.initialTransform.position.x + deltaX,
 				y: firstElement.initialTransform.position.y + deltaY,
@@ -364,8 +582,8 @@ export function usePreviewInteraction({
 				? snapPosition({
 						proposedPosition,
 						canvasSize,
-						elementSize: dragState.bounds,
-						rotation: dragState.bounds.rotation,
+						elementSize: activeDragState.bounds,
+						rotation: activeDragState.bounds.rotation,
 						snapThreshold,
 					})
 				: {
@@ -373,57 +591,166 @@ export function usePreviewInteraction({
 						activeLines: [] as SnapLine[],
 					};
 
-			onSnapLinesChange?.(activeLines);
-
 			const deltaSnappedX =
 				snappedPosition.x - firstElement.initialTransform.position.x;
 			const deltaSnappedY =
 				snappedPosition.y - firstElement.initialTransform.position.y;
 
-			const updates = dragState.elements.map(
-				({ trackId, elementId, initialTransform }) => ({
-					trackId,
-					elementId,
+			const updates = activeDragState.elements.map((el) => {
+				const newPos = {
+					x: el.initialTransform.position.x + deltaSnappedX,
+					y: el.initialTransform.position.y + deltaSnappedY,
+				};
+				el.finalPosition = newPos;
+				return {
+					trackId: el.trackId,
+					elementId: el.elementId,
 					updates: {
 						transform: {
-							...initialTransform,
-							position: {
-								x: initialTransform.position.x + deltaSnappedX,
-								y: initialTransform.position.y + deltaSnappedY,
-							},
+							...el.initialTransform,
+							position: newPos,
 						},
+						...(el.shouldClearPositionAnimation && {
+							animations: el.animationsWithoutPosition,
+						}),
 					},
-				}),
-			);
+				};
+			});
 
-			editor.timeline.previewElements({ updates });
+			onSnapLinesChange?.(activeLines);
+			schedulePreviewElements(updates);
 		},
-		[editor, isShiftHeldRef, onSnapLinesChange, releaseCapturedPointer, viewport],
+		[
+			editor,
+			clearInteractionState,
+			isShiftHeldRef,
+			onSnapLinesChange,
+			releaseCapturedPointer,
+			schedulePreviewElements,
+			viewport,
+		],
 	);
 
 	const handlePointerUp = useCallback(
 		({ type }: React.PointerEvent) => {
-			const dragState = dragStateRef.current;
-			if (dragState) {
-				if (type === "pointercancel") {
-					editor.timeline.discardPreview();
-				} else {
-					editor.timeline.commitPreview();
+			const state = interactionRef.current;
+
+			if (state.kind === "marquee") {
+				interactionRef.current = { kind: "idle" };
+				marqueeRectRef.current = null;
+				setMarqueeRect(null);
+				clearScheduledPreview();
+				onSnapLinesChange?.([]);
+				releaseCapturedPointer(state);
+
+				if (type !== "pointercancel") {
+					const tracks = editor.scenes.getActiveScene().tracks;
+					const currentTime = editor.playback.getCurrentTime();
+					const mediaAssets = editor.media.getAssets();
+					const canvasSize = editor.project.getActive().settings.canvasSize;
+
+					const elementsWithBounds = getVisibleElementsWithBounds({
+						tracks,
+						currentTime,
+						canvasSize,
+						mediaAssets,
+					});
+
+					const isShift = isShiftHeldRef.current;
+					const existingSelection = isShift
+						? editor.selection.getSelectedElements()
+						: [];
+
+					const selected: ElementRef[] = [...existingSelection];
+
+					for (const el of elementsWithBounds) {
+						if (
+							boundsOverlapMarquee(el.bounds, {
+								x1: state.rect.startX,
+								y1: state.rect.startY,
+								x2: state.rect.endX,
+								y2: state.rect.endY,
+							})
+						) {
+							const ref: ElementRef = {
+								trackId: el.trackId,
+								elementId: el.elementId,
+							};
+							if (
+								!selected.some((s) => isSameElementRef({ left: s, right: ref }))
+							) {
+								selected.push(ref);
+							}
+						}
+					}
+
+					if (selected.length > 0) {
+						editor.selection.setSelectedElements({ elements: selected });
+					} else {
+						editor.selection.clearSelection();
+					}
 				}
 
-				dragStateRef.current = null;
-				pendingGestureRef.current = null;
-				setIsDragging(false);
-				onSnapLinesChange?.([]);
-				releaseCapturedPointer(dragState);
 				return;
 			}
 
-			const pendingGesture = pendingGestureRef.current;
-			if (!pendingGesture) return;
+			if (state.kind === "dragging") {
+				flushScheduledPreview();
+
+				if (type === "pointercancel") {
+					editor.timeline.discardPreview();
+				} else {
+					editor.timeline.discardPreview();
+
+					const currentTime = editor.playback.getCurrentTime();
+					for (const el of state.elements) {
+						const element = editor.timeline.getElementsWithTracks({
+							elements: [{ trackId: el.trackId, elementId: el.elementId }],
+						})[0]?.element;
+						if (!element) continue;
+						if (!isVisualElement(element)) continue;
+						const localTime = getElementLocalTime({
+							timelineTime: currentTime,
+							elementStartTime: element.startTime,
+							elementDuration: element.duration,
+						});
+						if (localTime < 0) continue;
+
+						const deltaSnappedX =
+							el.finalPosition.x - el.initialTransform.position.x;
+						const deltaSnappedY =
+							el.finalPosition.y - el.initialTransform.position.y;
+
+						editor.timeline.upsertKeyframes({
+							keyframes: [
+								{
+									trackId: el.trackId,
+									elementId: el.elementId,
+									propertyPath: "transform.positionX",
+									time: localTime,
+									value: el.initialTransform.position.x + deltaSnappedX,
+								},
+								{
+									trackId: el.trackId,
+									elementId: el.elementId,
+									propertyPath: "transform.positionY",
+									time: localTime,
+									value: el.initialTransform.position.y + deltaSnappedY,
+								},
+							],
+						});
+					}
+				}
+
+				clearInteractionState();
+				releaseCapturedPointer(state);
+				return;
+			}
+
+			if (state.kind !== "pending") return;
 
 			if (type !== "pointercancel") {
-				const clickTarget = pendingGesture.topmostHit;
+				const clickTarget = state.topmostHit;
 				if (!clickTarget) {
 					editor.selection.clearSelection();
 				} else {
@@ -438,11 +765,18 @@ export function usePreviewInteraction({
 				}
 			}
 
-			pendingGestureRef.current = null;
-			onSnapLinesChange?.([]);
-			releaseCapturedPointer(pendingGesture);
+			clearInteractionState();
+			releaseCapturedPointer(state);
 		},
-		[editor, onSnapLinesChange, releaseCapturedPointer],
+		[
+			clearInteractionState,
+			editor,
+			isShiftHeldRef,
+			flushScheduledPreview,
+			onSnapLinesChange,
+			releaseCapturedPointer,
+			clearScheduledPreview,
+		],
 	);
 
 	return {
@@ -452,5 +786,6 @@ export function usePreviewInteraction({
 		onDoubleClick: handleDoubleClick,
 		editingText,
 		commitTextEdit,
+		marqueeRect,
 	};
 }

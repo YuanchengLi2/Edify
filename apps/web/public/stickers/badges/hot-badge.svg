@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hotGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="40%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M64,4 C64,4 90,30 90,60 C90,80 78,96 64,96 C50,96 38,80 38,60 C38,30 64,4 64,4 Z" fill="url(#hotGrad)"/>
+    <path d="M64,20 C64,20 80,38 80,56 C80,70 73,80 64,80 C55,80 48,70 48,56 C48,38 64,20 64,20 Z" fill="#FDE68A" opacity="0.5"/>
+    <path d="M64,36 C64,36 72,46 72,54 C72,62 68,66 64,66 C60,66 56,62 56,54 C56,46 64,36 64,36 Z" fill="#FEF3C7" opacity="0.6"/>
+    <text x="64" y="118" text-anchor="middle" fill="#DC2626" font-family="Arial Black,sans-serif" font-size="22" font-weight="bold" letter-spacing="3" filter="url(#glow)">HOT!</text>
+  </g>
+</svg>

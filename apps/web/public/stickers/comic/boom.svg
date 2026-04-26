@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="ht-boom" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#D500F9" opacity="0.25"/>
+    </pattern>
+  </defs>
+  <polygon points="64,2 74,26 100,10 88,38 122,40 94,58 120,80 88,74 76,106 64,84 52,106 40,74 8,80 34,58 6,40 40,38 28,10 54,26" fill="#AA00FF" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,2 74,26 100,10 88,38 122,40 94,58 120,80 88,74 76,106 64,84 52,106 40,74 8,80 34,58 6,40 40,38 28,10 54,26" fill="url(#ht-boom)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="38" font-weight="900" fill="#FFEB3B" stroke="#1a1a1a" stroke-width="3" letter-spacing="2">BOOM!</text>
+</svg>

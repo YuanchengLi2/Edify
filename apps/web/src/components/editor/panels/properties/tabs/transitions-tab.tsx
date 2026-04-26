@@ -44,7 +44,10 @@ export function TransitionsTab({
 
 	const updateTransitionIn = useCallback(
 		(patch: Partial<Transition>) => {
-			const current = element.transitionIn ?? { type: "dissolve" as TransitionType, duration: 0.5 };
+			const current = element.transitionIn ?? {
+				type: "dissolve" as TransitionType,
+				duration: 0.5,
+			};
 			const updated: Transition = { ...current, ...patch };
 			editor.timeline.updateElements({
 				updates: [
@@ -61,7 +64,10 @@ export function TransitionsTab({
 
 	const updateTransitionOut = useCallback(
 		(patch: Partial<Transition>) => {
-			const current = element.transitionOut ?? { type: "dissolve" as TransitionType, duration: 0.5 };
+			const current = element.transitionOut ?? {
+				type: "dissolve" as TransitionType,
+				duration: 0.5,
+			};
 			const updated: Transition = { ...current, ...patch };
 			editor.timeline.updateElements({
 				updates: [

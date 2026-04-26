@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="56" fill="none" stroke="#DC2626" stroke-width="6"/>
+    <circle cx="64" cy="64" r="48" fill="none" stroke="#DC2626" stroke-width="3"/>
+    <circle cx="64" cy="64" r="44" fill="none" stroke="#DC2626" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="64" y="48" text-anchor="middle" fill="#DC2626" font-family="Arial Black,sans-serif" font-size="16" font-weight="bold">★ OFFICIAL ★</text>
+    <line x1="24" y1="56" x2="104" y2="56" stroke="#DC2626" stroke-width="2"/>
+    <text x="64" y="78" text-anchor="middle" fill="#DC2626" font-family="Arial,sans-serif" font-size="13" font-weight="bold" letter-spacing="4">APPROVED</text>
+    <line x1="24" y1="86" x2="104" y2="86" stroke="#DC2626" stroke-width="2"/>
+    <text x="64" y="102" text-anchor="middle" fill="#DC2626" font-family="Arial,sans-serif" font-size="8" letter-spacing="2">GUARANTEED</text>
+  </g>
+</svg>

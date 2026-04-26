@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="leafGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2ecc71"/>
+      <stop offset="100%" stop-color="#1a9c56"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(64,64)">
+    <path d="M0 -4 Q-8 -30 -4 -44 Q-2 -48 0 -44 Q2 -48 4 -44 Q8 -30 0 -4 Z" fill="url(#leafGrad)" stroke="#158a48" stroke-width="1"/>
+    <path d="M0 -4 Q-30 -8 -44 -4 Q-48 -2 -44 0 Q-48 2 -44 4 Q-30 8 0 -4 Z" fill="url(#leafGrad)" stroke="#158a48" stroke-width="1"/>
+    <path d="M0 -4 Q8 -30 4 -44" fill="none" stroke="#1a7a42" stroke-width="0.5" opacity="0.5"/>
+    <path d="M0 -4 Q-30 8 -44 4" fill="none" stroke="#1a7a42" stroke-width="0.5" opacity="0.5"/>
+    <path d="M0 -4 Q8 22 4 36 Q2 40 0 36 Q-2 40 -4 36 Q-22 22 0 -4 Z" fill="url(#leafGrad)" stroke="#158a48" stroke-width="1" transform="rotate(90)"/>
+    <path d="M0 -4 Q8 22 4 36 Q2 40 0 36 Q-2 40 -4 36 Q-22 22 0 -4 Z" fill="url(#leafGrad)" stroke="#158a48" stroke-width="1" transform="rotate(180)"/>
+    <path d="M0 -4 Q8 22 4 36 Q2 40 0 36 Q-2 40 -4 36 Q-22 22 0 -4 Z" fill="url(#leafGrad)" stroke="#158a48" stroke-width="1" transform="rotate(270)"/>
+    <path d="M0 -8 Q-6 -28 -3 -40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(45)"/>
+    <path d="M0 -8 Q-6 -28 -3 -40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(135)"/>
+    <path d="M0 -8 Q-6 -28 -3 -40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(225)"/>
+    <path d="M0 -8 Q-6 -28 -3 -40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(315)"/>
+    <circle cx="0" cy="0" r="5" fill="#27ae60" stroke="#1a7a42" stroke-width="1"/>
+    <circle cx="0" cy="0" r="2.5" fill="#2ecc71"/>
+  </g>
+  <line x1="64" y1="64" x2="64" y2="118" stroke="#1a7a42" stroke-width="3" stroke-linecap="round"/>
+  <path d="M64 90 Q54 84 52 78" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round"/>
+  <path d="M52 78 Q50 74 54 76" fill="#2ecc71"/>
+</svg>

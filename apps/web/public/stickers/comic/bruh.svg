@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bruh-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C4DFF"/>
+      <stop offset="100%" stop-color="#651FFF"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="18" width="116" height="92" rx="14" fill="url(#bruh-grad)" stroke="#1a1a1a" stroke-width="5"/>
+  <rect x="12" y="24" width="104" height="80" rx="10" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="5,4" opacity="0.25"/>
+  <text x="64" y="76" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="42" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="5">BRUH</text>
+  <circle cx="42" cy="42" r="5" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+  <circle cx="42" cy="42" r="1.5" fill="#FFFFFF"/>
+  <circle cx="86" cy="42" r="5" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+  <circle cx="86" cy="42" r="1.5" fill="#FFFFFF"/>
+  <line x1="56" y1="50" x2="72" y2="50" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

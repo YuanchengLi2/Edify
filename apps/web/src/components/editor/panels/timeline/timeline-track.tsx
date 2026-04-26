@@ -1,23 +1,17 @@
 "use client";
-
+import { memo } from "react";
 import { useElementSelection } from "@/hooks/timeline/element/use-element-selection";
 import { TimelineElement } from "./timeline-element";
 import type { TimelineTrack } from "@/lib/timeline";
 import type { TimelineElement as TimelineElementType } from "@/lib/timeline";
 import type { SnapPoint } from "@/lib/timeline/snap-utils";
 import { TIMELINE_LAYERS } from "./layers";
-import { BASE_TIMELINE_PIXELS_PER_SECOND } from "@/lib/timeline/scale";
-import { useEdgeAutoScroll } from "@/hooks/timeline/use-edge-auto-scroll";
 import type { ElementDragState } from "@/lib/timeline";
-import { useEditor } from "@/hooks/use-editor";
 
 interface TimelineTrackContentProps {
 	track: TimelineTrack;
 	zoomLevel: number;
 	dragState: ElementDragState;
-	rulerScrollRef: React.RefObject<HTMLDivElement | null>;
-	tracksScrollRef: React.RefObject<HTMLDivElement | null>;
-	lastMouseXRef: React.RefObject<number>;
 	onSnapPointChange?: (snapPoint: SnapPoint | null) => void;
 	onResizeStateChange?: (params: { isResizing: boolean }) => void;
 	onElementMouseDown: (params: {
@@ -36,13 +30,10 @@ interface TimelineTrackContentProps {
 	targetElementId?: string | null;
 }
 
-export function TimelineTrackContent({
+export const TimelineTrackContent = memo(function TimelineTrackContent({
 	track,
 	zoomLevel,
 	dragState,
-	rulerScrollRef,
-	tracksScrollRef,
-	lastMouseXRef,
 	onSnapPointChange,
 	onResizeStateChange,
 	onElementMouseDown,
@@ -53,15 +44,6 @@ export function TimelineTrackContent({
 	targetElementId = null,
 }: TimelineTrackContentProps) {
 	const { isElementSelected } = useElementSelection();
-	const duration = useEditor((e) => e.timeline.getTotalDuration());
-
-	useEdgeAutoScroll({
-		isActive: dragState.isDragging,
-		getMouseClientX: () => lastMouseXRef.current ?? 0,
-		rulerScrollRef,
-		tracksScrollRef,
-		contentWidth: duration * BASE_TIMELINE_PIXELS_PER_SECOND * zoomLevel,
-	});
 
 	return (
 		<div className="relative size-full">
@@ -69,9 +51,9 @@ export function TimelineTrackContent({
 				type="button"
 				className="absolute inset-0 m-0 size-full appearance-none border-0 bg-transparent p-0"
 				aria-label={`Select ${track.name} track`}
-			onMouseUp={(event) => {
+				onMouseUp={(event) => {
 					if (shouldIgnoreClick?.()) return;
-				onTrackMouseUp?.(event);
+					onTrackMouseUp?.(event);
 				}}
 				onMouseDown={(event) => {
 					event.preventDefault();
@@ -126,4 +108,23 @@ export function TimelineTrackContent({
 			</div>
 		</div>
 	);
-}
+	},
+	(prev, next) => {
+		const wasTrackDragging = prev.track.elements.some((e) =>
+			prev.dragState.dragElementIds.includes(e.id),
+		);
+		const isTrackDragging = next.track.elements.some((e) =>
+			next.dragState.dragElementIds.includes(e.id),
+		);
+
+		if (wasTrackDragging || isTrackDragging) return false;
+
+		return (
+			prev.track === next.track &&
+			prev.zoomLevel === next.zoomLevel &&
+			prev.targetElementId === next.targetElementId
+		);
+	}
+);
+
+TimelineTrackContent.displayName = "TimelineTrackContent";

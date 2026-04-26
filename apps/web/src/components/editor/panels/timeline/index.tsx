@@ -61,7 +61,6 @@ import { SELECTED_TRACK_ROW_CLASS } from "./theme";
 import {
 	computeTrackExpansionHeight,
 	getTrackExpandedRows,
-	getExpansionHeight,
 	getPropertyLabel,
 	type ExpandedRow,
 } from "./expanded-layout";
@@ -107,6 +106,12 @@ const TRACK_ICONS: Record<TimelineTrack["type"], ReactNode> = {
 			className="text-muted-foreground size-4 shrink-0"
 		/>
 	),
+	mask: (
+		<HugeiconsIcon
+			icon={TaskAdd02Icon} // Use an existing icon or import another.
+			className="text-muted-foreground size-4 shrink-0"
+		/>
+	),
 };
 
 export function Timeline() {
@@ -119,7 +124,9 @@ export function Timeline() {
 	} = useElementSelection();
 	const editor = useEditor();
 	const timeline = editor.timeline;
-	const scene = useEditor((currentEditor) => currentEditor.scenes.getActiveSceneOrNull());
+	const scene = useEditor((currentEditor) =>
+		currentEditor.scenes.getActiveSceneOrNull(),
+	);
 	const tracks = useMemo<TimelineTrack[]>(
 		() =>
 			scene
@@ -315,14 +322,13 @@ export function Timeline() {
 		onSnapPointChange: handleSnapPointChange,
 	});
 
-	const { handleRulerMouseDown: handlePlayheadRulerMouseDown } =
-		useTimelinePlayhead({
-			zoomLevel,
-			rulerRef,
-			rulerScrollRef,
-			tracksScrollRef,
-			playheadRef,
-		});
+	useTimelinePlayhead({
+		zoomLevel,
+		rulerRef,
+		rulerScrollRef,
+		tracksScrollRef,
+		playheadRef,
+	});
 
 	const { isDragOver, dropTarget, dragProps } = useTimelineDragDrop({
 		containerRef: tracksContainerRef,
@@ -366,7 +372,10 @@ export function Timeline() {
 
 	const containerWidth =
 		tracksContainerRef.current?.clientWidth || FALLBACK_CONTAINER_WIDTH;
-	const contentWidth = timelineTimeToPixels({ time: timelineDuration, zoomLevel });
+	const contentWidth = timelineTimeToPixels({
+		time: timelineDuration,
+		zoomLevel,
+	});
 	const paddingPx = getTimelinePaddingPx({
 		containerWidth,
 		zoomLevel,
@@ -381,6 +390,14 @@ export function Timeline() {
 		tracksContainerRef.current?.clientWidth ??
 		containerWidth;
 	const hasHorizontalScrollbar = dynamicTimelineWidth > tracksViewportWidth;
+
+	useEdgeAutoScroll({
+		isActive: dragState.isDragging,
+		getMouseClientX: () => lastMouseXRef.current,
+		rulerScrollRef,
+		tracksScrollRef,
+		contentWidth: dynamicTimelineWidth,
+	});
 
 	useEdgeAutoScroll({
 		isActive: bookmarkDragState.isDragging,
@@ -476,7 +493,7 @@ export function Timeline() {
 								handleWheel={handleWheel}
 								handleTimelineContentClick={handleRulerClick}
 								handleRulerTrackingMouseDown={handleRulerMouseDown}
-								handleRulerMouseDown={handlePlayheadRulerMouseDown}
+								handleSelectionMouseDown={handleSelectionMouseDown}
 							/>
 							<TimelineBookmarksRow
 								zoomLevel={zoomLevel}
@@ -486,7 +503,7 @@ export function Timeline() {
 								handleWheel={handleWheel}
 								handleTimelineContentClick={handleRulerClick}
 								handleRulerTrackingMouseDown={handleRulerMouseDown}
-								handleRulerMouseDown={handlePlayheadRulerMouseDown}
+								handleSelectionMouseDown={handleSelectionMouseDown}
 							/>
 						</div>
 					</div>
@@ -513,7 +530,10 @@ export function Timeline() {
 											TRACKS_CONTAINER_HEIGHT.min,
 											Math.min(
 												TRACKS_CONTAINER_HEIGHT.max,
-												getTotalTracksHeight({ tracks, getExtraHeight: getTrackExpansionHeight }),
+												getTotalTracksHeight({
+													tracks,
+													getExtraHeight: getTrackExpansionHeight,
+												}),
 											),
 										) + TIMELINE_CONTENT_TOP_PADDING_PX
 									}px`,
@@ -533,8 +553,8 @@ export function Timeline() {
 								}}
 							>
 								{tracks.length > 0 && (
-		<TimelineTrackRows
-					mainTrackId={mainTrackId}
+									<TimelineTrackRows
+										mainTrackId={mainTrackId}
 										zoomLevel={zoomLevel}
 										dragState={dragState}
 										tracksScrollRef={tracksScrollRef}
@@ -798,8 +818,7 @@ function TimelineTrackRows({
 						<div
 							className={cn(
 								"absolute right-0 left-0 transition-colors",
-								tracksWithSelection.has(track.id) &&
-									SELECTED_TRACK_ROW_CLASS,
+								tracksWithSelection.has(track.id) && SELECTED_TRACK_ROW_CLASS,
 							)}
 							style={{
 								top: `${TIMELINE_CONTENT_TOP_PADDING_PX + getCumulativeHeightBefore({ tracks, trackIndex: index, getExtraHeight: getTrackExpansionHeight })}px`,
@@ -810,9 +829,6 @@ function TimelineTrackRows({
 								track={track}
 								zoomLevel={zoomLevel}
 								dragState={dragState}
-								rulerScrollRef={tracksScrollRef}
-								tracksScrollRef={tracksScrollRef}
-								lastMouseXRef={lastMouseXRef}
 								onSnapPointChange={onSnapPointChange}
 								onResizeStateChange={onResizeStateChange}
 								onElementMouseDown={onElementMouseDown}
@@ -929,12 +945,10 @@ function TrackToggleIcon({
 function PropertyTree({ rows }: { rows: ExpandedRow[] }) {
 	return (
 		<div className="flex flex-col overflow-hidden">
-			{rows.map((row, index) => (
+			{rows.map((row, _index) => (
 				<div
 					key={row.propertyPath}
-					className={cn(
-						"flex shrink-0 items-center px-3 bg-muted/50",
-					)}
+					className={cn("flex shrink-0 items-center px-3 bg-muted/50")}
 					style={{ height: `${KEYFRAME_LANE_HEIGHT_PX}px` }}
 				>
 					<span className="text-muted-foreground truncate text-xs leading-none">

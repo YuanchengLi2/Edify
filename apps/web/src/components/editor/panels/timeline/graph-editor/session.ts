@@ -328,15 +328,16 @@ export function resolveGraphEditorSelectionState({
 
 	// For shared-easing bindings (e.g. color), all components always use the same
 	// curve. Collapse to a single option so no per-component tabs are shown.
-	const visibleContexts =
-		easingMode === "shared" ? [contexts[0]] : contexts;
+	const visibleContexts = easingMode === "shared" ? [contexts[0]] : contexts;
 	const allContexts = contexts.map(({ context }) => context);
 
 	const nextSegmentContexts = visibleContexts.filter(
 		({ context }) => context.nextKey !== null,
 	);
 	const preferredContext =
-		visibleContexts.find(({ option }) => option.key === preferredComponentKey) ?? null;
+		visibleContexts.find(
+			({ option }) => option.key === preferredComponentKey,
+		) ?? null;
 	const activeContext =
 		preferredContext ?? nextSegmentContexts[0] ?? visibleContexts[0];
 	const componentOptions = visibleContexts.map(({ option }) => option);
@@ -359,7 +360,9 @@ export function resolveGraphEditorSelectionState({
 		});
 	}
 
-	const referenceSpanValue = getReferenceSpanValue({ context: activeContext.context });
+	const referenceSpanValue = getReferenceSpanValue({
+		context: activeContext.context,
+	});
 	const cubicBezier =
 		activeContext.context.keyframe.segmentToNext === "linear"
 			? GRAPH_LINEAR_CURVE
@@ -371,7 +374,8 @@ export function resolveGraphEditorSelectionState({
 	if (!cubicBezier) {
 		return createUnavailableState({
 			reason: "selected-segment-is-flat",
-			message: "Cannot edit a segment where both keyframes are at the same time.",
+			message:
+				"Cannot edit a segment where both keyframes are at the same time.",
 			componentOptions,
 			activeComponentKey: activeContext.option.key,
 		});

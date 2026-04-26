@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="hg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B9D"/>
+      <stop offset="100%" stop-color="#C44569"/>
+    </linearGradient>
+    <linearGradient id="hg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A9E"/>
+      <stop offset="100%" stop-color="#FF6B9D"/>
+    </linearGradient>
+    <linearGradient id="hg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E91E63"/>
+      <stop offset="100%" stop-color="#AD1457"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg1)" opacity="0.9" transform="translate(-15,-2)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg2)" opacity="0.75" transform="translate(18,5) scale(0.7)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg3)" opacity="0.65" transform="translate(-5,30) scale(0.55)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg1)" opacity="0.5" transform="translate(30,35) scale(0.45)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg2)" opacity="0.85" transform="translate(-25,55) scale(0.6)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg3)" opacity="0.55" transform="translate(25,65) scale(0.5)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg1)" opacity="0.4" transform="translate(5,80) scale(0.4)"/>
+  <path d="M64 20 C64 12 74 4 80 12 C86 20 64 36 64 36 C64 36 42 20 48 12 C54 4 64 12 64 20 Z" fill="url(#hg2)" opacity="0.7" transform="translate(-30,85) scale(0.5)"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="treeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2ecc71"/>
+      <stop offset="100%" stop-color="#1a9c56"/>
+    </linearGradient>
+  </defs>
+  <polygon points="64,8 32,52 48,52 20,96 108,96 80,52 96,52" fill="url(#treeGrad)" stroke="#158a48" stroke-width="1.5"/>
+  <rect x="56" y="96" width="16" height="18" rx="2" fill="#8B4513" stroke="#5C2E00" stroke-width="1"/>
+  <rect x="48" y="112" width="32" height="6" rx="2" fill="#A0522D"/>
+  <polygon points="64,2 60,14 68,14" fill="#f1c40f" stroke="#d4a800" stroke-width="0.5"/>
+  <circle cx="52" cy="42" r="4" fill="#e74c3c"/>
+  <circle cx="76" cy="42" r="4" fill="#3498db"/>
+  <circle cx="44" cy="68" r="4.5" fill="#f1c40f"/>
+  <circle cx="84" cy="68" r="4.5" fill="#e74c3c"/>
+  <circle cx="64" cy="58" r="4" fill="#9b59b6"/>
+  <circle cx="36" cy="86" r="5" fill="#3498db"/>
+  <circle cx="92" cy="86" r="5" fill="#f1c40f"/>
+  <circle cx="64" cy="80" r="4.5" fill="#e74c3c"/>
+  <circle cx="52" cy="92" r="3.5" fill="#9b59b6"/>
+  <circle cx="76" cy="92" r="3.5" fill="#2ecc71"/>
+  <line x1="58" y1="30" x2="58" y2="24" stroke="#f39c12" stroke-width="1.5"/>
+  <circle cx="58" cy="23" r="2" fill="#f39c12"/>
+  <line x1="70" y1="36" x2="70" y2="30" stroke="#f39c12" stroke-width="1.5"/>
+  <circle cx="70" cy="29" r="2" fill="#f39c12"/>
+  <polygon points="64,18 61,24 67,24" fill="#f1c40f"/>
+  <polygon points="64,0 61,10 67,10" fill="#f1c40f" stroke="#d4a800" stroke-width="0.5"/>
+</svg>

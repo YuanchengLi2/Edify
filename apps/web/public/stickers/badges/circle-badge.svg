@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="seal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="64" r="58" fill="url(#seal)"/>
+    <circle cx="64" cy="64" r="50" fill="none" stroke="#E0E7FF" stroke-width="2" stroke-dasharray="5,3"/>
+    <circle cx="64" cy="64" r="44" fill="none" stroke="#E0E7FF" stroke-width="1.5"/>
+    <circle cx="64" cy="64" r="38" fill="none" stroke="#A5B4FC" stroke-width="1"/>
+    <text x="64" y="60" text-anchor="middle" fill="#E0E7FF" font-family="Arial,sans-serif" font-size="11" font-weight="bold" letter-spacing="3">APPROVED</text>
+    <text x="64" y="78" text-anchor="middle" fill="#C7D2FE" font-family="Arial,sans-serif" font-size="9" letter-spacing="2">CERTIFIED</text>
+    <polygon points="64,24 67,32 75,32 69,37 71,45 64,40 57,45 59,37 53,32 61,32" fill="#FDE68A" opacity="0.9"/>
+  </g>
+</svg>

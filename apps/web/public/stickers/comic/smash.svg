@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="ht-smash" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#00C853" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <polygon points="64,4 80,28 112,14 96,42 126,52 100,66 124,92 90,80 78,112 64,90 50,112 38,80 4,92 28,66 2,52 32,42 16,14 48,28" fill="#00C853" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,4 80,28 112,14 96,42 126,52 100,66 124,92 90,80 78,112 64,90 50,112 38,80 4,92 28,66 2,52 32,42 16,14 48,28" fill="url(#ht-smash)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="36" font-weight="900" fill="#FFEB3B" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="2">SMASH!</text>
+</svg>

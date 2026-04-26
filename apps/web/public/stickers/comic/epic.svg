@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="epic-fire" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FF1744"/>
+      <stop offset="50%" stop-color="#FF6D00"/>
+      <stop offset="100%" stop-color="#FFD600"/>
+    </linearGradient>
+    <pattern id="ht-epic" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FF6D00" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <polygon points="64,8 80,30 108,18 94,44 122,52 98,66 118,92 88,80 76,108 64,90 52,108 40,80 10,92 30,66 6,52 34,44 20,18 48,30" fill="#AA00FF" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,8 80,30 108,18 94,44 122,52 98,66 118,92 88,80 76,108 64,90 52,108 40,80 10,92 30,66 6,52 34,44 20,18 48,30" fill="url(#ht-epic)"/>
+  <text x="64" y="74" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="40" font-weight="900" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="3">EPIC</text>
+  <path d="M20,118 Q24,96 32,102 Q36,86 44,94 Q48,78 56,88 Q58,74 64,84 Q68,74 72,88 Q76,78 84,94 Q88,86 96,102 Q100,96 108,118 Z" fill="url(#epic-fire)" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M36,118 Q40,104 48,108 Q52,98 58,106 Q60,98 64,104 Q68,98 70,106 Q76,98 80,108 Q84,104 92,118 Z" fill="#FFD600" opacity="0.6"/>
+</svg>

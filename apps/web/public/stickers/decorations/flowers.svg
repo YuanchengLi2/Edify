@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="fg1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FF8C00"/>
+    </radialGradient>
+    <radialGradient id="fg2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF"/>
+      <stop offset="100%" stop-color="#FFE4E1"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(64,50)">
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF6B9D" opacity="0.85" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF8FB1" opacity="0.85" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF6B9D" opacity="0.85" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF8FB1" opacity="0.85" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF6B9D" opacity="0.85" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#FF8FB1" opacity="0.85" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="7" fill="url(#fg1)"/>
+    <circle cx="0" cy="0" r="4" fill="#FFF" opacity="0.3"/>
+  </g>
+  <g transform="translate(28,28) scale(0.55)">
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#A78BFA" opacity="0.8" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#C4B5FD" opacity="0.8" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#A78BFA" opacity="0.8" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#C4B5FD" opacity="0.8" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#A78BFA" opacity="0.8" transform="rotate(288)"/>
+    <circle cx="0" cy="0" r="6" fill="#FBBF24"/>
+  </g>
+  <g transform="translate(100,35) scale(0.5)">
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#60A5FA" opacity="0.75" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#93C5FD" opacity="0.75" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#60A5FA" opacity="0.75" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#93C5FD" opacity="0.75" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#60A5FA" opacity="0.75" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#93C5FD" opacity="0.75" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="6" fill="#FBBF24"/>
+  </g>
+  <g transform="translate(25,95) scale(0.45)">
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#34D399" opacity="0.7" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#6EE7B7" opacity="0.7" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#34D399" opacity="0.7" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#6EE7B7" opacity="0.7" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#34D399" opacity="0.7" transform="rotate(288)"/>
+    <circle cx="0" cy="0" r="6" fill="#FBBF24"/>
+  </g>
+  <g transform="translate(100,95) scale(0.5)">
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F472B6" opacity="0.75" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F9A8D4" opacity="0.75" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F472B6" opacity="0.75" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F9A8D4" opacity="0.75" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F472B6" opacity="0.75" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-14" rx="9" ry="14" fill="#F9A8D4" opacity="0.75" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="6" fill="url(#fg2)"/>
+  </g>
+</svg>

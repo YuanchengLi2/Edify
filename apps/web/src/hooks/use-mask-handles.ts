@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePreviewViewport } from "@/components/editor/panels/preview/preview-viewport";
+import { usePropertiesStore } from "@/components/editor/panels/properties/stores/properties-store";
 import { useEditor } from "@/hooks/use-editor";
 import { useShiftKey } from "@/hooks/use-shift-key";
+import { resolveActiveMaskId } from "@/lib/masks/active-mask";
 import { masksRegistry } from "@/lib/masks";
 import {
 	getMaskHandlePositions,
@@ -44,6 +46,12 @@ export function useMaskHandles({
 	const captureRef = useRef<{ element: HTMLElement; pointerId: number } | null>(
 		null,
 	);
+	const pendingPreviewUpdatesRef = useRef<Array<{
+		trackId: string;
+		elementId: string;
+		updates: Partial<MaskableElement>;
+	}> | null>(null);
+	const pendingPreviewFrameRef = useRef<number | null>(null);
 
 	const tracks = useEditor(
 		(e) => e.timeline.getPreviewTracks() ?? e.scenes.getActiveScene().tracks,
@@ -54,13 +62,20 @@ export function useMaskHandles({
 		(e) => e.project.getActive().settings.canvasSize,
 	);
 	const selectedElements = useEditor((e) => e.selection.getSelectedElements());
+	const activeMaskByElement = usePropertiesStore(
+		(state) => state.activeMaskByElement,
+	);
 
-	const elementsWithBounds = getVisibleElementsWithBounds({
-		tracks,
-		currentTime,
-		canvasSize,
-		mediaAssets,
-	});
+	const elementsWithBounds = useMemo(
+		() =>
+			getVisibleElementsWithBounds({
+				tracks,
+				currentTime,
+				canvasSize,
+				mediaAssets,
+			}),
+		[tracks, currentTime, canvasSize, mediaAssets],
+	);
 
 	const selectedWithMask =
 		selectedElements.length === 1
@@ -73,7 +88,22 @@ export function useMaskHandles({
 					if (!entry) return null;
 					const element = entry.element as MaskableElement;
 					if (!element.masks?.length) return null;
-					return { ...entry, element, mask: element.masks[0] };
+					const activeMaskId =
+						activeMaskByElement[`${sel.trackId}:${sel.elementId}`] ?? null;
+					const resolvedMaskId = resolveActiveMaskId({
+						masks: element.masks,
+						activeMaskId,
+					});
+					const maskIndex = element.masks.findIndex(
+						(mask) => mask.id === resolvedMaskId,
+					);
+					if (maskIndex === -1) return null;
+					return {
+						...entry,
+						element,
+						mask: element.masks[maskIndex],
+						maskIndex,
+					};
 				})()
 			: null;
 
@@ -119,17 +149,66 @@ export function useMaskHandles({
 		captureRef.current = null;
 	}, []);
 
+	const clearScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		pendingPreviewUpdatesRef.current = null;
+	}, []);
+
+	const flushScheduledPreview = useCallback(() => {
+		if (pendingPreviewFrameRef.current !== null) {
+			cancelAnimationFrame(pendingPreviewFrameRef.current);
+			pendingPreviewFrameRef.current = null;
+		}
+		const pendingUpdates = pendingPreviewUpdatesRef.current;
+		pendingPreviewUpdatesRef.current = null;
+		if (pendingUpdates && pendingUpdates.length > 0) {
+			editor.timeline.previewElements({ updates: pendingUpdates });
+		}
+	}, [editor.timeline]);
+
+	const schedulePreviewElements = useCallback(
+		(
+			updates: Array<{
+				trackId: string;
+				elementId: string;
+				updates: Partial<MaskableElement>;
+			}>,
+		) => {
+			pendingPreviewUpdatesRef.current = updates;
+			if (pendingPreviewFrameRef.current !== null) {
+				return;
+			}
+
+			pendingPreviewFrameRef.current = requestAnimationFrame(() => {
+				pendingPreviewFrameRef.current = null;
+				const pendingUpdates = pendingPreviewUpdatesRef.current;
+				pendingPreviewUpdatesRef.current = null;
+				if (pendingUpdates && pendingUpdates.length > 0) {
+					editor.timeline.previewElements({ updates: pendingUpdates });
+				}
+			});
+		},
+		[editor.timeline],
+	);
+
+	useEffect(() => () => clearScheduledPreview(), [clearScheduledPreview]);
+
 	useEffect(() => {
 		if (!activeHandleId) return;
 
 		return registerCanceller({
 			fn: () => {
+				clearScheduledPreview();
 				editor.timeline.discardPreview();
 				clearMaskHandleState();
 				releaseCapturedPointer();
 			},
 		});
 	}, [
+		clearScheduledPreview,
 		activeHandleId,
 		clearMaskHandleState,
 		editor.timeline,
@@ -213,40 +292,44 @@ export function useMaskHandles({
 				...selectedWithMask.mask,
 				params: nextParams,
 			};
-			editor.timeline.previewElements({
-				updates: [
-					{
-						trackId: drag.trackId,
-						elementId: drag.elementId,
-						updates: {
-							masks: [
-								updatedMask,
-								...(selectedWithMask.element.masks?.slice(1) ?? []),
-							],
-						} as Partial<MaskableElement>,
-					},
-				],
-			});
+			const nextMasks = [...(selectedWithMask.element.masks ?? [])];
+			nextMasks[selectedWithMask.maskIndex] =
+				updatedMask as (typeof nextMasks)[number];
+			schedulePreviewElements([
+				{
+					trackId: drag.trackId,
+					elementId: drag.elementId,
+					updates: {
+						masks: nextMasks,
+					} as Partial<MaskableElement>,
+				},
+			]);
 		},
 		[
 			selectedWithMask,
 			canvasSize,
-			editor,
 			isShiftHeldRef,
 			onSnapLinesChange,
+			schedulePreviewElements,
 			viewport,
 		],
 	);
 
 	const handlePointerUp = useCallback(() => {
-			if (dragStateRef.current) {
-				editor.timeline.commitPreview();
-				clearMaskHandleState();
-			}
-			releaseCapturedPointer();
-		},
-		[clearMaskHandleState, editor, releaseCapturedPointer],
-	);
+		if (dragStateRef.current) {
+			flushScheduledPreview();
+			editor.timeline.commitPreview();
+			clearScheduledPreview();
+			clearMaskHandleState();
+		}
+		releaseCapturedPointer();
+	}, [
+		clearMaskHandleState,
+		clearScheduledPreview,
+		editor,
+		flushScheduledPreview,
+		releaseCapturedPointer,
+	]);
 
 	return {
 		selectedWithMask,

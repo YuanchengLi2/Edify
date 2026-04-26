@@ -8,9 +8,16 @@ export interface TranscriptionSegment {
 	end: number;
 }
 
+export interface TranscriptionWord {
+	text: string;
+	start: number;
+	end: number;
+}
+
 export interface TranscriptionResult {
 	text: string;
 	segments: TranscriptionSegment[];
+	words?: TranscriptionWord[];
 	language: string;
 }
 
@@ -40,8 +47,15 @@ export interface TranscriptionModel {
 	description: string;
 }
 
+export interface WordTiming {
+	word: string;
+	start: number;
+	end: number;
+}
+
 export interface CaptionChunk {
 	text: string;
 	startTime: number;
 	duration: number;
+	wordTimings?: WordTiming[];
 }

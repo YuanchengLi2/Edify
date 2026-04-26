@@ -10,7 +10,6 @@ import { ThemeToggle } from "./theme-toggle";
 import {
 	Copy01Icon,
 	Download01Icon,
-	GithubIcon,
 	LinkSquare02Icon,
 	Menu02Icon,
 } from "@hugeicons/core-free-icons";
@@ -36,7 +35,7 @@ export function Header() {
 		},
 		{
 			label: "AI",
-			href: "/#features",
+			href: "/#ai",
 		},
 		{
 			label: "Blog",
@@ -118,12 +117,6 @@ export function Header() {
 						</Button>
 					</div>
 					<div className="hidden items-center gap-3 md:flex">
-						<Link href={SOCIAL_LINKS.github}>
-							<Button className="bg-background text-sm" variant="outline">
-								<HugeiconsIcon icon={GithubIcon} className="size-4" />
-								Star
-							</Button>
-						</Link>
 						<Link href="/projects">
 							<Button className="text-sm">
 								Open Editor

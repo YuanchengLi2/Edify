@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#78909C"/>
+      <stop offset="100%" stop-color="#455A64"/>
+    </linearGradient>
+    <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#FFD600"/>
+      <stop offset="100%" stop-color="#FF8F00"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="64" cy="38" rx="44" ry="22" fill="url(#tg)" stroke="#37474F" stroke-width="1.5"/>
+  <ellipse cx="42" cy="30" rx="26" ry="20" fill="url(#tg)" stroke="#37474F" stroke-width="1.5"/>
+  <ellipse cx="82" cy="28" rx="28" ry="22" fill="#607D8B" stroke="#37474F" stroke-width="1.5"/>
+  <ellipse cx="60" cy="22" rx="20" ry="18" fill="#78909C" stroke="#37474F" stroke-width="1"/>
+  <polygon points="62,58 48,86 58,86 50,118 82,78 68,78 78,58" fill="url(#lg)" stroke="#F57F17" stroke-width="1.5" stroke-linejoin="round"/>
+  <g stroke="#90A4AE" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <line x1="28" y1="66" x2="24" y2="80"/>
+    <line x1="96" y1="64" x2="92" y2="78"/>
+  </g>
+</svg>

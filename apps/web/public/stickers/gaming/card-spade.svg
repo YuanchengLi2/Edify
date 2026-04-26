@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="csG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#424242"/>
+      <stop offset="100%" stop-color="#212121"/>
+    </linearGradient>
+    <filter id="csGlow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="#1a1a2e"/>
+  <rect x="28" y="20" width="72" height="100" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="2"/>
+  <rect x="28" y="20" width="72" height="20" rx="8" fill="url(#csG)"/>
+  <rect x="28" y="32" width="72" height="8" fill="url(#csG)"/>
+  <text x="64" y="90" font-family="serif" font-size="52" font-weight="bold" fill="#1a1a2e" text-anchor="middle" filter="url(#csGlow)">A</text>
+  <text x="40" y="56" font-family="serif" font-size="14" fill="#1a1a2e" font-weight="bold">A</text>
+  <path d="M36 44 L40 38 L44 44 L40 48 Z" fill="#1a1a2e"/>
+  <text x="88" y="106" font-family="serif" font-size="14" fill="#1a1a2e" font-weight="bold" transform="rotate(180,88,100)">A</text>
+  <path d="M84 106 L88 100 L92 106 L88 110 Z" fill="#1a1a2e"/>
+  <path d="M54 64 L64 50 L74 64 L64 68 Z" fill="#1a1a2e" opacity="0.15"/>
+</svg>

@@ -16,6 +16,8 @@ import {
 	solveBezierProgressForTime,
 } from "./bezier";
 
+const KEYFRAME_TIME_TOLERANCE = 1;
+
 function byTimeAscending({
 	leftTime,
 	rightTime,
@@ -187,7 +189,10 @@ function extrapolateScalarEdge({
 		return edgeKey.value;
 	}
 
-	return edgeKey.value + ((time - edgeKey.time) / span) * (neighborKey.value - edgeKey.value);
+	return (
+		edgeKey.value +
+		((time - edgeKey.time) / span) * (neighborKey.value - edgeKey.value)
+	);
 }
 
 export function getScalarSegmentInterpolation({
@@ -257,7 +262,7 @@ export function getScalarChannelValueAtTime({
 	) {
 		const leftKey = normalizedChannel.keys[keyIndex];
 		const rightKey = normalizedChannel.keys[keyIndex + 1];
-		if (time === rightKey.time) {
+		if (Math.abs(time - rightKey.time) <= KEYFRAME_TIME_TOLERANCE) {
 			return rightKey.value;
 		}
 

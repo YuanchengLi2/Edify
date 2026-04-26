@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="fire-grad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FF1744"/>
+      <stop offset="50%" stop-color="#FF6D00"/>
+      <stop offset="100%" stop-color="#FFD600"/>
+    </linearGradient>
+    <pattern id="ht-fire" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FF6D00" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <polygon points="64,6 80,30 110,16 96,44 124,52 100,66 122,92 90,80 78,110 64,88 50,110 38,80 6,92 30,66 4,52 32,44 18,16 48,30" fill="#D50000" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,6 80,30 110,16 96,44 124,52 100,66 122,92 90,80 78,110 64,88 50,110 38,80 6,92 30,66 4,52 32,44 18,16 48,30" fill="url(#ht-fire)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="40" font-weight="900" fill="#FFD600" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="3">FIRE</text>
+  <path d="M16,124 Q22,100 30,110 Q36,92 44,104 Q50,88 56,100 Q60,90 64,98 Q68,88 72,100 Q78,88 84,104 Q90,92 96,110 Q102,100 112,124 Z" fill="url(#fire-grad)" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M32,124 Q36,112 42,116 Q46,108 50,114 Q54,108 56,114 Q60,108 62,114 Q66,108 70,114 Q74,108 78,116 Q82,112 96,124 Z" fill="#FFEB3B" opacity="0.5"/>
+</svg>

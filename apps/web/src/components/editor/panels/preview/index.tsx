@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import useDeepCompareEffect from "use-deep-compare-effect";
 import { useEditor } from "@/hooks/use-editor";
 import { useRafLoop } from "@/hooks/use-raf-loop";
 import { useContainerSize } from "@/hooks/use-container-size";
@@ -82,10 +81,11 @@ function RenderTreeController() {
 	);
 	const mediaAssets = useEditor((e) => e.media.getAssets());
 	const activeProject = useEditor((e) => e.project.getActive());
+	const background = activeProject?.settings.background;
 
 	const { width, height } = usePreviewSize();
 
-	useDeepCompareEffect(() => {
+	useEffect(() => {
 		if (!activeProject) return;
 
 		const duration = editor.timeline.getTotalDuration();
@@ -94,12 +94,12 @@ function RenderTreeController() {
 			mediaAssets,
 			duration,
 			canvasSize: { width, height },
-			background: activeProject.settings.background,
+			background,
 			isPreview: true,
 		});
 
 		editor.renderer.setRenderTree({ renderTree });
-	}, [tracks, mediaAssets, activeProject?.settings.background, width, height]);
+	}, [tracks, mediaAssets, background, width, height, editor, activeProject]);
 
 	return null;
 }
@@ -112,48 +112,48 @@ function PreviewCanvas({
 	onToggleFullscreen: () => void;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const frameRef = useRef<HTMLDivElement>(null);
 	const lastFrameRef = useRef(-1);
 	const lastSceneRef = useRef<RootNode | null>(null);
+	const lastDirtyVersionRef = useRef(0);
 	const renderingRef = useRef(false);
+	const renderTreeRef = useRef<RootNode | null>(null);
 	const { width: nativeWidth, height: nativeHeight } = usePreviewSize();
-	const viewportSize = useContainerSize({ containerRef: viewportRef });
+	const wrapperSize = useContainerSize({ containerRef: wrapperRef });
 	const aspectRatioKey = usePreviewStore((s) => s.aspectRatio);
 	const ratioValue = ASPECT_PRESETS[aspectRatioKey as AspectPresetKey];
 	const { frameWidth, frameHeight } = useMemo(() => {
-		if (
-			!ratioValue ||
-			!viewportSize.width ||
-			!viewportSize.height
-		) {
+		if (!ratioValue || !wrapperSize.width || !wrapperSize.height) {
 			return {
-				frameWidth: viewportSize.width,
-				frameHeight: viewportSize.height,
+				frameWidth: wrapperSize.width,
+				frameHeight: wrapperSize.height,
 			};
 		}
-		const actualRatio = viewportSize.width / viewportSize.height;
+		const actualRatio = wrapperSize.width / wrapperSize.height;
 		if (actualRatio > ratioValue) {
 			return {
-				frameWidth: viewportSize.height * ratioValue,
-				frameHeight: viewportSize.height,
+				frameWidth: wrapperSize.height * ratioValue,
+				frameHeight: wrapperSize.height,
 			};
 		}
 		return {
-			frameWidth: viewportSize.width,
-			frameHeight: viewportSize.width / ratioValue,
+			frameWidth: wrapperSize.width,
+			frameHeight: wrapperSize.width / ratioValue,
 		};
-	}, [viewportSize.width, viewportSize.height, ratioValue]);
+	}, [wrapperSize.width, wrapperSize.height, ratioValue]);
 	const editor = useEditor();
 	const activeProject = useEditor((e) => e.project.getActive());
 	const renderTree = useEditor((e) => e.renderer.getRenderTree());
+	renderTreeRef.current = renderTree ?? null;
 	const { overlays } = usePreviewStore();
 	const viewport = usePreviewViewportState({
 		canvasHeight: nativeHeight,
 		canvasWidth: nativeWidth,
-		viewportHeight: frameHeight || viewportSize.height,
-		viewportWidth: frameWidth || viewportSize.width,
-		viewportRef: frameRef,
+		viewportHeight: frameHeight || wrapperSize.height,
+		viewportWidth: frameWidth || wrapperSize.width,
+		viewportRef: viewportRef,
 	});
 
 	const renderer = useMemo(() => {
@@ -162,38 +162,49 @@ function PreviewCanvas({
 			height: nativeHeight,
 			fps: activeProject.settings.fps,
 		});
-	}, [nativeWidth, nativeHeight, activeProject.settings.fps.numerator, activeProject.settings.fps.denominator]);
+	}, [nativeWidth, nativeHeight, activeProject.settings.fps]);
 
 	const render = useCallback(() => {
-		if (canvasRef.current && renderTree && !renderingRef.current) {
+		if (renderingRef.current) return;
+
+		const tree = renderTreeRef.current;
+		if (!canvasRef.current || !tree) return;
+
 		const renderTime = Math.min(
 			editor.playback.getCurrentTime(),
 			editor.timeline.getLastFrameTime(),
 		);
-		const ticksPerFrame = Math.round(TICKS_PER_SECOND * renderer.fps.denominator / renderer.fps.numerator);
+		const ticksPerFrame = Math.round(
+			(TICKS_PER_SECOND * renderer.fps.denominator) / renderer.fps.numerator,
+		);
 		const frame = Math.floor(renderTime / ticksPerFrame);
+		const dirtyVersion = tree.dirtyVersion;
 
-			if (
-				frame !== lastFrameRef.current ||
-				renderTree !== lastSceneRef.current
-			) {
-				renderingRef.current = true;
-				lastSceneRef.current = renderTree;
-				lastFrameRef.current = frame;
-				renderer
-					.renderToCanvas({
-						node: renderTree,
-						time: renderTime,
-						targetCanvas: canvasRef.current,
-					})
-					.then(() => {
-						renderingRef.current = false;
-					});
-			}
+		if (
+			frame !== lastFrameRef.current ||
+			tree !== lastSceneRef.current ||
+			dirtyVersion !== lastDirtyVersionRef.current
+		) {
+			renderingRef.current = true;
+			lastSceneRef.current = tree;
+			lastFrameRef.current = frame;
+			lastDirtyVersionRef.current = dirtyVersion;
+			renderer
+				.renderToCanvas({
+					node: tree,
+					time: renderTime,
+					targetCanvas: canvasRef.current,
+				})
+				.then(() => {
+					renderingRef.current = false;
+				})
+				.catch(() => {
+					renderingRef.current = false;
+				});
 		}
-	}, [renderer, renderTree, editor.playback]);
+	}, [renderer, editor.playback, editor.timeline]);
 
-	useRafLoop(render);
+	useRafLoop(render, { fps: 60 });
 
 	useEffect(() => {
 		const container = viewportRef.current;
@@ -283,26 +294,24 @@ function PreviewCanvas({
 	return (
 		<PreviewViewportProvider value={viewport}>
 			<div className="flex size-full min-h-0 min-w-0 flex-col">
-				<div className="flex min-h-0 min-w-0 flex-1 p-2 pb-0">
+				<div ref={wrapperRef} className="flex min-h-0 min-w-0 flex-1 p-2 pb-0">
 					<ContextMenu>
 						<ContextMenuTrigger asChild>
 							<div
 								ref={viewportRef}
-								className="relative flex size-full min-h-0 min-w-0 items-center justify-center overflow-hidden"
+								className="relative flex shrink-0 items-center justify-center overflow-hidden bg-black"
+								style={{
+									width: frameWidth ? `${frameWidth}px` : "100%",
+									height: frameHeight ? `${frameHeight}px` : "100%",
+									margin: "auto",
+								}}
 							>
-								<div
-									ref={frameRef}
-									className="relative overflow-hidden"
-									style={{
-										width: frameWidth ? `${frameWidth}px` : "100%",
-										height: frameHeight ? `${frameHeight}px` : "100%",
-									}}
-								>
+								<div ref={frameRef} className="relative size-full">
 									<canvas
 										ref={canvasRef}
 										width={nativeWidth}
 										height={nativeHeight}
-										className="absolute block border"
+										className="absolute block"
 										style={{
 											left: viewport.sceneLeft,
 											top: viewport.sceneTop,

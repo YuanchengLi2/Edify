@@ -98,6 +98,8 @@ export function getDefaultBaseMaskParams(): BaseMaskParams {
 		strokeColor: "#ffffff",
 		strokeWidth: 0,
 		strokeAlign: "center",
+		fillColor: "#000000",
+		fillOpacity: 0,
 	};
 }
 

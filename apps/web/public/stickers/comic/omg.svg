@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="omg-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFAB40"/>
+      <stop offset="100%" stop-color="#FF6D00"/>
+    </radialGradient>
+    <pattern id="ht-omg" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#FFD600" opacity="0.25"/>
+    </pattern>
+  </defs>
+  <polygon points="64,2 78,28 110,12 94,42 126,50 100,64 124,90 88,78 76,110 64,88 52,110 40,78 4,90 28,64 2,50 34,42 18,12 50,28" fill="url(#omg-grad)" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+  <polygon points="64,2 78,28 110,12 94,42 126,50 100,64 124,90 88,78 76,110 64,88 52,110 40,78 4,90 28,64 2,50 34,42 18,12 50,28" fill="url(#ht-omg)"/>
+  <text x="64" y="72" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="44" font-weight="900" fill="#FFEB3B" stroke="#1a1a1a" stroke-width="3.5" letter-spacing="3">OMG</text>
+</svg>

@@ -29,8 +29,9 @@ export function useTimelinePlayhead({
 }: UseTimelinePlayheadProps) {
 	const editor = useEditor();
 	const isScrubbing = useEditor((e) => e.playback.getIsScrubbing());
-	const activeProject = editor.project.getActive();
-	const duration = editor.timeline.getTotalDuration();
+	const activeProject = useEditor((e) => e.project.getActive());
+	const duration = useEditor((e) => e.timeline.getTotalDuration());
+	const activeScene = useEditor((e) => e.scenes.getActiveScene());
 	const isShiftHeldRef = useShiftKey();
 
 	const zoomLevelRef = useRef(zoomLevel);
@@ -54,6 +55,10 @@ export function useTimelinePlayhead({
 	const isDraggingRulerRef = useRef(false);
 	const hasDraggedRulerRef = useRef(false);
 	const lastMouseXRef = useRef<number>(0);
+	const pendingRulerScrubRef = useRef<{
+		startX: number;
+		startY: number;
+	} | null>(null);
 
 	const handleScrub = useCallback(
 		({
@@ -68,34 +73,36 @@ export function useTimelinePlayhead({
 			const rulerRect = ruler.getBoundingClientRect();
 			const relativeMouseX = event.clientX - rulerRect.left;
 
-		const timelineContentWidth = timelineTimeToPixels({ time: duration, zoomLevel });
+			const timelineContentWidth = timelineTimeToPixels({
+				time: duration,
+				zoomLevel,
+			});
 
-		const clampedMouseX = Math.max(
-			0,
-			Math.min(timelineContentWidth, relativeMouseX),
-		);
+			const clampedMouseX = Math.max(
+				0,
+				Math.min(timelineContentWidth, relativeMouseX),
+			);
 
-		const rawTimeSeconds = Math.max(
-			0,
-			Math.min(
-				duration / TICKS_PER_SECOND,
-				clampedMouseX / (BASE_TIMELINE_PIXELS_PER_SECOND * zoomLevel),
-			),
-		);
-		const rawTime = Math.round(rawTimeSeconds * TICKS_PER_SECOND);
+			const rawTimeSeconds = Math.max(
+				0,
+				Math.min(
+					duration / TICKS_PER_SECOND,
+					clampedMouseX / (BASE_TIMELINE_PIXELS_PER_SECOND * zoomLevel),
+				),
+			);
+			const rawTime = Math.round(rawTimeSeconds * TICKS_PER_SECOND);
 
-		const rate = activeProject.settings.fps;
-		const frameTime = snappedSeekTime({ time: rawTime, duration, rate }) ?? rawTime;
+			const rate = activeProject.settings.fps;
+			const frameTime =
+				snappedSeekTime({ time: rawTime, duration, rate }) ?? rawTime;
 
 			const shouldSnap = snappingEnabled && !isShiftHeldRef.current;
 			const time = (() => {
 				if (!shouldSnap) return frameTime;
-				const tracks = editor.scenes.getActiveScene().tracks;
-				const bookmarks = editor.scenes.getActiveScene()?.bookmarks ?? [];
 				const snapPoints = findSnapPoints({
-					tracks,
+					tracks: activeScene.tracks,
 					playheadTime: frameTime,
-					bookmarks,
+					bookmarks: activeScene.bookmarks ?? [],
 					enablePlayheadSnapping: false,
 				});
 				const snapResult = snapToNearestPoint({
@@ -117,9 +124,8 @@ export function useTimelinePlayhead({
 			seek,
 			rulerRef,
 			activeProject.settings.fps,
+			activeScene,
 			isShiftHeldRef,
-			editor.scenes,
-			editor.timeline,
 		],
 	);
 
@@ -139,13 +145,14 @@ export function useTimelinePlayhead({
 			if (playheadRef?.current?.contains(event.target as Node)) return;
 
 			event.preventDefault();
-			isDraggingRulerRef.current = true;
+			pendingRulerScrubRef.current = {
+				startX: event.clientX,
+				startY: event.clientY,
+			};
+			isDraggingRulerRef.current = false;
 			hasDraggedRulerRef.current = false;
-
-			editor.playback.setScrubbing({ isScrubbing: true });
-			handleScrub({ event, snappingEnabled: false });
 		},
-		[handleScrub, playheadRef, editor.playback],
+		[playheadRef],
 	);
 
 	const handlePlayheadMouseDownEvent = useCallback(
@@ -167,9 +174,32 @@ export function useTimelinePlayhead({
 	});
 
 	useEffect(() => {
-		if (!isScrubbing) return;
-
 		const handleMouseMove = ({ event }: { event: MouseEvent }) => {
+			if (pendingRulerScrubRef.current && !isScrubbingRef.current) {
+				const deltaX = Math.abs(
+					event.clientX - pendingRulerScrubRef.current.startX,
+				);
+				const deltaY = Math.abs(
+					event.clientY - pendingRulerScrubRef.current.startY,
+				);
+
+				if (deltaY > 6 && deltaY > deltaX) {
+					pendingRulerScrubRef.current = null;
+					return;
+				}
+
+				if (deltaX > 4 || deltaY > 4) {
+					pendingRulerScrubRef.current = null;
+					isDraggingRulerRef.current = true;
+					hasDraggedRulerRef.current = true;
+					editor.playback.setScrubbing({ isScrubbing: true });
+					handleScrub({ event, snappingEnabled: false });
+					return;
+				}
+			}
+
+			if (!isScrubbingRef.current) return;
+
 			handleScrub({ event });
 			if (isDraggingRulerRef.current) {
 				hasDraggedRulerRef.current = true;
@@ -177,6 +207,14 @@ export function useTimelinePlayhead({
 		};
 
 		const handleMouseUp = ({ event }: { event: MouseEvent }) => {
+			if (pendingRulerScrubRef.current) {
+				pendingRulerScrubRef.current = null;
+				handleScrub({ event, snappingEnabled: false });
+				return;
+			}
+
+			if (!isScrubbingRef.current) return;
+
 			editor.playback.setScrubbing({ isScrubbing: false });
 			const finalTime = scrubTimeRef.current;
 			if (finalTime !== null) {
@@ -210,7 +248,7 @@ export function useTimelinePlayhead({
 			window.removeEventListener("mousemove", onMouseMove);
 			window.removeEventListener("mouseup", onMouseUp);
 		};
-	}, [isScrubbing, seek, handleScrub, editor, tracksScrollRef, zoomLevel]);
+	}, [handleScrub, editor, tracksScrollRef, zoomLevel, seek]);
 
 	const updatePlayheadLeft = useCallback(
 		(time: number) => {
@@ -249,10 +287,10 @@ export function useTimelinePlayhead({
 			const tracksViewport = tracksScrollRef.current;
 			if (!rulerViewport || !tracksViewport) return;
 
-		const playheadPixels = timelineTimeToPixels({
-			time,
-			zoomLevel: zoomLevelRef.current,
-		});
+			const playheadPixels = timelineTimeToPixels({
+				time,
+				zoomLevel: zoomLevelRef.current,
+			});
 			const viewportWidth = rulerViewport.clientWidth;
 			const scrollMinimum = 0;
 			const scrollMaximum = rulerViewport.scrollWidth - viewportWidth;

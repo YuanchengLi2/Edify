@@ -191,6 +191,8 @@ export const splitMaskDefinition: MaskDefinition<SplitMaskParams> = {
 				strokeColor: "#ffffff",
 				strokeWidth: 0,
 				strokeAlign: "center",
+				fillColor: "#000000",
+				fillOpacity: 0,
 				centerX: 0,
 				centerY: 0,
 				rotation: 0,

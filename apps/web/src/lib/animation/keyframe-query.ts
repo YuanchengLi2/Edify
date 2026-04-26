@@ -15,6 +15,18 @@ import {
 } from "./interpolation";
 import { isAnimationPath } from "./target-resolver";
 
+const KEYFRAME_TIME_TOLERANCE = 1;
+
+function isNearlySameTime({
+	leftTime,
+	rightTime,
+}: {
+	leftTime: number;
+	rightTime: number;
+}) {
+	return Math.abs(leftTime - rightTime) <= KEYFRAME_TIME_TOLERANCE;
+}
+
 function getBindingFallbackValue({
 	channel,
 }: {
@@ -75,16 +87,16 @@ function getUniqueBindingKeyframeMatches({
 		const previousMatch = uniqueMatches[uniqueMatches.length - 1];
 		if (
 			!previousMatch ||
-			previousMatch.keyframe.time !== match.keyframe.time
+			!isNearlySameTime({
+				leftTime: previousMatch.keyframe.time,
+				rightTime: match.keyframe.time,
+			})
 		) {
 			uniqueMatches.push(match);
 			continue;
 		}
 
-		if (
-			previousMatch.componentIndex !== 0 &&
-			match.componentIndex === 0
-		) {
+		if (previousMatch.componentIndex !== 0 && match.componentIndex === 0) {
 			uniqueMatches[uniqueMatches.length - 1] = match;
 		}
 	}
@@ -98,9 +110,7 @@ function getPreferredBindingKeyframeMatch({
 	matches: BindingKeyframeMatch[];
 }): BindingKeyframeMatch | null {
 	return (
-		matches.find((match) => match.componentIndex === 0) ??
-		matches[0] ??
-		null
+		matches.find((match) => match.componentIndex === 0) ?? matches[0] ?? null
 	);
 }
 
@@ -247,7 +257,9 @@ export function getKeyframeAtTime({
 		matches: getBindingKeyframeMatches({
 			animations,
 			binding,
-		}).filter(({ keyframe }) => keyframe.time === time),
+		}).filter(({ keyframe }) =>
+			isNearlySameTime({ leftTime: keyframe.time, rightTime: time }),
+		),
 	});
 	if (!keyframeMatch) {
 		return null;

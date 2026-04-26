@@ -2,185 +2,126 @@ import type {
 	TranscriptionLanguage,
 	TranscriptionResult,
 	TranscriptionProgress,
-	TranscriptionModelId,
 } from "@/lib/transcription/types";
-import {
-	DEFAULT_TRANSCRIPTION_MODEL,
-	TRANSCRIPTION_MODELS,
-} from "@/lib/transcription/models";
-import type { WorkerMessage, WorkerResponse } from "./worker";
 
 type ProgressCallback = (progress: TranscriptionProgress) => void;
 
 class TranscriptionService {
-	private worker: Worker | null = null;
-	private currentModelId: TranscriptionModelId | null = null;
-	private isInitialized = false;
-	private isInitializing = false;
+	preload() {
+		return Promise.resolve();
+	}
 
 	async transcribe({
 		audioData,
+		sampleRate = 16000,
 		language = "auto",
-		modelId = DEFAULT_TRANSCRIPTION_MODEL,
 		onProgress,
 	}: {
 		audioData: Float32Array;
+		sampleRate?: number;
 		language?: TranscriptionLanguage;
-		modelId?: TranscriptionModelId;
 		onProgress?: ProgressCallback;
 	}): Promise<TranscriptionResult> {
-		await this.ensureWorker({ modelId, onProgress });
+		onProgress?.({
+			status: "transcribing",
+			progress: 10,
+			message: "Preparing audio...",
+		});
 
-		return new Promise((resolve, reject) => {
-			if (!this.worker) {
-				reject(new Error("Worker not initialized"));
-				return;
+		try {
+			const wavBlob = this.encodeWAV(audioData, sampleRate);
+			const formData = new FormData();
+			formData.append("file", wavBlob, "audio.wav");
+
+			if (language && language !== "auto") {
+				formData.append("language", language);
 			}
 
-			const handleMessage = (event: MessageEvent<WorkerResponse>) => {
-				const response = event.data;
+			onProgress?.({
+				status: "transcribing",
+				progress: 30,
+				message: "Uploading for transcription...",
+			});
 
-				switch (response.type) {
-					case "transcribe-progress":
-						onProgress?.({
-							status: "transcribing",
-							progress: response.progress,
-							message: "Transcribing audio...",
-						});
-						break;
+			const res = await fetch("/api/transcribe", {
+				method: "POST",
+				body: formData,
+			});
 
-					case "transcribe-complete":
-						this.worker?.removeEventListener("message", handleMessage);
-						resolve({
-							text: response.text,
-							segments: response.segments,
-							language,
-						});
-						break;
+			if (!res.ok) {
+				const errorData = await res.json().catch(() => ({}));
+				throw new Error(errorData.error || "Failed to transcribe audio");
+			}
 
-					case "transcribe-error":
-						this.worker?.removeEventListener("message", handleMessage);
-						reject(new Error(response.error));
-						break;
+			onProgress?.({
+				status: "transcribing",
+				progress: 90,
+				message: "Parsing results...",
+			});
 
-					case "cancelled":
-						this.worker?.removeEventListener("message", handleMessage);
-						reject(new Error("Transcription cancelled"));
-						break;
-				}
+			const data = await res.json();
+			return {
+				text: data.text,
+				language: language,
+				segments: data.segments?.map((s: any) => ({
+					start: s.start,
+					end: s.end,
+					text: s.text,
+				})) || [],
+				words: data.words?.map((w: any) => ({
+					start: w.start,
+					end: w.end,
+					text: w.word,
+				})) || [],
 			};
-
-			this.worker.addEventListener("message", handleMessage);
-
-			this.worker.postMessage({
-				type: "transcribe",
-				audio: audioData,
-				language,
-			} satisfies WorkerMessage);
-		});
+		} catch (err: any) {
+			onProgress?.({
+				status: "error",
+				progress: 0,
+				message: err?.message || "Error",
+			});
+			throw err;
+		}
 	}
 
 	cancel() {
-		this.worker?.postMessage({ type: "cancel" } satisfies WorkerMessage);
+		// No-op for fetch API without AbortController
 	}
 
-	private async ensureWorker({
-		modelId,
-		onProgress,
-	}: {
-		modelId: TranscriptionModelId;
-		onProgress?: ProgressCallback;
-	}): Promise<void> {
-		const needsNewModel = this.currentModelId !== modelId;
+	private encodeWAV(samples: Float32Array, sampleRate: number): Blob {
+		const buffer = new ArrayBuffer(44 + samples.length * 2);
+		const view = new DataView(buffer);
 
-		if (this.worker && this.isInitialized && !needsNewModel) {
-			return;
-		}
-
-		if (this.isInitializing && !needsNewModel) {
-			await this.waitForInit();
-			return;
-		}
-
-		this.terminate();
-		this.isInitializing = true;
-		this.isInitialized = false;
-
-		const model = TRANSCRIPTION_MODELS.find((m) => m.id === modelId);
-		if (!model) {
-			throw new Error(`Unknown model: ${modelId}`);
-		}
-
-		this.worker = new Worker(new URL("./worker.ts", import.meta.url), {
-			type: "module",
-		});
-
-		return new Promise((resolve, reject) => {
-			if (!this.worker) {
-				reject(new Error("Failed to create worker"));
-				return;
+		const writeString = (offset: number, str: string) => {
+			for (let i = 0; i < str.length; i++) {
+				view.setUint8(offset + i, str.charCodeAt(i));
 			}
+		};
 
-			const handleMessage = (event: MessageEvent<WorkerResponse>) => {
-				const response = event.data;
+		writeString(0, "RIFF");
+		view.setUint32(4, 36 + samples.length * 2, true);
+		writeString(8, "WAVE");
+		writeString(12, "fmt ");
+		view.setUint32(16, 16, true);
+		view.setUint16(20, 1, true);
+		view.setUint16(22, 1, true);
+		view.setUint32(24, sampleRate, true);
+		view.setUint32(28, sampleRate * 2, true);
+		view.setUint16(32, 2, true);
+		view.setUint16(34, 16, true);
+		writeString(36, "data");
+		view.setUint32(40, samples.length * 2, true);
 
-				switch (response.type) {
-					case "init-progress":
-						onProgress?.({
-							status: "loading-model",
-							progress: response.progress,
-							message: `Loading ${model.name} model...`,
-						});
-						break;
+		let offset = 44;
+		for (let i = 0; i < samples.length; i++, offset += 2) {
+			let s = Math.max(-1, Math.min(1, samples[i]));
+			view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+		}
 
-					case "init-complete":
-						this.worker?.removeEventListener("message", handleMessage);
-						this.isInitialized = true;
-						this.isInitializing = false;
-						this.currentModelId = modelId;
-						resolve();
-						break;
-
-					case "init-error":
-						this.worker?.removeEventListener("message", handleMessage);
-						this.isInitializing = false;
-						this.terminate();
-						reject(new Error(response.error));
-						break;
-				}
-			};
-
-			this.worker.addEventListener("message", handleMessage);
-
-			this.worker.postMessage({
-				type: "init",
-				modelId: model.huggingFaceId,
-			} satisfies WorkerMessage);
-		});
+		return new Blob([buffer], { type: "audio/wav" });
 	}
 
-	private waitForInit(): Promise<void> {
-		return new Promise((resolve) => {
-			const checkInit = () => {
-				if (this.isInitialized) {
-					resolve();
-				} else if (!this.isInitializing) {
-					resolve();
-				} else {
-					setTimeout(checkInit, 100);
-				}
-			};
-			checkInit();
-		});
-	}
-
-	terminate() {
-		this.worker?.terminate();
-		this.worker = null;
-		this.isInitialized = false;
-		this.isInitializing = false;
-		this.currentModelId = null;
-	}
+	terminate() {}
 }
 
 export const transcriptionService = new TranscriptionService();
